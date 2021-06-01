@@ -1,0 +1,11 @@
+Schematics:
+  tier-1:
+    Default: true
+    File: mine1.schem
+    Tier: 1
+    Reset-Delay: 5
+    Icon:
+      type: COBBLESTONE
+    Description:
+      - "The default Mine Schematic"
+      - "Nothing special, but it does the job"
