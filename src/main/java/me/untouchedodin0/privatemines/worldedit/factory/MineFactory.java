@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 public class MineFactory {
 
@@ -39,12 +40,16 @@ public class MineFactory {
     Location spawnLocation;
     WorldEditVector minimum;
     WorldEditVector maximum;
+    WorldEditRegion worldEditRegion;
     Operation operation;
+    Location minimumLocation;
+    Location maximumLocation;
+    IterationFactory iterationFactory = new IterationFactory();
 
     public WorldEditRegion pasteSchematic(File file, Location location) throws IOException {
 
         world = location.getWorld();
-        weWorld = new BukkitWorld(world);
+        weWorld = new BukkitWorld(location.getWorld());
         clipboardFormat = ClipboardFormats.findByFile(file);
         blockVector3 = BlockVector3.at(location.getX(), location.getY(), location.getZ());
 
@@ -73,8 +78,12 @@ public class MineFactory {
                                 clipboardRegion.getMaximumPoint().getZ()
                         );
 
-                        WorldEditRegion worldEditRegion = new WorldEditRegion(minimum, maximum, world);
+                        worldEditRegion = new WorldEditRegion(minimum, maximum, world);
+                        region = worldEditRegion;
 
+                        List<Location> cornerLocations = iterationFactory.findCornerBlocks(minimum, maximum, region.getWorld());
+
+                        Bukkit.broadcastMessage("corner blocks pasteSchematic: " + cornerLocations);
                         for (WorldEditVector pt : loop(worldEditRegion)) {
                             final Block blockAt = world.getBlockAt((int) pt.getX(), (int) pt.getY(), (int) pt.getZ());
                             Material type = blockAt.getType();
@@ -115,6 +124,52 @@ public class MineFactory {
         } else {
             try {
                 region = pasteSchematic(file, location);
+                if (region == null) {
+                    Bukkit.broadcastMessage("The region was somehow null.");
+                }
+                minimumLocation = region.getMinimumLocation();
+                maximumLocation = region.getMaximumLocation();
+                /*
+                BlockVector3 one = BlockVector3.at(
+                        minimumLocation.getBlockX(),
+                        minimumLocation.getBlockY(),
+                        minimumLocation.getBlockZ());
+                BlockVector3 two = BlockVector3.at(
+                        maximumLocation.getBlockX(),
+                        maximumLocation.getBlockY(),
+                        maximumLocation.getBlockZ());
+                 */
+                List<Location> cornerLocations = iterationFactory.findCornerBlocks(minimum, maximum, region.getWorld());
+
+                Bukkit.broadcastMessage("Corner Locations: " + cornerLocations.toString());
+
+//                CuboidRegion cuboidRegion = new CuboidRegion(one, two);
+
+//                for (WorldEditVector pt : loop(region)) {
+//                    final Block blockAt = world.getBlockAt((int) pt.getX(), (int) pt.getY(), (int) pt.getZ());
+//                    Material type = blockAt.getType();
+//                    if (type == Material.CHEST) {
+//                        Bukkit.broadcastMessage("Found chest at: " + blockAt.getLocation());
+//                    }
+//
+//                    for (Iterator<BlockVector3> it = cuboidRegion.iterator(); it.hasNext(); ) {
+//                        Location check = new Location(region.getWorld(), it.next().getBlockX(), it.next().getBlockY(), it.next().getBlockZ());
+//                        Material material = check.getBlock().getType();
+//                        if (material.isAir())
+//                            return;
+//                        if (material == Material.CHEST) {
+//                            Bukkit.broadcastMessage("Found a chest at " + location);
+//                        } else {
+//                            if (material == Material.WHITE_WOOL) {
+//                                Bukkit.broadcastMessage("Found wool at " + location);
+//                            } else {
+//                                if (material == Material.POWERED_RAIL) {
+//                                    Bukkit.broadcastMessage("Found powered rail at " + location);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
