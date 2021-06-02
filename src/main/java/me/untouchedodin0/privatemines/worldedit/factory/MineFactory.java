@@ -65,6 +65,7 @@ public class MineFactory {
                                 .ignoreAirBlocks(true)
                                 // configure here
                                 .build();
+
                         Region clipboardRegion = clipboard.getRegion();
 
                         minimum = new WorldEditVector(
@@ -81,7 +82,7 @@ public class MineFactory {
                         worldEditRegion = new WorldEditRegion(minimum, maximum, world);
                         this.region = worldEditRegion;
 
-                        List<Location> cornerLocations = iterationFactory.findCornerBlocks(minimum, maximum, region.getWorld());
+                        List<Location> cornerLocations = iterationFactory.findCornerBlocks(minimum, maximum, this.region.getWorld());
 
                         Bukkit.broadcastMessage("corner blocks pasteSchematic: " + cornerLocations);
                         for (WorldEditVector pt : loop(worldEditRegion)) {
@@ -91,16 +92,15 @@ public class MineFactory {
                             if (spawnLocation == null && type == Material.CHEST) {
                                 spawnLocation = blockAt.getLocation();
                                 Bukkit.broadcastMessage("spawnLocation: " + spawnLocation.toString());
-                            } else {
-                                if (type == Material.POWERED_RAIL) {
-                                    if (minimum == null) {
-                                        minimum = pt.copy();
-                                        Bukkit.broadcastMessage("min: " + minimum.toString());
-                                    }
-                                    if (maximum == null) {
-                                        maximum = pt.copy();
-                                        Bukkit.broadcastMessage("max: " + maximum.toString());
-                                    }
+                            }
+                            if (type.equals(Material.POWERED_RAIL)) {
+                                if (minimum == null) {
+                                    minimum = pt.copy();
+                                    Bukkit.broadcastMessage("min: " + minimum.toString());
+                                }
+                                if (maximum == null) {
+                                    maximum = pt.copy();
+                                    Bukkit.broadcastMessage("max: " + maximum.toString());
                                 }
                             }
                         }
@@ -124,52 +124,31 @@ public class MineFactory {
         } else {
             try {
                 region = pasteSchematic(file, location);
+
+                for (WorldEditVector pt : loop(region)) {
+                    final Block blockAt = world.getBlockAt((int) pt.getX(), (int) pt.getY(), (int) pt.getZ());
+                    Material type = blockAt.getType();
+                    if (type == Material.AIR || type.name().equals("LEGACY_AIR")) continue;
+
+                    if (type == Material.POWERED_RAIL) {
+                        if (minimum == null) {
+                            Bukkit.broadcastMessage("Minimum was null, let's copy that!");
+                            minimum = pt.copy();
+                            continue;
+                        }
+                        if (maximum == null) {
+                            Bukkit.broadcastMessage("Maximum was null, let's copy that!");
+                            maximum = pt.copy();
+                        }
+                    }
+                    Bukkit.broadcastMessage("Minimum = " + minimum);
+                    Bukkit.broadcastMessage("Maximum = " + maximum);
+                }
                 if (region == null) {
                     Bukkit.broadcastMessage("The region was somehow null.");
                 }
                 minimumLocation = region.getMinimumLocation();
                 maximumLocation = region.getMaximumLocation();
-                /*
-                BlockVector3 one = BlockVector3.at(
-                        minimumLocation.getBlockX(),
-                        minimumLocation.getBlockY(),
-                        minimumLocation.getBlockZ());
-                BlockVector3 two = BlockVector3.at(
-                        maximumLocation.getBlockX(),
-                        maximumLocation.getBlockY(),
-                        maximumLocation.getBlockZ());
-                 */
-                List<Location> cornerLocations = iterationFactory.findCornerBlocks(minimum, maximum, region.getWorld());
-
-                Bukkit.broadcastMessage("Corner Locations: " + cornerLocations.toString());
-
-//                CuboidRegion cuboidRegion = new CuboidRegion(one, two);
-
-//                for (WorldEditVector pt : loop(region)) {
-//                    final Block blockAt = world.getBlockAt((int) pt.getX(), (int) pt.getY(), (int) pt.getZ());
-//                    Material type = blockAt.getType();
-//                    if (type == Material.CHEST) {
-//                        Bukkit.broadcastMessage("Found chest at: " + blockAt.getLocation());
-//                    }
-//
-//                    for (Iterator<BlockVector3> it = cuboidRegion.iterator(); it.hasNext(); ) {
-//                        Location check = new Location(region.getWorld(), it.next().getBlockX(), it.next().getBlockY(), it.next().getBlockZ());
-//                        Material material = check.getBlock().getType();
-//                        if (material.isAir())
-//                            return;
-//                        if (material == Material.CHEST) {
-//                            Bukkit.broadcastMessage("Found a chest at " + location);
-//                        } else {
-//                            if (material == Material.WHITE_WOOL) {
-//                                Bukkit.broadcastMessage("Found wool at " + location);
-//                            } else {
-//                                if (material == Material.POWERED_RAIL) {
-//                                    Bukkit.broadcastMessage("Found powered rail at " + location);
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

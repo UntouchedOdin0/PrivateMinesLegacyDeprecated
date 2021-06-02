@@ -34,16 +34,22 @@ public class IterationFactory {
         }
 
         if (one != null && two != null) {
-                this.region = new WorldEditRegion(one, two, theWorld);
-                for (WorldEditVector pt : loop(region)) {
-                    final Block blockAt = theWorld.getBlockAt((int) pt.getX(), (int) pt.getY(), (int) pt.getZ());
-                    Material type = blockAt.getType();
-                    if (type == Material.POWERED_RAIL) {
-                        Bukkit.broadcastMessage("Found powered rail at: " + blockAt.getLocation());
-                        locations.add(blockAt.getLocation());
-                    }
+            Bukkit.broadcastMessage("one " + one.toString());
+
+            region = new WorldEditRegion(one, two, theWorld);
+            Bukkit.broadcastMessage("region " + region.toString());
+            for (WorldEditVector pt : loop(region)) {
+                final Block blockAt = theWorld.getBlockAt((int) pt.getX(), (int) pt.getY(), (int) pt.getZ());
+                Material type = blockAt.getType();
+                if (type == Material.AIR) continue;
+
+                if (type == Material.POWERED_RAIL) {
+                    Bukkit.broadcastMessage("Found powered rail at: " + blockAt.getLocation());
+                    locations.add(blockAt.getLocation());
+                    Bukkit.broadcastMessage(String.valueOf(locations));
                 }
             }
+        }
         return locations;
     }
 
