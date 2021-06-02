@@ -79,7 +79,7 @@ public class MineFactory {
                         );
 
                         worldEditRegion = new WorldEditRegion(minimum, maximum, world);
-                        region = worldEditRegion;
+                        this.region = worldEditRegion;
 
                         List<Location> cornerLocations = iterationFactory.findCornerBlocks(minimum, maximum, region.getWorld());
 
@@ -111,7 +111,7 @@ public class MineFactory {
                 }
             }
         }
-        return null;
+        return worldEditRegion;
     }
 
     public void createPrivateMine(Player player, File file, Location location) {

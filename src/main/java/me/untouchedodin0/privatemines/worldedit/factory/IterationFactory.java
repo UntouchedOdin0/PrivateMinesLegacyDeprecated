@@ -11,7 +11,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class IterationFactory {
         }
 
         if (one != null && two != null) {
-                region = new WorldEditRegion(one, two, theWorld);
+                this.region = new WorldEditRegion(one, two, theWorld);
                 for (WorldEditVector pt : loop(region)) {
                     final Block blockAt = theWorld.getBlockAt((int) pt.getX(), (int) pt.getY(), (int) pt.getZ());
                     Material type = blockAt.getType();
@@ -45,7 +44,7 @@ public class IterationFactory {
                     }
                 }
             }
-        return new ArrayList<>();
+        return locations;
     }
 
     public Iterable<WorldEditVector> loop(WorldEditRegion region) {
