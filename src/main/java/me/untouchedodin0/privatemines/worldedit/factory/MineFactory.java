@@ -39,6 +39,7 @@ public class MineFactory {
     Location spawnLocation;
     WorldEditVector minimum;
     WorldEditVector maximum;
+    Operation operation;
 
     public WorldEditRegion pasteSchematic(File file, Location location) throws IOException {
 
@@ -47,21 +48,13 @@ public class MineFactory {
         clipboardFormat = ClipboardFormats.findByFile(file);
         blockVector3 = BlockVector3.at(location.getX(), location.getY(), location.getZ());
 
-        if (world == null) {
-            Bukkit.broadcastMessage("world null");
-        } else if (clipboardFormat == null) {
-            Bukkit.broadcastMessage("clipboardFormat == null");
-        } else if (!file.exists()) {
-            Bukkit.broadcastMessage("file == null");
-        }
-
         if (clipboardFormat != null) {
             try (ClipboardReader clipboardReader = clipboardFormat.getReader(new FileInputStream(file))) {
                 clipboard = clipboardReader.read();
 
                 if (clipboard != null) {
                     try (EditSession editSession = WorldEdit.getInstance().newEditSession(weWorld)) {
-                        Operation operation = new ClipboardHolder(clipboard)
+                        operation = new ClipboardHolder(clipboard)
                                 .createPaste(editSession)
                                 .to(blockVector3)
                                 .ignoreAirBlocks(true)
@@ -69,18 +62,18 @@ public class MineFactory {
                                 .build();
                         Region clipboardRegion = clipboard.getRegion();
 
-                        WorldEditVector min = new WorldEditVector(
+                        minimum = new WorldEditVector(
                                 clipboardRegion.getMinimumPoint().getX(),
                                 clipboardRegion.getMinimumPoint().getY(),
                                 clipboardRegion.getMinimumPoint().getZ());
 
-                        WorldEditVector max = new WorldEditVector(
+                        maximum = new WorldEditVector(
                                 clipboardRegion.getMaximumPoint().getX(),
                                 clipboardRegion.getMaximumPoint().getY(),
                                 clipboardRegion.getMaximumPoint().getZ()
                         );
 
-                        WorldEditRegion worldEditRegion = new WorldEditRegion(min, max, world);
+                        WorldEditRegion worldEditRegion = new WorldEditRegion(minimum, maximum, world);
 
                         for (WorldEditVector pt : loop(worldEditRegion)) {
                             final Block blockAt = world.getBlockAt((int) pt.getX(), (int) pt.getY(), (int) pt.getZ());
