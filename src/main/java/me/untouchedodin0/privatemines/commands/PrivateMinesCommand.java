@@ -12,7 +12,7 @@ import java.io.File;
 @CommandAlias("privatemines|privatemine|pm|pmine")
 public class PrivateMinesCommand extends BaseCommand {
 
-    private final MineFactory mineFactory = new MineFactory();
+    MineFactory mineFactory = new MineFactory();
 
     @Default
     @Description("Manage privatemines")
