@@ -5,4 +5,4 @@ author: UntouchedOdin0
 api-version: 1.16
 
 depend:
-  - WorldEdit
+  - RedLib

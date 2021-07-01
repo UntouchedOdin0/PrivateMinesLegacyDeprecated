@@ -1,8 +1,12 @@
 package me.untouchedodin0.privatemines;
 
+//import co.aikar.commands.BukkitCommandManager;
+//import co.aikar.commands.PaperCommandManager;
+
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
 import me.untouchedodin0.privatemines.commands.PrivateMinesCommand;
+import me.untouchedodin0.privatemines.utils.Util;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,9 +22,9 @@ public class PrivateMines extends JavaPlugin{
     @Override
     public void onEnable() {
         File schematicsFile = new File(getDataFolder(), SCHEMATICS_FILE_NAME);
-
+        Util util = new Util();
         BukkitCommandManager manager = new PaperCommandManager(this);
-        manager.registerCommand(new PrivateMinesCommand());
+        manager.registerCommand(new PrivateMinesCommand(util));
         if (!schematicsFile.exists()) {
             saveResource(SCHEMATICS_FILE_NAME, false);
             try {

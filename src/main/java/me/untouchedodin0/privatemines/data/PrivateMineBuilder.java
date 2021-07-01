@@ -1,9 +1,8 @@
 package me.untouchedodin0.privatemines.data;
 
-import me.untouchedodin0.privatemines.worldedit.WorldEditRegion;
+import me.untouchedodin0.privatemines.region.WorldEditRegion;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
-import org.codemc.worldguardwrapper.region.IWrappedRegion;
 
 import java.util.List;
 import java.util.Set;
@@ -21,7 +20,7 @@ public class PrivateMineBuilder {
         Location spawnLocation;
         MineLocations mineLocations;
         WorldEditRegion mainRegion;
-        IWrappedRegion wgRegion;
+//        IWrappedRegion wgRegion;
         MineSchematic mineSchematic;
         Set<UUID> bannedPlayers;
         Set<UUID> trustedPlayers;
@@ -34,7 +33,7 @@ public class PrivateMineBuilder {
                        final Location spawnLocation,
                        final MineLocations mineLocations,
                        final WorldEditRegion worldEditRegion,
-                       final IWrappedRegion wgRegion,
+                       //final IWrappedRegion wgRegion,
                        final MineSchematic mineSchematic,
                        final Set<UUID> bannedPlayers,
                        final Set<UUID> trustedPlayers
@@ -47,7 +46,7 @@ public class PrivateMineBuilder {
             this.spawnLocation = spawnLocation;
             this.mineLocations = mineLocations;
             this.mainRegion = worldEditRegion;
-            this.wgRegion = wgRegion;
+//            this.wgRegion = wgRegion;
             this.mineSchematic = mineSchematic;
             this.bannedPlayers = bannedPlayers;
             this.trustedPlayers = trustedPlayers;
@@ -83,10 +82,10 @@ public class PrivateMineBuilder {
             return this;
         }
 
-        public Builder setWorldGuardRegion(final IWrappedRegion worldGuardRegion) {
-            this.wgRegion = worldGuardRegion;
-            return this;
-        }
+//        public Builder setWorldGuardRegion(final IWrappedRegion worldGuardRegion) {
+//            this.wgRegion = worldGuardRegion;
+//            return this;
+//        }
 
         public Builder setMineSchematic(final MineSchematic mineSchematic) {
             this.mineSchematic = mineSchematic;
