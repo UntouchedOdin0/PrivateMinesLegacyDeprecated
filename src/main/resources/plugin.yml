@@ -6,3 +6,4 @@ api-version: 1.16
 
 depend:
   - RedLib
+  - WorldEdit

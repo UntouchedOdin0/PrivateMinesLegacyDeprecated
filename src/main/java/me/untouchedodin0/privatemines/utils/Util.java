@@ -1,5 +1,6 @@
 package me.untouchedodin0.privatemines.utils;
 
+import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
@@ -19,6 +20,7 @@ public class Util {
     Location endFix;
     Location corner1;
     Location corner2;
+
     ItemStack cornerMaterial = new ItemStack(Material.POWERED_RAIL);
 
     public void fillRegion(Location one, Location two, Material material) {
@@ -37,56 +39,61 @@ public class Util {
         return multiBlockStructure;
     }
 
-    public List<Location> findCornerBlocks(World world, CuboidRegion cuboidRegion) {
+    public List<Location> findCornerBlocks(World world, Location start, Location finish) {
         List<Location> cornerLocations = new ArrayList<>();
-
-        start = cuboidRegion.getStart();
-        end = cuboidRegion.getEnd();
 
         startFix = new Location(world,
                 start.getBlockX() + 1,
                 start.getBlockY(),
                 start.getBlockZ());
         endFix = new Location(world,
-                end.getBlockX() + 1,
-                end.getBlockY(),
-                end.getBlockZ());
+                finish.getBlockX() + 1,
+                finish.getBlockY(),
+                finish.getBlockZ());
 
-        for (int x = start.getBlockX(); x <= end.getBlockX(); x++) {
-            for (int y = start.getBlockY(); y <= end.getBlockY(); y++) {
-                for (int z = start.getBlockZ(); z <= end.getBlockZ(); z++) {
-                    final Block blockAt = world.getBlockAt(x, y, z);
-                    Material type = blockAt.getType();
+        for (int x = 0; x <= Math.abs(start.getX() - finish.getX()); x++) {
+            for (int y = 0; y <= Math.abs(start.getY() - finish.getY()); y++) {
+                for (int z = 0; z <= Math.abs(start.getZ() - finish.getZ()); z++) {
+                    Block block = world.getBlockAt(
+                            (Math.min(start.getBlockX(), finish.getBlockX())) + x,
+                            (Math.min(start.getBlockY(), finish.getBlockY())) + y,
+                            (Math.min(start.getBlockZ(), finish.getBlockZ())) + z
+                    );
 
-                    if (type == Material.AIR || type.name().equals("LEGACY_AIR")) continue;
-                    if (type == Material.POWERED_RAIL) {
-                        if (corner1 == null) {
-                            corner1 = blockAt.getLocation().clone();
-                            Bukkit.broadcastMessage(ChatColor.YELLOW + "Start: "
-                                    + corner1.getBlockX()
-                                    + " "
-                                    + corner1.getBlockY()
-                                    + " "
-                                    + corner1.getBlockZ());
-                        }
-                        if (corner2 == null) {
-                            corner2 = blockAt.getLocation().clone();
-                            Bukkit.broadcastMessage(ChatColor.YELLOW + "Finish: "
-                                    + corner2.getBlockX()
-                                    + " "
-                                    + corner2.getBlockY()
-                                    + " "
-                                    + corner2.getBlockZ());
-                        }
+                    if (block.getType().isAir()) {
+                        continue;
                     }
+                    if (block.getType().equals(Material.POWERED_RAIL)) {
+                        Bukkit.broadcastMessage("powered rail at " + block.getLocation());
+                        cornerLocations.add(block.getLocation());
+                    }
+
+//                    cornerBlocks = util.findCornerBlocks(world, miningRegion);
+//                    Bukkit.broadcastMessage("corner blocks: " + cornerBlocks);
                 }
             }
         }
-        if (corner1 != null) {
-            cornerLocations.add(corner1);
-        } else if (corner2 != null) {
-            cornerLocations.add(corner2);
-        }
         return cornerLocations;
+    }
+
+    public String coordFormat(double nRaw) {
+        String result = "";
+        String n = (new StringBuilder(String.valueOf(nRaw))).toString();
+        int decimals = 1;
+        boolean atDecimal = false;
+        int current = 0;
+        for (int i = 0; i < n.length(); ) {
+            char c = n.charAt(i);
+            if (atDecimal)
+                current++;
+            if (c == '.')
+                atDecimal = true;
+            if (decimals >= current) {
+                result = result + c;
+                i++;
+            }
+            break;
+        }
+        return result;
     }
 }

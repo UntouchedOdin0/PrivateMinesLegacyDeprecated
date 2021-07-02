@@ -2,6 +2,7 @@ package me.untouchedodin0.privatemines.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
+import com.sk89q.worldedit.math.BlockVector3;
 import me.untouchedodin0.privatemines.utils.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -10,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Rotator;
 import redempt.redlib.multiblock.Structure;
@@ -19,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -41,7 +44,22 @@ public class PrivateMinesCommand extends BaseCommand {
     Rotator rotator;
     InputStream inputStream;
     CuboidRegion cuboidRegion;
+    CuboidRegion miningRegion;
     ItemStack cornerMaterial = new ItemStack(Material.POWERED_RAIL);
+    List<Material> mineBlocks = new ArrayList<>();
+    List<Location> cornerBlocks;
+    WeightedRandom<Material> weightedRandom = new WeightedRandom<>();
+
+    String coords1 = "";
+    String coords2 = "";
+
+    String x1 = "";
+    String y1 = "";
+    String z1 = "";
+
+    String x2 = "";
+    String y2 = "";
+    String z2 = "";
 
     public PrivateMinesCommand(Util util) {
         this.util = util;
@@ -96,19 +114,24 @@ public class PrivateMinesCommand extends BaseCommand {
         }
         world = to.getWorld();
         cuboidRegion = multiBlockStructure.getRegion(to);
-        start = cuboidRegion.getStart();
-        end = cuboidRegion.getEnd();
-
-        Bukkit.broadcastMessage("start: " + start + " end:  " + end);
+        start = cuboidRegion.getStart().clone();
+        end = cuboidRegion.getEnd().clone();
 
         multiBlockStructure.build(to);
+
+        if (start == null || end == null) {
+            Bukkit.getLogger().info("Failed to create the mine due to either");
+            Bukkit.getLogger().info("the start of the end being null");
+            Bukkit.broadcastMessage("The main cause of this is because the location is");
+            Bukkit.broadcastMessage("either to high or to low.");
+            return;
+        }
 
         for (int x = start.getBlockX(); x <= end.getBlockX(); x++) {
             for (int y = start.getBlockY(); y <= end.getBlockY(); y++) {
                 for (int z = start.getBlockZ(); z <= end.getBlockZ(); z++) {
                     Block block = world.getBlockAt(x, y, z);
                     if (block.getType() == Material.POWERED_RAIL) {
-                        Bukkit.broadcastMessage("Powered rail at += " + block.getLocation());
                         if (corner1 == null) {
                             corner1 = block.getLocation();
                         } else if (corner2 == null) {
@@ -118,6 +141,60 @@ public class PrivateMinesCommand extends BaseCommand {
                 }
             }
         }
+        miningRegion = new CuboidRegion(corner1, corner2)
+                .expand(1, 0, 1, 0, 1, 0);
+
+        weightedRandom.set(Material.STONE, 1);
+        weightedRandom.set(Material.COBBLESTONE, 1);
+
+        miningRegion.forEachBlock(block -> {
+            Material material = weightedRandom.roll();
+            block.setType(material);
+        });
+
+        BlockVector3 pos1 = BlockVector3.at(corner1.getBlockX(), corner1.getBlockY(), corner1.getBlockZ());
+        BlockVector3 pos2 = BlockVector3.at(corner2.getBlockX(), corner2.getBlockY(), corner2.getBlockZ());
+
+        com.sk89q.worldedit.regions.CuboidRegion region =
+                new com.sk89q.worldedit.regions.CuboidRegion(pos1, pos2);
+//        Bukkit.broadcastMessage("miningRegion: " + miningRegion);
+//        Bukkit.broadcastMessage("region: " + region);
+
+        Location miningRegionStart = miningRegion.getStart();
+        Location miningRegionEnd = miningRegion.getEnd();
+
+        for (int x = 0; x <= Math.abs(pos1.getX() - pos2.getX()); x++) {
+            for (int y = 0; y <= Math.abs(pos1.getY() - pos2.getY()); y++) {
+                for (int z = 0; z <= Math.abs(pos1.getZ() - pos2.getZ()); z++) {
+                    Block block = world.getBlockAt(
+                            (Math.min(pos1.getX(), pos2.getX())) + x,
+                            (Math.min(pos1.getY(), pos2.getY())) + y,
+                            (Math.min(pos1.getZ(), pos2.getZ())) + z
+                    );
+
+                    if (block.getType().isAir()) {
+                        continue;
+                    }
+//                    if (block.getType().equals(Material.POWERED_RAIL)) {
+//                        Bukkit.broadcastMessage("powered rail at " + block.getLocation());
+//                    }
+                }
+            }
+        }
+        cornerBlocks = util.findCornerBlocks(world, miningRegionStart, miningRegionEnd);
+
+        x1 = util.coordFormat(corner1.getX());
+        y1 = util.coordFormat(corner1.getY());
+        z1 = util.coordFormat(corner1.getZ());
+
+        coords1 = x1 + " " + y1 + " " + z1;
+        coords2 = x2 + " " + y2 + " " + z2;
+
+//        Bukkit.broadcastMessage("Powered rail at += " + coords1);
+//        Bukkit.broadcastMessage("Powered rail at += " + coords2);
+        Bukkit.broadcastMessage("corner blocks: " + cornerBlocks);
+
     }
 }
+
 
