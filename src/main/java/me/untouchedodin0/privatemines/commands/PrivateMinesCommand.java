@@ -3,11 +3,16 @@ package me.untouchedodin0.privatemines.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import me.untouchedodin0.privatemines.utils.Util;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import redempt.redlib.multiblock.MultiBlockStructure;
+import redempt.redlib.multiblock.Rotator;
+import redempt.redlib.multiblock.Structure;
 import redempt.redlib.region.CuboidRegion;
 
 import java.io.File;
@@ -31,7 +36,9 @@ public class PrivateMinesCommand extends BaseCommand {
     Location corner1;
     Location corner2;
     World world;
+    Structure structure;
     MultiBlockStructure multiBlockStructure;
+    Rotator rotator;
     InputStream inputStream;
     CuboidRegion cuboidRegion;
     ItemStack cornerMaterial = new ItemStack(Material.POWERED_RAIL);
@@ -80,63 +87,37 @@ public class PrivateMinesCommand extends BaseCommand {
             e.printStackTrace();
         }
 
-        world = to.getWorld();
         if (inputStream != null) {
-            multiBlockStructure = util.createStructure(inputStream);
+            multiBlockStructure = MultiBlockStructure
+                    .create(inputStream,
+                            "mine",
+                            false,
+                            false);
         }
+        world = to.getWorld();
         cuboidRegion = multiBlockStructure.getRegion(to);
-
         start = cuboidRegion.getStart();
         end = cuboidRegion.getEnd();
 
-        List<Location> locations = util.findCornerBlocks(world, cuboidRegion);
-        p.sendMessage("locations: " + locations);
+        Bukkit.broadcastMessage("start: " + start + " end:  " + end);
 
-        startFix = new Location(world,
-                start.getBlockX() + 1,
-                start.getBlockY(),
-                start.getBlockZ());
-        endFix = new Location(world,
-                end.getBlockX() + 1,
-                end.getBlockY(),
-                end.getBlockZ());
+        multiBlockStructure.build(to);
 
         for (int x = start.getBlockX(); x <= end.getBlockX(); x++) {
             for (int y = start.getBlockY(); y <= end.getBlockY(); y++) {
                 for (int z = start.getBlockZ(); z <= end.getBlockZ(); z++) {
-                    final Block blockAt = world.getBlockAt(x, y, z);
-                    Material type = blockAt.getType();
-
-                    if (type == Material.AIR || type.name().equals("LEGACY_AIR")) continue;
-                    if (type == cornerMaterial.getType()) {
-                        Block block = world.getBlockAt(x, y, z);
-                        if (block.getType() == cornerMaterial.getType()) {
-                            Bukkit.broadcastMessage("Powered rail at += " + block.getLocation());
-
-                            if (corner1 == null) {
-                                corner1 = block.getLocation().clone();
-                                Bukkit.broadcastMessage(ChatColor.YELLOW + "Start: "
-                                        + corner1.getBlockX()
-                                        + " "
-                                        + corner1.getBlockY()
-                                        + " "
-                                        + corner1.getBlockZ());
-                            }
-                            if (corner2 == null) {
-                                corner2 = block.getLocation().clone();
-                                Bukkit.broadcastMessage(ChatColor.YELLOW + "Finish: "
-                                        + corner2.getBlockX()
-                                        + " "
-                                        + corner2.getBlockY()
-                                        + " "
-                                        + corner2.getBlockZ());
-                                return;
-                            }
+                    Block block = world.getBlockAt(x, y, z);
+                    if (block.getType() == Material.POWERED_RAIL) {
+                        Bukkit.broadcastMessage("Powered rail at += " + block.getLocation());
+                        if (corner1 == null) {
+                            corner1 = block.getLocation();
+                        } else if (corner2 == null) {
+                            corner2 = block.getLocation();
                         }
                     }
                 }
             }
-            multiBlockStructure.build(to);
         }
     }
 }
+
