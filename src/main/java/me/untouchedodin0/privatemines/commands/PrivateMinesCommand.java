@@ -3,14 +3,15 @@ package me.untouchedodin0.privatemines.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import com.sk89q.worldedit.math.BlockVector3;
+import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.utils.Util;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import redempt.redlib.blockdata.BlockDataManager;
+import redempt.redlib.blockdata.DataBlock;
 import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Rotator;
@@ -46,9 +47,12 @@ public class PrivateMinesCommand extends BaseCommand {
     CuboidRegion cuboidRegion;
     CuboidRegion miningRegion;
     ItemStack cornerMaterial = new ItemStack(Material.POWERED_RAIL);
-    List<Material> mineBlocks = new ArrayList<>();
+    List<ItemStack> mineBlocks = new ArrayList<>();
     List<Location> cornerBlocks;
     WeightedRandom<Material> weightedRandom = new WeightedRandom<>();
+    MineFillManager fillManager;
+    PrivateMines privateMines;
+    BlockDataManager manager;
 
     String coords1 = "";
     String coords2 = "";
@@ -61,8 +65,18 @@ public class PrivateMinesCommand extends BaseCommand {
     String y2 = "";
     String z2 = "";
 
-    public PrivateMinesCommand(Util util) {
+    Block startBlock;
+    Block endBlock;
+    DataBlock startDataBlock;
+    DataBlock endDataBlock;
+
+
+    public PrivateMinesCommand(Util util,
+                               MineFillManager fillManager,
+                               PrivateMines privateMines) {
         this.util = util;
+        this.fillManager = fillManager;
+        this.privateMines = privateMines;
     }
 
     @Default
@@ -144,21 +158,22 @@ public class PrivateMinesCommand extends BaseCommand {
         miningRegion = new CuboidRegion(corner1, corner2)
                 .expand(1, 0, 1, 0, 1, 0);
 
-        weightedRandom.set(Material.STONE, 1);
-        weightedRandom.set(Material.COBBLESTONE, 1);
 
-        miningRegion.forEachBlock(block -> {
-            Material material = weightedRandom.roll();
-            block.setType(material);
-        });
+        if (mineBlocks.isEmpty()) {
+            Bukkit.broadcastMessage(ChatColor.RED + "Failed to reset the mine due to no Materials being listed!");
+            Bukkit.broadcastMessage(ChatColor.GREEN + "Adding Stone to the list and trying again!");
+            mineBlocks.add(new ItemStack(Material.STONE));
+
+            if (mineBlocks.toArray().length >= 2) {
+                Bukkit.getScheduler().runTaskLater(privateMines, ()
+                        -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
+            } else {
+                fillManager.fillMine(corner1, corner2, mineBlocks.get(0));
+            }
+        }
 
         BlockVector3 pos1 = BlockVector3.at(corner1.getBlockX(), corner1.getBlockY(), corner1.getBlockZ());
         BlockVector3 pos2 = BlockVector3.at(corner2.getBlockX(), corner2.getBlockY(), corner2.getBlockZ());
-
-        com.sk89q.worldedit.regions.CuboidRegion region =
-                new com.sk89q.worldedit.regions.CuboidRegion(pos1, pos2);
-//        Bukkit.broadcastMessage("miningRegion: " + miningRegion);
-//        Bukkit.broadcastMessage("region: " + region);
 
         Location miningRegionStart = miningRegion.getStart();
         Location miningRegionEnd = miningRegion.getEnd();
@@ -193,7 +208,8 @@ public class PrivateMinesCommand extends BaseCommand {
 //        Bukkit.broadcastMessage("Powered rail at += " + coords1);
 //        Bukkit.broadcastMessage("Powered rail at += " + coords2);
         Bukkit.broadcastMessage("corner blocks: " + cornerBlocks);
-
+        startBlock = miningRegionStart.getBlock();
+        endBlock = miningRegionEnd.getBlock();
     }
 }
 
