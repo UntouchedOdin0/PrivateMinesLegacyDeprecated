@@ -173,23 +173,6 @@ public class PrivateMinesCommand extends BaseCommand {
                 corner2 = null;
             }
         }
-
-
-        Location miningRegionStart = miningRegion.getStart();
-        Location miningRegionEnd = miningRegion.getEnd();
-
-        x1 = util.coordFormat(corner1.getX());
-        y1 = util.coordFormat(corner1.getY());
-        z1 = util.coordFormat(corner1.getZ());
-
-        coords1 = x1 + " " + y1 + " " + z1;
-        coords2 = x2 + " " + y2 + " " + z2;
-
-//        Bukkit.broadcastMessage("Powered rail at += " + coords1);
-//        Bukkit.broadcastMessage("Powered rail at += " + coords2);
-        Bukkit.broadcastMessage("corner blocks: " + cornerBlocks);
-        startBlock = miningRegionStart.getBlock();
-        endBlock = miningRegionEnd.getBlock();
     }
 }
 
