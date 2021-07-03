@@ -3,22 +3,28 @@ package me.untouchedodin0.privatemines;
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
 import me.untouchedodin0.privatemines.commands.PrivateMinesCommand;
+import me.untouchedodin0.privatemines.structure.StructureManagers;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import redempt.redlib.blockdata.BlockDataManager;
+import redempt.redlib.sql.SQLHelper;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 
-public class PrivateMines extends JavaPlugin{
+public class PrivateMines extends JavaPlugin {
 
     public static final String SCHEMATICS_FILE_NAME = "schematics/schematics.yml";
     private static final YamlConfiguration schematicsConfig = new YamlConfiguration();
+    Connection connection;
+    SQLHelper sqlHelper;
     private PrivateMines privateMine;
+
+    File structure = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
 
     @Override
     public void onEnable() {
@@ -43,6 +49,18 @@ public class PrivateMines extends JavaPlugin{
             }
         }
         privateMine = this;
+        StructureManagers structureManagers = new StructureManagers();
+
+        Bukkit.getLogger().info("Loading structures...");
+        structureManagers.loadStructureData(structure);
+
+        /*
+        Bukkit.getLogger().info("Loading the SQL database...");
+        connection = SQLHelper.openSQLite(privateMine.getDataFolder().toPath().resolve("mines.db"));
+        Bukkit.getLogger().info("Wrapping the SQL database with a wrapper...");
+        sqlHelper = new SQLHelper(connection);
+        sqlHelper.execute("CREATE TABLE IF NOT EXISTS privatemines");
+         */
     }
 
     @Override
