@@ -171,27 +171,26 @@ public class PrivateMinesCommand extends BaseCommand {
             Bukkit.broadcastMessage(ChatColor.RED + "Failed to reset the mine due to no Materials being listed!");
             Bukkit.broadcastMessage(ChatColor.GREEN + "Adding Stone to the list and trying again!");
             mineBlocks.add(new ItemStack(Material.STONE));
-
-            if (mineBlocks.toArray().length >= 2) {
-                Bukkit.getScheduler().runTaskLater(privateMines, ()
-                        -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
-            } else {
-                fillManager.fillMine(corner1, corner2, mineBlocks.get(0));
-                corner1 = null;
-                corner2 = null;
-                start = null;
-                end = null;
-            }
         }
 
         Location miningRegionStart = miningRegion.getStart();
         Location miningRegionEnd = miningRegion.getEnd();
 
-//        Bukkit.broadcastMessage("Powered rail at += " + coords1);
-//        Bukkit.broadcastMessage("Powered rail at += " + coords2);
         Bukkit.broadcastMessage("corner blocks: " + cornerBlocks);
         startBlock = miningRegionStart.getBlock();
         endBlock = miningRegionEnd.getBlock();
+
+        if (mineBlocks.toArray().length >= 2) {
+            Bukkit.getScheduler().runTaskLater(privateMines, ()
+                    -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
+        } else {
+            fillManager.fillMine(corner1, corner2, mineBlocks.get(0));
+            corner1 = null;
+            corner2 = null;
+            start = null;
+            end = null;
+        }
+
         Bukkit.broadcastMessage("cornerBlocks debug: ");
         Bukkit.broadcastMessage("count: " + cornerBlocks.stream().count());
         cornerBlocks = new ArrayList<>();
