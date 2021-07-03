@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import redempt.redlib.blockdata.BlockDataManager;
 import redempt.redlib.blockdata.DataBlock;
+import redempt.redlib.misc.Task;
 import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Rotator;
@@ -181,10 +182,13 @@ public class PrivateMinesCommand extends BaseCommand {
         endBlock = miningRegionEnd.getBlock();
 
         if (mineBlocks.toArray().length >= 2) {
-            Bukkit.getScheduler().runTaskLater(privateMines, ()
+            Task.syncDelayed(()
                     -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
+//            Bukkit.getScheduler().runTaskLater(privateMines, ()
+//                    -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
         } else {
-            fillManager.fillMine(corner1, corner2, mineBlocks.get(0));
+            Task.syncDelayed(()
+                    -> fillManager.fillMine(corner1, corner2, mineBlocks.get(0)), 20L);
             corner1 = null;
             corner2 = null;
             start = null;
@@ -196,6 +200,7 @@ public class PrivateMinesCommand extends BaseCommand {
         cornerBlocks = new ArrayList<>();
         Bukkit.broadcastMessage("count after iterator: " + cornerBlocks.stream().count());
         if (p != null) {
+            spawnLocation.getBlock().setType(Material.AIR);
             p.teleport(spawnLocation);
             p.sendMessage(ChatColor.GREEN + "You've been teleported to your mine!");
             spawnLocation = null;
