@@ -169,34 +169,14 @@ public class PrivateMinesCommand extends BaseCommand {
                         -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
             } else {
                 fillManager.fillMine(corner1, corner2, mineBlocks.get(0));
+                corner1 = null;
+                corner2 = null;
             }
         }
 
-        BlockVector3 pos1 = BlockVector3.at(corner1.getBlockX(), corner1.getBlockY(), corner1.getBlockZ());
-        BlockVector3 pos2 = BlockVector3.at(corner2.getBlockX(), corner2.getBlockY(), corner2.getBlockZ());
 
         Location miningRegionStart = miningRegion.getStart();
         Location miningRegionEnd = miningRegion.getEnd();
-
-        for (int x = 0; x <= Math.abs(pos1.getX() - pos2.getX()); x++) {
-            for (int y = 0; y <= Math.abs(pos1.getY() - pos2.getY()); y++) {
-                for (int z = 0; z <= Math.abs(pos1.getZ() - pos2.getZ()); z++) {
-                    Block block = world.getBlockAt(
-                            (Math.min(pos1.getX(), pos2.getX())) + x,
-                            (Math.min(pos1.getY(), pos2.getY())) + y,
-                            (Math.min(pos1.getZ(), pos2.getZ())) + z
-                    );
-
-                    if (block.getType().isAir()) {
-                        continue;
-                    }
-//                    if (block.getType().equals(Material.POWERED_RAIL)) {
-//                        Bukkit.broadcastMessage("powered rail at " + block.getLocation());
-//                    }
-                }
-            }
-        }
-        cornerBlocks = util.findCornerBlocks(world, miningRegionStart, miningRegionEnd);
 
         x1 = util.coordFormat(corner1.getX());
         y1 = util.coordFormat(corner1.getY());
