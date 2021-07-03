@@ -2,7 +2,6 @@ package me.untouchedodin0.privatemines.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
-import com.sk89q.worldedit.math.BlockVector3;
 import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
@@ -39,6 +38,9 @@ public class PrivateMinesCommand extends BaseCommand {
     Location endFix;
     Location corner1;
     Location corner2;
+    Location spawnLocation;
+    Location npcLocation;
+    Location placeLocation;
     World world;
     Structure structure;
     MultiBlockStructure multiBlockStructure;
@@ -48,7 +50,7 @@ public class PrivateMinesCommand extends BaseCommand {
     CuboidRegion miningRegion;
     ItemStack cornerMaterial = new ItemStack(Material.POWERED_RAIL);
     List<ItemStack> mineBlocks = new ArrayList<>();
-    List<Location> cornerBlocks;
+    List<Location> cornerBlocks = new ArrayList<>();
     WeightedRandom<Material> weightedRandom = new WeightedRandom<>();
     MineFillManager fillManager;
     PrivateMines privateMines;
@@ -69,7 +71,6 @@ public class PrivateMinesCommand extends BaseCommand {
     Block endBlock;
     DataBlock startDataBlock;
     DataBlock endDataBlock;
-
 
     public PrivateMinesCommand(Util util,
                                MineFillManager fillManager,
@@ -151,13 +152,20 @@ public class PrivateMinesCommand extends BaseCommand {
                         } else if (corner2 == null) {
                             corner2 = block.getLocation();
                         }
+                    } else if (block.getType() == Material.CHEST && spawnLocation == null) {
+                        spawnLocation = block.getLocation();
+                    } else if (block.getType() == Material.WHITE_WOOL && npcLocation == null) {
+                        npcLocation = block.getLocation();
                     }
                 }
             }
         }
+
         miningRegion = new CuboidRegion(corner1, corner2)
                 .expand(1, 0, 1, 0, 1, 0);
 
+        cornerBlocks.add(corner1);
+        cornerBlocks.add(corner2);
 
         if (mineBlocks.isEmpty()) {
             Bukkit.broadcastMessage(ChatColor.RED + "Failed to reset the mine due to no Materials being listed!");
@@ -171,9 +179,31 @@ public class PrivateMinesCommand extends BaseCommand {
                 fillManager.fillMine(corner1, corner2, mineBlocks.get(0));
                 corner1 = null;
                 corner2 = null;
+                start = null;
+                end = null;
             }
+        }
+
+        Location miningRegionStart = miningRegion.getStart();
+        Location miningRegionEnd = miningRegion.getEnd();
+
+//        Bukkit.broadcastMessage("Powered rail at += " + coords1);
+//        Bukkit.broadcastMessage("Powered rail at += " + coords2);
+        Bukkit.broadcastMessage("corner blocks: " + cornerBlocks);
+        startBlock = miningRegionStart.getBlock();
+        endBlock = miningRegionEnd.getBlock();
+        Bukkit.broadcastMessage("cornerBlocks debug: ");
+        Bukkit.broadcastMessage("count: " + cornerBlocks.stream().count());
+        cornerBlocks = new ArrayList<>();
+        Bukkit.broadcastMessage("count after iterator: " + cornerBlocks.stream().count());
+        if (p != null) {
+            p.teleport(spawnLocation);
+            p.sendMessage(ChatColor.GREEN + "You've been teleported to your mine!");
+            spawnLocation = null;
+            npcLocation = null;
         }
     }
 }
+
 
 

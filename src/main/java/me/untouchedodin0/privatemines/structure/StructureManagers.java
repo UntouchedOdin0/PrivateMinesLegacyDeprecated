@@ -16,6 +16,7 @@ public class StructureManagers {
     InputStream inputStream;
     MultiBlockStructure multiBlockStructure;
     List<MultiBlockStructure> multiBlockStructures = new ArrayList<>();
+    int[][] corners = new int[2][];
 
     public void loadStructureData(File file) {
         try {
@@ -33,7 +34,6 @@ public class StructureManagers {
                                     false);
 
             int[] dim = multiBlockStructure.getDimensions();
-            int[][] corners = new int[2][];
             int pos = 0;
 
             for (int x = 0; x < dim[0]; x++) {
@@ -48,6 +48,10 @@ public class StructureManagers {
             }
             multiBlockStructures.add(multiBlockStructure);
         }
+    }
+
+    public int[][] getCorners() {
+        return corners;
     }
 }
 
