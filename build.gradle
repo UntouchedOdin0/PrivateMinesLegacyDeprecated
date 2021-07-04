@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
+group 'com.privateminesrewrite'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+
+    maven { url = 'https://oss.sonatype.org/content/groups/public/' }
+    maven { url = 'https://repo.aikar.co/content/groups/aikar/' }
+    maven { url = 'https://jitpack.io' }
+    maven { url = 'https://repo.citizensnpcs.co/' }
+    maven { url = 'https://maven.sk89q.com/repo/' }
+    maven { url = "https://repo.mattstudios.me/artifactory/public/" }
+    maven {
+        name = "sonatype-oss-snapshots"
+        url = "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+}
+
+dependencies {
+    implementation 'org.jetbrains:annotations:20.1.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
+    compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
+    compileOnly "co.aikar:acf-paper:0.5.0-SNAPSHOT"
+    compileOnly 'com.github.Redempt:RedLib:5.0.2'
+
+    implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
+    implementation("net.citizensnpcs:citizensapi:2.0.16-SNAPSHOT")
+    implementation "dev.triumphteam:triumph-gui:3.0.3" // Replace version here
+    implementation "net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT"
+
+    compileOnly "com.sk89q.worldedit:worldedit-bukkit:7.2.0-SNAPSHOT"
+    compileOnly "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
+
+    // maybe test if it's this worldguard causing issues?
+//    compileOnly "com.sk89q.worldguard:worldguard-bukkit:7.0.0"
+
+//    implementation 'org.codemc.worldguardwrapper:worldguardwrapper:1.2.0-SNAPSHOT'
+}
+
+shadowJar {
+    relocate 'co.aikar.commands', 'me.untouchedodin0.privatemines.acf'
+    relocate("dev.triumphteam.gui", "me.untouchedodin0.privatemines.gui")
+}
+
+test {
+    useJUnitPlatform()
+}
