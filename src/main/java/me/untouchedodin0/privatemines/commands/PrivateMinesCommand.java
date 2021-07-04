@@ -6,6 +6,7 @@ import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import me.untouchedodin0.privatemines.PrivateMines;
+import me.untouchedodin0.privatemines.guis.MainMenuGui;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
@@ -83,15 +84,18 @@ public class PrivateMinesCommand extends BaseCommand {
     DataBlock endDataBlock;
 
     Gui gui;
+    MainMenuGui mainMenuGui;
 
     public PrivateMinesCommand(Util util,
                                MineFillManager fillManager,
                                PrivateMines privateMines,
-                               MineStorage mineStorage) {
+                               MineStorage mineStorage,
+                               MainMenuGui mainMenuGui) {
         this.util = util;
         this.fillManager = fillManager;
         this.privateMines = privateMines;
         this.mineStorage = mineStorage;
+        this.mainMenuGui = mainMenuGui;
     }
 
     @Default
@@ -102,7 +106,7 @@ public class PrivateMinesCommand extends BaseCommand {
 
             userFile = new File("plugins/PrivateMinesRewrite/mines/" + p.getUniqueId() + ".yml");
             mineConfig = YamlConfiguration.loadConfiguration(userFile);
-            teleportLocation = mineConfig.getLocation("spawnLocation");
+            this.teleportLocation = mineConfig.getLocation("spawnLocation");
 
             /*
                 Add gui menu with following items
@@ -112,9 +116,48 @@ public class PrivateMinesCommand extends BaseCommand {
 
             ItemStack bedStack = new ItemStack(Material.RED_BED);
             ItemMeta bedStackItemMeta = bedStack.getItemMeta();
-
             bedStackItemMeta.setDisplayName(ChatColor.GREEN + "Go to your mine");
             bedStack.setItemMeta(bedStackItemMeta);
+
+            ItemStack status = new ItemStack(Material.RED_WOOL);
+            ItemMeta statusItemMeta = bedStack.getItemMeta();
+            statusItemMeta.setDisplayName(ChatColor.GREEN + "Status");
+            status.setItemMeta(statusItemMeta);
+
+            ItemStack setTax = new ItemStack(Material.OAK_SIGN);
+            ItemMeta setTaxItemMeta = setTax.getItemMeta();
+            setTaxItemMeta.setDisplayName(ChatColor.GREEN + "Set Tax");
+            setTax.setItemMeta(setTaxItemMeta);
+
+            ItemStack mineSize = new ItemStack(Material.LAVA_BUCKET);
+            ItemMeta mineSizeItemMeta = mineSize.getItemMeta();
+            mineSizeItemMeta.setDisplayName(ChatColor.GREEN + "Mine Size");
+            setTax.setItemMeta(setTaxItemMeta);
+
+            ItemStack resetMine = new ItemStack(Material.MINECART);
+            ItemMeta resetMineItemMeta = resetMine.getItemMeta();
+            resetMineItemMeta.setDisplayName(ChatColor.GREEN + "Reset Mine");
+            resetMine.setItemMeta(resetMineItemMeta);
+
+            ItemStack whitelistedMembers = new ItemStack(Material.WATER_BUCKET);
+            ItemMeta whitelistedMembersItemMeta = whitelistedMembers.getItemMeta();
+            whitelistedMembersItemMeta.setDisplayName(ChatColor.GREEN + "Whitelisted Members");
+            whitelistedMembers.setItemMeta(whitelistedMembersItemMeta);
+
+            ItemStack bannedMembers = new ItemStack(Material.LAVA_BUCKET);
+            ItemMeta bannedMembersItemMeta = bannedMembers.getItemMeta();
+            bannedMembersItemMeta.setDisplayName(ChatColor.GREEN + "Banned Members");
+            bannedMembers.setItemMeta(bannedMembersItemMeta);
+
+            ItemStack priorityMembers = new ItemStack(Material.LAVA_BUCKET);
+            ItemMeta priorityMembersItemMeta = priorityMembers.getItemMeta();
+            priorityMembersItemMeta.setDisplayName(ChatColor.GREEN + "Priority Members");
+            priorityMembers.setItemMeta(priorityMembersItemMeta);
+
+            ItemStack coowner = new ItemStack(Material.DRAGON_EGG);
+            ItemMeta coownerItemMeta = coowner.getItemMeta();
+            coownerItemMeta.setDisplayName(ChatColor.LIGHT_PURPLE + "Co-Owner");
+            coowner.setItemMeta(coownerItemMeta);
 
             gui = Gui.gui().title(Component.text("Private Mine")).rows(1).create();
 
@@ -124,8 +167,9 @@ public class PrivateMinesCommand extends BaseCommand {
                 p.teleport(teleportLocation);
             });
 
-            gui.addItem(teleportToMine);
-            gui.open(p);
+//            gui.addItem(teleportToMine);
+//            gui.open(p);
+            mainMenuGui.openMainMenuGui(p);
         }
     }
 
@@ -245,15 +289,14 @@ public class PrivateMinesCommand extends BaseCommand {
             Bukkit.broadcastMessage("cornerBlocks debug: ");
             Bukkit.broadcastMessage("count: " + cornerBlocks.stream().count());
             cornerBlocks = new ArrayList<>();
-            if (p != null) {
-                p.teleport(spawnLocation);
-                p.sendMessage(ChatColor.GREEN + "You've been teleported to your mine!");
-                npcLocation = null;
-                corner1 = null;
-                corner2 = null;
-            }
+            p.teleport(spawnLocation);
+            p.sendMessage(ChatColor.GREEN + "You've been teleported to your mine!");
+            npcLocation = null;
+            corner1 = null;
+            corner2 = null;
         }
     }
+
 
     @Subcommand("teleport")
     @Description("Teleports you to your mine")
@@ -285,6 +328,11 @@ public class PrivateMinesCommand extends BaseCommand {
                         -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
             }
         }
+    }
+
+
+    public Location getTeleportLocation() {
+        return teleportLocation;
     }
 }
 

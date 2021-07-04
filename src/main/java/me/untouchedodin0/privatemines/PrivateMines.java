@@ -3,6 +3,7 @@ package me.untouchedodin0.privatemines;
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
 import me.untouchedodin0.privatemines.commands.PrivateMinesCommand;
+import me.untouchedodin0.privatemines.guis.MainMenuGui;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
@@ -32,11 +33,13 @@ public class PrivateMines extends JavaPlugin {
         File minesFolder = new File(getDataFolder(), MINES_FOLDER_NAME);
 
         Util util = new Util();
-        MineFillManager mineFillManager = new MineFillManager();
+        mineFillManager = new MineFillManager(this);
         MineStorage mineStorage = new MineStorage();
         BukkitCommandManager manager = new PaperCommandManager(this);
+        MainMenuGui mainMenuGui = new MainMenuGui(mineFillManager);
 
-        manager.registerCommand(new PrivateMinesCommand(util, mineFillManager, this, mineStorage));
+        manager.registerCommand(new PrivateMinesCommand
+                (util, mineFillManager, this, mineStorage, mainMenuGui));
         if (!schematicsFile.exists()) {
             Bukkit.getLogger().info("Creating and loading schematics.yml...");
             saveResource(SCHEMATICS_FILE_NAME, false);
