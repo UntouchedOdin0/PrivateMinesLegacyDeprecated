@@ -5,8 +5,10 @@ import co.aikar.commands.annotation.*;
 import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
+import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import redempt.redlib.blockdata.BlockDataManager;
@@ -17,10 +19,7 @@ import redempt.redlib.multiblock.Rotator;
 import redempt.redlib.multiblock.Structure;
 import redempt.redlib.region.CuboidRegion;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +54,9 @@ public class PrivateMinesCommand extends BaseCommand {
     MineFillManager fillManager;
     PrivateMines privateMines;
     BlockDataManager manager;
+    MineStorage mineStorage;
+    File userFile;
+    YamlConfiguration mineConfig;
 
     String coords1 = "";
     String coords2 = "";
@@ -67,6 +69,8 @@ public class PrivateMinesCommand extends BaseCommand {
     String y2 = "";
     String z2 = "";
 
+    String playerID;
+
     Block startBlock;
     Block endBlock;
     DataBlock startDataBlock;
@@ -74,10 +78,12 @@ public class PrivateMinesCommand extends BaseCommand {
 
     public PrivateMinesCommand(Util util,
                                MineFillManager fillManager,
-                               PrivateMines privateMines) {
+                               PrivateMines privateMines,
+                               MineStorage mineStorage) {
         this.util = util;
         this.fillManager = fillManager;
         this.privateMines = privateMines;
+        this.mineStorage = mineStorage;
     }
 
     @Default
@@ -85,6 +91,12 @@ public class PrivateMinesCommand extends BaseCommand {
     public void main(Player p) {
         if (p.hasPermission("privatemines.owner")) {
             p.sendMessage("opening gui.");
+
+            /*
+                Add gui menu with following items
+                ENDER_PEARL: resets the mine
+                BED: Teleports to mine?
+             */
         }
     }
 
@@ -109,9 +121,11 @@ public class PrivateMinesCommand extends BaseCommand {
     @CommandPermission("privatemines.give")
     public void give(Player p) {
         File file = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
-
+        userFile = new File("plugins/PrivateMinesRewrite/data/" + p.getUniqueId() + ".yml");
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
         if (p != null) {
             to = p.getLocation();
+            playerID = p.getUniqueId().toString();
         }
 
         try {
@@ -120,87 +134,101 @@ public class PrivateMinesCommand extends BaseCommand {
             e.printStackTrace();
         }
 
-        if (inputStream != null) {
-            multiBlockStructure = MultiBlockStructure
-                    .create(inputStream,
-                            "mine",
-                            false,
-                            false);
-        }
-        world = to.getWorld();
-        cuboidRegion = multiBlockStructure.getRegion(to);
-        start = cuboidRegion.getStart().clone();
-        end = cuboidRegion.getEnd().clone();
+        if (p != null) {
+            if (mineStorage.getMines().contains(p.getUniqueId())) {
+                p.sendMessage(ChatColor.RED + "Er, you do know you already have a mine. Right?");
+            } else {
+                if (inputStream != null) {
+                    multiBlockStructure = MultiBlockStructure
+                            .create(inputStream,
+                                    "mine",
+                                    false,
+                                    false);
+                }
+                world = to.getWorld();
+                cuboidRegion = multiBlockStructure.getRegion(to);
+                start = cuboidRegion.getStart().clone();
+                end = cuboidRegion.getEnd().clone();
 
-        multiBlockStructure.build(to);
+                multiBlockStructure.build(to);
 
-        if (start == null || end == null) {
-            Bukkit.getLogger().info("Failed to create the mine due to either");
-            Bukkit.getLogger().info("the start of the end being null");
-            Bukkit.broadcastMessage("The main cause of this is because the location is");
-            Bukkit.broadcastMessage("either to high or to low.");
-            return;
-        }
+                if (start == null || end == null) {
+                    Bukkit.getLogger().info("Failed to create the mine due to either");
+                    Bukkit.getLogger().info("the start of the end being null");
+                    Bukkit.broadcastMessage("The main cause of this is because the location is");
+                    Bukkit.broadcastMessage("either to high or to low.");
+                    return;
+                }
 
-        for (int x = start.getBlockX(); x <= end.getBlockX(); x++) {
-            for (int y = start.getBlockY(); y <= end.getBlockY(); y++) {
-                for (int z = start.getBlockZ(); z <= end.getBlockZ(); z++) {
-                    Block block = world.getBlockAt(x, y, z);
-                    if (block.getType() == Material.POWERED_RAIL) {
-                        if (corner1 == null) {
-                            corner1 = block.getLocation();
-                        } else if (corner2 == null) {
-                            corner2 = block.getLocation();
+                for (int x = start.getBlockX(); x <= end.getBlockX(); x++) {
+                    for (int y = start.getBlockY(); y <= end.getBlockY(); y++) {
+                        for (int z = start.getBlockZ(); z <= end.getBlockZ(); z++) {
+                            Block block = world.getBlockAt(x, y, z);
+                            if (block.getType() == Material.POWERED_RAIL) {
+                                if (corner1 == null) {
+                                    corner1 = block.getLocation();
+                                } else if (corner2 == null) {
+                                    corner2 = block.getLocation();
+                                }
+                            } else if (block.getType() == Material.CHEST && spawnLocation == null) {
+                                spawnLocation = block.getLocation();
+                                spawnLocation.getBlock().setType(Material.AIR);
+                            } else if (block.getType() == Material.WHITE_WOOL && npcLocation == null) {
+                                npcLocation = block.getLocation();
+                            }
                         }
-                    } else if (block.getType() == Material.CHEST && spawnLocation == null) {
-                        spawnLocation = block.getLocation();
-                        spawnLocation.getBlock().setType(Material.AIR);
-                    } else if (block.getType() == Material.WHITE_WOOL && npcLocation == null) {
-                        npcLocation = block.getLocation();
                     }
                 }
-            }
-        }
 
-        miningRegion = new CuboidRegion(corner1, corner2)
-                .expand(1, 0, 1, 0, 1, 0);
+                miningRegion = new CuboidRegion(corner1, corner2)
+                        .expand(1, 0, 1, 0, 1, 0);
 
-        cornerBlocks.add(corner1);
-        cornerBlocks.add(corner2);
+                cornerBlocks.add(corner1);
+                cornerBlocks.add(corner2);
 
-        if (mineBlocks.isEmpty()) {
-            Bukkit.broadcastMessage(ChatColor.RED + "Failed to reset the mine due to no Materials being listed!");
-            Bukkit.broadcastMessage(ChatColor.GREEN + "Adding Stone to the list and trying again!");
-            mineBlocks.add(new ItemStack(Material.STONE));
-        }
+                if (mineBlocks.isEmpty()) {
+                    Bukkit.broadcastMessage(ChatColor.RED + "Failed to reset the mine due to no Materials being listed!");
+                    Bukkit.broadcastMessage(ChatColor.GREEN + "Adding Stone to the list and trying again!");
+                    mineBlocks.add(new ItemStack(Material.STONE));
+                }
 
-        Location miningRegionStart = miningRegion.getStart();
-        Location miningRegionEnd = miningRegion.getEnd();
+                Location miningRegionStart = miningRegion.getStart();
+                Location miningRegionEnd = miningRegion.getEnd();
 
-        Bukkit.broadcastMessage("corner blocks: " + cornerBlocks);
-        startBlock = miningRegionStart.getBlock();
-        endBlock = miningRegionEnd.getBlock();
+                Bukkit.broadcastMessage("corner blocks: " + cornerBlocks);
+                startBlock = miningRegionStart.getBlock();
+                endBlock = miningRegionEnd.getBlock();
 
-        if (mineBlocks.toArray().length >= 2) {
-            Bukkit.getScheduler().runTaskLater(privateMines, ()
-                    -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
-        } else {
-            fillManager.fillMine(corner1, corner2, mineBlocks.get(0));
-            corner1 = null;
-            corner2 = null;
-            start = null;
-            end = null;
-        }
+                mineConfig.set("corner1", corner1);
+                mineConfig.set("corner2", corner2);
+                mineConfig.set("spawnLocation", spawnLocation);
+                mineConfig.set("npcLocation", npcLocation);
+                mineConfig.set("blocks", mineBlocks);
+                try {
+                    mineConfig.save(userFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-        Bukkit.broadcastMessage("cornerBlocks debug: ");
-        Bukkit.broadcastMessage("count: " + cornerBlocks.stream().count());
-        cornerBlocks = new ArrayList<>();
-        Bukkit.broadcastMessage("count after iterator: " + cornerBlocks.stream().count());
-        if (p != null) {
-            p.teleport(spawnLocation);
-            p.sendMessage(ChatColor.GREEN + "You've been teleported to your mine!");
+                if (mineBlocks.toArray().length >= 2) {
+                    Bukkit.getScheduler().runTaskLater(privateMines, ()
+                            -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
+                } else {
+                    fillManager.fillMine(corner1, corner2, mineBlocks.get(0));
+                }
+
+                Bukkit.broadcastMessage("cornerBlocks debug: ");
+                Bukkit.broadcastMessage("count: " + cornerBlocks.stream().count());
+                cornerBlocks = new ArrayList<>();
+                if (p != null) {
+                    p.teleport(spawnLocation);
+                    p.sendMessage(ChatColor.GREEN + "You've been teleported to your mine!");
 //            spawnLocation = null;
-            npcLocation = null;
+                    npcLocation = null;
+                    corner1 = null;
+                    corner2 = null;
+                }
+            }
         }
     }
 
@@ -217,6 +245,25 @@ public class PrivateMinesCommand extends BaseCommand {
             }
         }
     }
+
+    @Subcommand("reset")
+    @Description("Resets your mine")
+    @CommandPermission("privatemines.reset")
+    public void reset(Player p) {
+        if (p != null) {
+            userFile = new File("plugins/PrivateMinesRewrite/data/" + p.getUniqueId() + ".yml");
+            mineConfig = YamlConfiguration.loadConfiguration(userFile);
+            corner1 = mineConfig.getLocation("corner1");
+            corner2 = mineConfig.getLocation("corner2");
+            mineBlocks = (List<ItemStack>) mineConfig.getList("blocks");
+
+            if (corner1 != null && corner2 != null && mineBlocks != null) {
+                Bukkit.getScheduler().runTaskLater(privateMines, ()
+                        -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
+            }
+        }
+    }
 }
+
 
 
