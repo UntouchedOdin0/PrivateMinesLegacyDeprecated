@@ -1,11 +1,13 @@
 package me.untouchedodin0.privatemines.utils;
 
-import com.sk89q.worldedit.math.BlockVector3;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import redempt.redlib.multiblock.MultiBlockStructure;
-import redempt.redlib.region.CuboidRegion;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -95,5 +97,20 @@ public class Util {
             break;
         }
         return result;
+    }
+
+    public static Float getYaw(BlockFace face) {
+        switch (face) {
+            case WEST:
+                return 90f;
+            case NORTH:
+                return 180f;
+            case EAST:
+                return -90f;
+            case SOUTH:
+                return -180f;
+            default:
+                return 0f;
+        }
     }
 }

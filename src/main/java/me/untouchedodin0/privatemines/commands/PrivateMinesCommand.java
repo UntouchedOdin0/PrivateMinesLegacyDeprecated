@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import redempt.redlib.blockdata.BlockDataManager;
 import redempt.redlib.blockdata.DataBlock;
-import redempt.redlib.misc.Task;
 import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Rotator;
@@ -155,6 +154,7 @@ public class PrivateMinesCommand extends BaseCommand {
                         }
                     } else if (block.getType() == Material.CHEST && spawnLocation == null) {
                         spawnLocation = block.getLocation();
+                        spawnLocation.getBlock().setType(Material.AIR);
                     } else if (block.getType() == Material.WHITE_WOOL && npcLocation == null) {
                         npcLocation = block.getLocation();
                     }
@@ -182,13 +182,10 @@ public class PrivateMinesCommand extends BaseCommand {
         endBlock = miningRegionEnd.getBlock();
 
         if (mineBlocks.toArray().length >= 2) {
-            Task.syncDelayed(()
+            Bukkit.getScheduler().runTaskLater(privateMines, ()
                     -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
-//            Bukkit.getScheduler().runTaskLater(privateMines, ()
-//                    -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
         } else {
-            Task.syncDelayed(()
-                    -> fillManager.fillMine(corner1, corner2, mineBlocks.get(0)), 20L);
+            fillManager.fillMine(corner1, corner2, mineBlocks.get(0));
             corner1 = null;
             corner2 = null;
             start = null;
@@ -200,14 +197,26 @@ public class PrivateMinesCommand extends BaseCommand {
         cornerBlocks = new ArrayList<>();
         Bukkit.broadcastMessage("count after iterator: " + cornerBlocks.stream().count());
         if (p != null) {
-            spawnLocation.getBlock().setType(Material.AIR);
             p.teleport(spawnLocation);
             p.sendMessage(ChatColor.GREEN + "You've been teleported to your mine!");
-            spawnLocation = null;
+//            spawnLocation = null;
             npcLocation = null;
         }
     }
-}
 
+    @Subcommand("teleport")
+    @Description("Teleports you to your mine")
+    @CommandPermission("privatemines.teleport")
+    public void teleport(Player p) {
+        if (p != null) {
+            if (spawnLocation == null) {
+                p.sendMessage(ChatColor.RED + "The spawn location was null!");
+            } else {
+                p.sendMessage(ChatColor.GREEN + "Teleporting you to your mine!");
+                p.teleport(spawnLocation);
+            }
+        }
+    }
+}
 
 
