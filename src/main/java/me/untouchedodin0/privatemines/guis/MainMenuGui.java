@@ -62,7 +62,7 @@ public class MainMenuGui {
         ItemStack mineSize = new ItemStack(Material.LAVA_BUCKET);
         ItemMeta mineSizeItemMeta = mineSize.getItemMeta();
         mineSizeItemMeta.setDisplayName(ChatColor.GREEN + "Mine Size");
-        setTax.setItemMeta(mineSizeItemMeta);
+        mineSize.setItemMeta(mineSizeItemMeta);
 
         ItemStack resetMine = new ItemStack(Material.MINECART);
         ItemMeta resetMineItemMeta = resetMine.getItemMeta();
@@ -136,6 +136,7 @@ public class MainMenuGui {
             event.setCancelled(true);
             mineFillManager.fillPlayerMine(player);
             player.sendMessage(ChatColor.GREEN + "Resetting your mine!");
+            player.closeInventory();
         });
 
         GuiItem whitelistItem = ItemBuilder.from(whitelistedMembers).asGuiItem(event -> {
@@ -158,15 +159,15 @@ public class MainMenuGui {
             player.sendMessage(ChatColor.GREEN + "someone's lucky to be the co-owner");
         });
 
-        gui.addItem(teleportToMine);
-        gui.addItem(openCloseItem);
-        gui.addItem(setTaxItem);
-        gui.addItem(mineSizeItem);
-        gui.addItem(resetMineItem);
-        gui.addItem(whitelistItem);
-        gui.addItem(bannedMembersItem);
-        gui.addItem(priorityMembersItem);
-        gui.addItem(coOwnerItem);
+        gui.setItem(0, teleportToMine);
+        gui.setItem(1, openCloseItem);
+        gui.setItem(2, setTaxItem);
+        gui.setItem(3, mineSizeItem);
+        gui.setItem(4, resetMineItem);
+        gui.setItem(5, whitelistItem);
+        gui.setItem(6, bannedMembersItem);
+        gui.setItem(7, priorityMembersItem);
+        gui.setItem(8, coOwnerItem);
 
         gui.open(player);
     }

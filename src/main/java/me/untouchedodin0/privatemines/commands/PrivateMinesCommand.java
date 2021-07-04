@@ -2,6 +2,7 @@ package me.untouchedodin0.privatemines.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
+import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
@@ -13,12 +14,14 @@ import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import redempt.redlib.blockdata.BlockDataManager;
 import redempt.redlib.blockdata.DataBlock;
+import redempt.redlib.misc.Task;
 import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Rotator;
@@ -167,8 +170,6 @@ public class PrivateMinesCommand extends BaseCommand {
                 p.teleport(teleportLocation);
             });
 
-//            gui.addItem(teleportToMine);
-//            gui.open(p);
             mainMenuGui.openMainMenuGui(p);
         }
     }
@@ -244,6 +245,7 @@ public class PrivateMinesCommand extends BaseCommand {
                             spawnLocation.getBlock().setType(Material.AIR);
                         } else if (block.getType() == Material.WHITE_WOOL && npcLocation == null) {
                             npcLocation = block.getLocation();
+                            npcLocation.getBlock().setType(Material.OAK_SIGN);
                         }
                     }
                 }
@@ -260,6 +262,11 @@ public class PrivateMinesCommand extends BaseCommand {
                 Bukkit.broadcastMessage(ChatColor.GREEN + "Adding Stone to the list and trying again!");
                 mineBlocks.add(new ItemStack(Material.STONE));
             }
+
+            Sign s = (Sign) world.getBlockAt(npcLocation).getState();
+            s.setLine(0, "I'm an NPC");
+            s.setLine(1, "I should be fixed.");
+            s.update();
 
             Location miningRegionStart = miningRegion.getStart();
             Location miningRegionEnd = miningRegion.getEnd();
@@ -280,9 +287,15 @@ public class PrivateMinesCommand extends BaseCommand {
             }
 
             if (mineBlocks.toArray().length >= 2) {
-                Bukkit.getScheduler().runTaskLater(privateMines, ()
-                        -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
+                Task.syncRepeating(() -> fillManager.fillPlayerMine(p), 0L, 20L);
+//                Task.syncDelayed(()
+//                        -> fillManager
+//                        .fillMineMultiple(corner1, corner2, mineBlocks));
+//
+//                Bukkit.getScheduler().runTaskLater(privateMines, ()
+//                        -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
             } else {
+                Task.syncRepeating(() -> fillManager.fillPlayerMine(p), 0L, 2 * 20 * 60L);
                 fillManager.fillMine(corner1, corner2, mineBlocks.get(0));
             }
 
@@ -312,6 +325,10 @@ public class PrivateMinesCommand extends BaseCommand {
         }
     }
 
+    /*
+        Lets a player reset their mine
+     */
+
     @Subcommand("reset")
     @Description("Resets your mine")
     @CommandPermission("privatemines.reset")
@@ -330,6 +347,26 @@ public class PrivateMinesCommand extends BaseCommand {
         }
     }
 
+    /*
+        Lets operators or administrators reset another players mine
+     */
+
+    @Subcommand("reset")
+    @Description("Lets operators or administrators reset another players mine")
+    @CommandPermission("privatemines.reset.other")
+    @CommandCompletion("@players")
+    public void reset(Player p, OnlinePlayer target) {
+        userFile = new File("plugins/PrivateMinesRewrite/mines/" + target.player.getUniqueId() + ".yml");
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        corner1 = mineConfig.getLocation("corner1");
+        corner2 = mineConfig.getLocation("corner2");
+        mineBlocks = (List<ItemStack>) mineConfig.getList("blocks");
+
+        if (corner1 != null && corner2 != null && mineBlocks != null) {
+            Bukkit.getScheduler().runTaskLater(privateMines, ()
+                    -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
+        }
+    }
 
     public Location getTeleportLocation() {
         return teleportLocation;
