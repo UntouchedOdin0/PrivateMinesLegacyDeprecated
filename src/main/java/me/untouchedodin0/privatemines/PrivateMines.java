@@ -17,7 +17,7 @@ import java.io.IOException;
 public class PrivateMines extends JavaPlugin {
 
     public static final String SCHEMATICS_FILE_NAME = "schematics/schematics.yml";
-    public static final String MINES_FILE_NAME = "data/mines.yml";
+    public static final String MINES_FOLDER_NAME = "mines";
     private static final YamlConfiguration schematicsConfig = new YamlConfiguration();
     Connection connection;
     SQLHelper sqlHelper;
@@ -29,7 +29,7 @@ public class PrivateMines extends JavaPlugin {
     public void onEnable() {
         Bukkit.getLogger().info("Loading PrivateMinesRewrite...");
         File schematicsFile = new File(getDataFolder(), SCHEMATICS_FILE_NAME);
-        File minesFile = new File(getDataFolder(), MINES_FILE_NAME);
+        File minesFolder = new File(getDataFolder(), MINES_FOLDER_NAME);
 
         Util util = new Util();
         MineFillManager mineFillManager = new MineFillManager();
@@ -52,16 +52,11 @@ public class PrivateMines extends JavaPlugin {
                 e.printStackTrace();
             }
         }
-        if (!minesFile.exists()) {
-            Bukkit.getLogger().info("Creating and loading mines.yml...");
-            saveResource(MINES_FILE_NAME, false);
-            try {
-                mineConfig.load(MINES_FILE_NAME);
-            } catch (InvalidConfigurationException | IOException e) {
-                e.printStackTrace();
-            }
-        }
 
+        if (!minesFolder.exists()) {
+            Bukkit.getLogger().info("Creating mines directory...");
+            minesFolder.mkdir();
+        }
         privateMine = this;
         StructureManagers structureManagers = new StructureManagers();
 
