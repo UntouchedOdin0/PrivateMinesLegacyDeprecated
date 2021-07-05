@@ -3,11 +3,13 @@ package me.untouchedodin0.privatemines;
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
 import me.untouchedodin0.privatemines.commands.PrivateMinesCommand;
+import me.untouchedodin0.privatemines.factory.MineFactory;
 import me.untouchedodin0.privatemines.guis.MainMenuGui;
 import me.untouchedodin0.privatemines.structure.StructureManagers;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
+import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -21,11 +23,11 @@ public class PrivateMines extends JavaPlugin {
     public static final String SCHEMATICS_FILE_NAME = "schematics/schematics.yml";
     public static final String MINES_FOLDER_NAME = "mines";
     private static final YamlConfiguration schematicsConfig = new YamlConfiguration();
-
+    int minesCount;
+    File structure = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
     private PrivateMines privateMine;
     private MineFillManager fillManager;
-
-    File structure = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
+    private MineWorldManager mineManager;
 
     @Override
     public void onEnable() {
@@ -34,13 +36,18 @@ public class PrivateMines extends JavaPlugin {
         File minesFolder = new File(getDataFolder(), MINES_FOLDER_NAME);
 
         Util util = new Util();
+
+        Bukkit.getLogger().info("Setting up the Private Mines World...");
+        mineManager = new MineWorldManager();
+        Bukkit.getLogger().info("Private Mines World has been setup!");
+
         MineStorage mineStorage = new MineStorage();
+        MineFactory mineFactory = new MineFactory(mineStorage, mineManager);
+
         fillManager = new MineFillManager(this);
         BukkitCommandManager manager = new PaperCommandManager(this);
         MainMenuGui mainMenuGui = new MainMenuGui(fillManager);
 
-        manager.registerCommand(new PrivateMinesCommand(util, fillManager, this, mineStorage, mainMenuGui));
-//        manager.registerCommand(new PrivateMinesCommand(util,this, mineStorage, mainMenuGui);
         if (!schematicsFile.exists()) {
             Bukkit.getLogger().info("Creating and loading schematics.yml...");
             saveResource(SCHEMATICS_FILE_NAME, false);
@@ -66,6 +73,22 @@ public class PrivateMines extends JavaPlugin {
 
         Bukkit.getLogger().info("Loading structures...");
         structureManagers.loadStructureData(structure);
+
+        Bukkit.getLogger().info("Loading mines...");
+        minesCount = minesFolder.list().length;
+        Bukkit.getLogger().info(String.format("Found a total of %d mines!", minesCount));
+
+        Bukkit.getLogger().info("Registering the command...");
+
+        manager.registerCommand(new PrivateMinesCommand(
+                util,
+                fillManager,
+                this,
+                mineStorage,
+                mineFactory,
+                mainMenuGui,
+                mineManager));
+        Bukkit.getLogger().info("Command registered!");
     }
 
     @Override

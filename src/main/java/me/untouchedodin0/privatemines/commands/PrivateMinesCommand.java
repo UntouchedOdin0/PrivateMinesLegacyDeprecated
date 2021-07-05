@@ -7,10 +7,12 @@ import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import me.untouchedodin0.privatemines.PrivateMines;
+import me.untouchedodin0.privatemines.factory.MineFactory;
 import me.untouchedodin0.privatemines.guis.MainMenuGui;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
+import me.untouchedodin0.privatemines.world.MineWorldManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -66,6 +68,7 @@ public class PrivateMinesCommand extends BaseCommand {
     PrivateMines privateMines;
     BlockDataManager manager;
     MineStorage mineStorage;
+    MineFactory mineFactory;
     File userFile;
     YamlConfiguration mineConfig;
 
@@ -90,16 +93,22 @@ public class PrivateMinesCommand extends BaseCommand {
     Gui gui;
     MainMenuGui mainMenuGui;
 
+    MineWorldManager mineWorldManager;
+
     public PrivateMinesCommand(Util util,
                                MineFillManager fillManager,
                                PrivateMines privateMines,
                                MineStorage mineStorage,
-                               MainMenuGui mainMenuGui) {
+                               MineFactory mineFactory,
+                               MainMenuGui mainMenuGui,
+                               MineWorldManager mineWorldManager) {
         this.util = util;
         this.fillManager = fillManager;
         this.privateMines = privateMines;
         this.mineStorage = mineStorage;
+        this.mineFactory = mineFactory;
         this.mainMenuGui = mainMenuGui;
+        this.mineWorldManager = mineWorldManager;
     }
 
     @Default
