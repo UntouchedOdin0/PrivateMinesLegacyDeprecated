@@ -15,6 +15,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -205,7 +206,7 @@ public class PrivateMinesCommand extends BaseCommand {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        if (mineStorage.getMines().contains(p.getUniqueId())) {
+        if (mineStorage.hasMine(p)) {
             p.sendMessage(ChatColor.RED + "Er, you do know you already have a mine. Right?");
         } else {
             if (inputStream != null) {
@@ -242,6 +243,9 @@ public class PrivateMinesCommand extends BaseCommand {
                             }
                         } else if (block.getType() == Material.CHEST && spawnLocation == null) {
                             spawnLocation = block.getLocation();
+                            if (block.getState().getData() instanceof Directional) {
+                                spawnLocation.setYaw(Util.getYaw((((Directional) block.getState().getData()).getFacing())));
+                            }
                             spawnLocation.getBlock().setType(Material.AIR);
                         } else if (block.getType() == Material.WHITE_WOOL && npcLocation == null) {
                             npcLocation = block.getLocation();
@@ -288,12 +292,6 @@ public class PrivateMinesCommand extends BaseCommand {
 
             if (mineBlocks.toArray().length >= 2) {
                 Task.syncRepeating(() -> fillManager.fillPlayerMine(p), 0L, 20L);
-//                Task.syncDelayed(()
-//                        -> fillManager
-//                        .fillMineMultiple(corner1, corner2, mineBlocks));
-//
-//                Bukkit.getScheduler().runTaskLater(privateMines, ()
-//                        -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
             } else {
                 Task.syncRepeating(() -> fillManager.fillPlayerMine(p), 0L, 2 * 20 * 60L);
                 fillManager.fillMine(corner1, corner2, mineBlocks.get(0));
@@ -365,6 +363,25 @@ public class PrivateMinesCommand extends BaseCommand {
         if (corner1 != null && corner2 != null && mineBlocks != null) {
             Bukkit.getScheduler().runTaskLater(privateMines, ()
                     -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
+        }
+    }
+
+    /*
+        Sets / Gets the tax for a mine
+     */
+
+    @Subcommand("tax")
+    @Description("Let's players either check or set their mine tax.")
+    @CommandPermission("privatemines.tax")
+    public void tax(Player p, @Optional @Conditions("limits:min=0,max=100") Double taxPercentage) {
+        if (taxPercentage == null) {
+            p.sendMessage(ChatColor.YELLOW + "Your mine tax is {tax}!");
+        } else {
+            if (taxPercentage < 1 || taxPercentage > 100) {
+                p.sendMessage(ChatColor.RED + "Invalid tax percentage! (1 -> 100)");
+                return;
+            }
+            p.sendMessage(ChatColor.GREEN + "Setting your tax to " + taxPercentage + "%");
         }
     }
 
