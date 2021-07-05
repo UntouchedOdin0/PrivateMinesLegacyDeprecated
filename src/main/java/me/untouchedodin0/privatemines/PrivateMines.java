@@ -66,14 +66,6 @@ public class PrivateMines extends JavaPlugin {
 
         Bukkit.getLogger().info("Loading structures...");
         structureManagers.loadStructureData(structure);
-
-        /*
-        Bukkit.getLogger().info("Loading the SQL database...");
-        connection = SQLHelper.openSQLite(privateMine.getDataFolder().toPath().resolve("mines.db"));
-        Bukkit.getLogger().info("Wrapping the SQL database with a wrapper...");
-        sqlHelper = new SQLHelper(connection);
-        sqlHelper.execute("CREATE TABLE IF NOT EXISTS privatemines");
-         */
     }
 
     @Override
