@@ -4,6 +4,7 @@ import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
 import me.untouchedodin0.privatemines.commands.PrivateMinesCommand;
 import me.untouchedodin0.privatemines.guis.MainMenuGui;
+import me.untouchedodin0.privatemines.structure.StructureManagers;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
@@ -20,9 +21,9 @@ public class PrivateMines extends JavaPlugin {
     public static final String SCHEMATICS_FILE_NAME = "schematics/schematics.yml";
     public static final String MINES_FOLDER_NAME = "mines";
     private static final YamlConfiguration schematicsConfig = new YamlConfiguration();
-    Connection connection;
-    SQLHelper sqlHelper;
+
     private PrivateMines privateMine;
+    private MineFillManager fillManager;
 
     File structure = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
 
@@ -33,13 +34,13 @@ public class PrivateMines extends JavaPlugin {
         File minesFolder = new File(getDataFolder(), MINES_FOLDER_NAME);
 
         Util util = new Util();
-        mineFillManager = new MineFillManager(this);
         MineStorage mineStorage = new MineStorage();
+        fillManager = new MineFillManager(this);
         BukkitCommandManager manager = new PaperCommandManager(this);
-        MainMenuGui mainMenuGui = new MainMenuGui(mineFillManager);
+        MainMenuGui mainMenuGui = new MainMenuGui(fillManager);
 
-        manager.registerCommand(new PrivateMinesCommand
-                (util, mineFillManager, this, mineStorage, mainMenuGui));
+        manager.registerCommand(new PrivateMinesCommand(util, fillManager, this, mineStorage, mainMenuGui));
+//        manager.registerCommand(new PrivateMinesCommand(util,this, mineStorage, mainMenuGui);
         if (!schematicsFile.exists()) {
             Bukkit.getLogger().info("Creating and loading schematics.yml...");
             saveResource(SCHEMATICS_FILE_NAME, false);
@@ -82,9 +83,5 @@ public class PrivateMines extends JavaPlugin {
 
     public PrivateMines getPrivateMines() {
         return privateMine;
-    }
-
-    public YamlConfiguration getMinesConfig() {
-        return mineConfig;
     }
 }
