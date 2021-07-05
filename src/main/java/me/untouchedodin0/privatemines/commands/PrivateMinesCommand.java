@@ -7,6 +7,7 @@ import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import me.untouchedodin0.privatemines.PrivateMines;
+import me.untouchedodin0.privatemines.data.PrivateMine;
 import me.untouchedodin0.privatemines.factory.MineFactory;
 import me.untouchedodin0.privatemines.guis.MainMenuGui;
 import me.untouchedodin0.privatemines.utils.Util;
@@ -99,6 +100,8 @@ public class PrivateMinesCommand extends BaseCommand {
     MainMenuGui mainMenuGui;
 
     MineWorldManager mineWorldManager;
+
+    PrivateMine privateMine;
 
     private static final String minesDirectory = "plugins/PrivateMinesRewrite/mines/";
 
@@ -297,6 +300,20 @@ public class PrivateMinesCommand extends BaseCommand {
             Bukkit.broadcastMessage("corner blocks: " + cornerBlocks);
             startBlock = miningRegionStart.getBlock();
             endBlock = miningRegionEnd.getBlock();
+
+            privateMine = new PrivateMine()
+                    .setOwner(p)
+                    .setLocation(p.getLocation())
+                    .setCornerBlocks(cornerBlocks)
+                    .setFile(file)
+                    .setBlocks(mineBlocks)
+                    .build();
+
+            Bukkit.broadcastMessage("privateMine builder owner = " + privateMine.getOwner());
+            Bukkit.broadcastMessage("privateMine builder mineLocation = " + privateMine.getMineLocation());
+            Bukkit.broadcastMessage("privateMine builder cornerblocks = " + privateMine.getCornerBlocks());
+            Bukkit.broadcastMessage("privateMine builder mineFile = " + privateMine.getMineFile());
+            Bukkit.broadcastMessage("privateMine builder blocks = " + privateMine.getBlocks());
 
             mineConfig.set("corner1", corner1);
             mineConfig.set("corner2", corner2);
