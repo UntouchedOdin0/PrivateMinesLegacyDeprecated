@@ -2,10 +2,7 @@ package me.untouchedodin0.privatemines.factory;
 
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import redempt.redlib.multiblock.MultiBlockStructure;
@@ -46,15 +43,15 @@ public class MineFactory {
             Bukkit.getLogger().info("Player was already in the storage, no need to give another mine!");
         } else if (inputStream != null) {
             player.sendMessage("Creating mine from storage");
-
+            to = location;
             multiBlockStructure = MultiBlockStructure
                     .create(inputStream,
                             "mine",
                             false,
                             false);
-            world = location.getWorld();
-            multiBlockStructure.build(location);
-            cuboidRegion = multiBlockStructure.getRegion(location);
+            world = mineWorldManager.getMinesWorld();
+            multiBlockStructure.build(to);
+            cuboidRegion = multiBlockStructure.getRegion(to);
             start = cuboidRegion.getStart().clone();
             end = cuboidRegion.getEnd().clone();
             cornerBlocks = findCornerBlocks(start, end);
@@ -64,6 +61,8 @@ public class MineFactory {
             miningRegion = new CuboidRegion(cornerBlocks.get(0), cornerBlocks.get(1))
                     .expand(1, 0, 1, 0, 1, 0);
         }
+        player.teleport(spawnLocation);
+        player.sendMessage(ChatColor.GREEN + "You've been given a mine!");
     }
 
     public List<Location> findCornerBlocks(Location start, Location end) {
