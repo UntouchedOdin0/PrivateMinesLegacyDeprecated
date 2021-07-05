@@ -53,16 +53,21 @@ public class PrivateMinesCommand extends BaseCommand {
     Location npcLocation;
     Location placeLocation;
     Location teleportLocation;
+
     World world;
     Structure structure;
     MultiBlockStructure multiBlockStructure;
     Rotator rotator;
     InputStream inputStream;
+
     CuboidRegion cuboidRegion;
     CuboidRegion miningRegion;
+
     ItemStack cornerMaterial = new ItemStack(Material.POWERED_RAIL);
+
     List<ItemStack> mineBlocks = new ArrayList<>();
     List<Location> cornerBlocks = new ArrayList<>();
+
     WeightedRandom<Material> weightedRandom = new WeightedRandom<>();
     MineFillManager fillManager;
     PrivateMines privateMines;
@@ -95,6 +100,8 @@ public class PrivateMinesCommand extends BaseCommand {
 
     MineWorldManager mineWorldManager;
 
+    private static final String minesDirectory = "plugins/PrivateMinesRewrite/mines/";
+
     public PrivateMinesCommand(Util util,
                                MineFillManager fillManager,
                                PrivateMines privateMines,
@@ -117,7 +124,7 @@ public class PrivateMinesCommand extends BaseCommand {
         if (p.hasPermission("privatemines.owner")) {
             p.sendMessage("opening gui.");
 
-            userFile = new File("plugins/PrivateMinesRewrite/mines/" + p.getUniqueId() + ".yml");
+            userFile = new File(minesDirectory + p.getUniqueId() + ".yml");
             mineConfig = YamlConfiguration.loadConfiguration(userFile);
             this.teleportLocation = mineConfig.getLocation("spawnLocation");
 
@@ -205,7 +212,7 @@ public class PrivateMinesCommand extends BaseCommand {
     @CommandPermission("privatemines.give")
     public void give(Player p) {
         File file = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
-        userFile = new File("plugins/PrivateMinesRewrite/mines/" + p.getUniqueId() + ".yml");
+        userFile = new File(minesDirectory + p.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         to = p.getLocation();
         playerID = p.getUniqueId().toString();
@@ -259,6 +266,9 @@ public class PrivateMinesCommand extends BaseCommand {
                         } else if (block.getType() == Material.WHITE_WOOL && npcLocation == null) {
                             npcLocation = block.getLocation();
                             npcLocation.getBlock().setType(Material.OAK_SIGN);
+                        } else if (block.getType() == Material.SPONGE && placeLocation == null) {
+                            placeLocation = block.getLocation();
+                            placeLocation.getBlock().setType(Material.AIR);
                         }
                     }
                 }
@@ -292,6 +302,7 @@ public class PrivateMinesCommand extends BaseCommand {
             mineConfig.set("corner2", corner2);
             mineConfig.set("spawnLocation", spawnLocation);
             mineConfig.set("npcLocation", npcLocation);
+            mineConfig.set("placeLocation", placeLocation);
             mineConfig.set("blocks", mineBlocks);
             try {
                 mineConfig.save(userFile);
@@ -341,7 +352,7 @@ public class PrivateMinesCommand extends BaseCommand {
     @CommandPermission("privatemines.reset")
     public void reset(Player p) {
         if (p != null) {
-            userFile = new File("plugins/PrivateMinesRewrite/mines/" + p.getUniqueId() + ".yml");
+            userFile = new File(minesDirectory + p.getUniqueId() + ".yml");
             mineConfig = YamlConfiguration.loadConfiguration(userFile);
             corner1 = mineConfig.getLocation("corner1");
             corner2 = mineConfig.getLocation("corner2");
@@ -363,7 +374,7 @@ public class PrivateMinesCommand extends BaseCommand {
     @CommandPermission("privatemines.reset.other")
     @CommandCompletion("@players")
     public void reset(Player p, OnlinePlayer target) {
-        userFile = new File("plugins/PrivateMinesRewrite/mines/" + target.player.getUniqueId() + ".yml");
+        userFile = new File(minesDirectory + target.player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         corner1 = mineConfig.getLocation("corner1");
         corner2 = mineConfig.getLocation("corner2");
@@ -396,6 +407,13 @@ public class PrivateMinesCommand extends BaseCommand {
 
     public Location getTeleportLocation() {
         return teleportLocation;
+    }
+
+    @Subcommand("upgrade")
+    @Description("Force upgrades a player mine")
+    @CommandPermission("privatemines.upgrade")
+    public void upgrade(Player p) {
+        p.sendMessage(ChatColor.GREEN + "Attempting to upgrade your mine. (no function here yet)");
     }
 }
 
