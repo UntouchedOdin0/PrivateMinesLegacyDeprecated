@@ -28,6 +28,8 @@ public class PrivateMines extends JavaPlugin {
     private PrivateMines privateMine;
     private MineFillManager fillManager;
     private MineWorldManager mineManager;
+    private MineStorage mineStorage = new MineStorage();
+    private MineFactory mineFactory = new MineFactory(mineStorage, mineManager, fillManager);
 
     @Override
     public void onEnable() {
@@ -40,11 +42,13 @@ public class PrivateMines extends JavaPlugin {
         Bukkit.getLogger().info("Setting up the Private Mines World...");
         mineManager = new MineWorldManager();
         Bukkit.getLogger().info("Private Mines World has been setup!");
-
-        MineStorage mineStorage = new MineStorage();
-        MineFactory mineFactory = new MineFactory(mineStorage, mineManager);
-
         fillManager = new MineFillManager(this);
+
+        Bukkit.getLogger().info("Setting up the Private Mines Storage and Factory...");
+        mineStorage = new MineStorage();
+        mineFactory = new MineFactory(mineStorage, mineManager, fillManager);
+        Bukkit.getLogger().info("Private Mines storage and factory has been setup!");
+
         BukkitCommandManager manager = new PaperCommandManager(this);
         MainMenuGui mainMenuGui = new MainMenuGui(fillManager);
 

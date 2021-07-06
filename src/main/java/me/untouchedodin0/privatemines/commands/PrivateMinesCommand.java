@@ -53,6 +53,7 @@ public class PrivateMinesCommand extends BaseCommand {
     Location spawnLocation;
     Location npcLocation;
     Location placeLocation;
+    Location nextLocation;
     Location teleportLocation;
 
     World world;
@@ -76,7 +77,10 @@ public class PrivateMinesCommand extends BaseCommand {
     MineStorage mineStorage;
     MineFactory mineFactory;
     File userFile;
+    File locationsFile;
+
     YamlConfiguration mineConfig;
+    YamlConfiguration locationConfig;
 
     String coords1 = "";
     String coords2 = "";
@@ -103,6 +107,7 @@ public class PrivateMinesCommand extends BaseCommand {
 
     PrivateMine privateMine;
 
+    private static final String utilDirectory = "plugins/PrivateMinesRewrite/util/";
     private static final String minesDirectory = "plugins/PrivateMinesRewrite/mines/";
 
     public PrivateMinesCommand(Util util,
@@ -216,7 +221,17 @@ public class PrivateMinesCommand extends BaseCommand {
     public void give(Player p) {
         File file = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
         userFile = new File(minesDirectory + p.getUniqueId() + ".yml");
+        locationsFile = new File(utilDirectory, "locations.yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        locationConfig = YamlConfiguration.loadConfiguration(locationsFile);
+
+        if (placeLocation == null) {
+            placeLocation = p.getLocation();
+        }
+
+        Bukkit.broadcastMessage("nextLocation after clone: " + nextLocation);
+        nextLocation = placeLocation.add(100, 0, 0);
+
         to = p.getLocation();
         playerID = p.getUniqueId().toString();
 
@@ -225,9 +240,9 @@ public class PrivateMinesCommand extends BaseCommand {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        if (mineStorage.hasMine(p)) {
-            p.sendMessage(ChatColor.RED + "Er, you do know you already have a mine. Right?");
-        } else {
+//        if (mineStorage.hasMine(p)) {
+//            p.sendMessage(ChatColor.RED + "Er, you do know you already have a mine. Right?");
+//        } else {
             if (inputStream != null) {
                 multiBlockStructure = MultiBlockStructure
                         .create(inputStream,
@@ -236,11 +251,11 @@ public class PrivateMinesCommand extends BaseCommand {
                                 false);
             }
             world = to.getWorld();
-            cuboidRegion = multiBlockStructure.getRegion(to);
+            cuboidRegion = multiBlockStructure.getRegion(nextLocation);
             start = cuboidRegion.getStart().clone();
             end = cuboidRegion.getEnd().clone();
 
-            multiBlockStructure.build(to);
+            multiBlockStructure.build(nextLocation);
 
             if (start == null || end == null) {
                 Bukkit.getLogger().info("Failed to create the mine due to either");
@@ -272,6 +287,10 @@ public class PrivateMinesCommand extends BaseCommand {
                         } else if (block.getType() == Material.SPONGE && placeLocation == null) {
                             placeLocation = block.getLocation();
                             placeLocation.getBlock().setType(Material.AIR);
+                            Bukkit.broadcastMessage("placeLocation after setair: " + placeLocation);
+                            Bukkit.broadcastMessage("nextLocation after add: " + nextLocation);
+                            placeLocation = nextLocation;
+                            Bukkit.broadcastMessage("placeLocation = next: " + placeLocation);
                         }
                     }
                 }
@@ -310,8 +329,6 @@ public class PrivateMinesCommand extends BaseCommand {
             p.sendMessage("privateMine mineFile: " + privateMine.getMineFile());
             p.sendMessage("privateMine blocks: " + privateMine.getBlocks());
 
-
-
 //            Bukkit.broadcastMessage("privateMine builder owner = " + privateMine.getOwner());
 //            Bukkit.broadcastMessage("privateMine builder mineLocation = " + privateMine.getMineLocation());
 //            Bukkit.broadcastMessage("privateMine builder cornerblocks = " + privateMine.getCornerBlocks());
@@ -346,7 +363,6 @@ public class PrivateMinesCommand extends BaseCommand {
             corner1 = null;
             corner2 = null;
         }
-    }
 
 
     @Subcommand("teleport")
@@ -357,6 +373,12 @@ public class PrivateMinesCommand extends BaseCommand {
             if (spawnLocation == null) {
                 p.sendMessage(ChatColor.RED + "The spawn location was null!");
             } else {
+                World world = Bukkit.getWorld(mineConfig.getString("spawnLocation.world"));
+                double x = mineConfig.getDouble("spawnLocation.x");
+                double y = mineConfig.getDouble("spawnLocation.y");
+                double z = mineConfig.getDouble("spawnLocation.z");
+                spawnLocation = new Location(world, x, y, z);
+
                 p.sendMessage(ChatColor.GREEN + "Teleporting you to your mine!");
                 p.teleport(spawnLocation);
             }
