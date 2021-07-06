@@ -301,19 +301,22 @@ public class PrivateMinesCommand extends BaseCommand {
             startBlock = miningRegionStart.getBlock();
             endBlock = miningRegionEnd.getBlock();
 
-            privateMine = new PrivateMine()
-                    .setOwner(p)
-                    .setLocation(p.getLocation())
-                    .setCornerBlocks(cornerBlocks)
-                    .setFile(file)
-                    .setBlocks(mineBlocks)
-                    .build();
+            privateMine = new PrivateMine(p, p.getLocation(), cornerBlocks, file, mineBlocks);
 
-            Bukkit.broadcastMessage("privateMine builder owner = " + privateMine.getOwner());
-            Bukkit.broadcastMessage("privateMine builder mineLocation = " + privateMine.getMineLocation());
-            Bukkit.broadcastMessage("privateMine builder cornerblocks = " + privateMine.getCornerBlocks());
-            Bukkit.broadcastMessage("privateMine builder mineFile = " + privateMine.getMineFile());
-            Bukkit.broadcastMessage("privateMine builder blocks = " + privateMine.getBlocks());
+            p.sendMessage("privateMine : " + privateMine);
+            p.sendMessage("privateMine Owner: " + privateMine.getOwner());
+            p.sendMessage("privateMine Location: " + privateMine.getMineLocation());
+            p.sendMessage("privateMine CornerBlocks: " + privateMine.getCornerBlocks());
+            p.sendMessage("privateMine mineFile: " + privateMine.getMineFile());
+            p.sendMessage("privateMine blocks: " + privateMine.getBlocks());
+
+
+
+//            Bukkit.broadcastMessage("privateMine builder owner = " + privateMine.getOwner());
+//            Bukkit.broadcastMessage("privateMine builder mineLocation = " + privateMine.getMineLocation());
+//            Bukkit.broadcastMessage("privateMine builder cornerblocks = " + privateMine.getCornerBlocks());
+//            Bukkit.broadcastMessage("privateMine builder mineFile = " + privateMine.getMineFile());
+//            Bukkit.broadcastMessage("privateMine builder blocks = " + privateMine.getBlocks());
 
             mineConfig.set("corner1", corner1);
             mineConfig.set("corner2", corner2);

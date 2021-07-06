@@ -9,64 +9,45 @@ import java.util.List;
 
 public class PrivateMine {
 
-    private Player owner;
-    private Location mineLocation;
-    private List<Location> cornerBlocks;
-    private File mineFile;
-    private List<ItemStack> blocks;
+    private final Player owner;
+    private final Location mineLocation;
+    private final List<Location> cornerBlocks;
+    private final File mineFile;
+    private final List<ItemStack> blocks;
 
-    public PrivateMine() {
+    public PrivateMine(Player owner,
+                       Location location,
+                       List<Location> cornerBlocks,
+                       File mineFile,
+                       List<ItemStack> blocks) {
+        this.owner = owner;
+        this.mineLocation = location;
+        this.cornerBlocks = cornerBlocks;
+        this.mineFile = mineFile;
+        this.blocks = blocks;
     }
 
-    public PrivateMine(Player owner, Location mineLocation, List<Location> cornerBlocks, File mineFile, List<ItemStack> blocks) {
+    public PrivateMine getPrivateMine() {
+        return new PrivateMine(this.owner, this.mineLocation, this.cornerBlocks, this.mineFile, this.blocks);
     }
 
     public Player getOwner() {
         return owner;
     }
 
-    public PrivateMine setOwner(Player owner) {
-        this.owner = owner;
-        return this;
-    }
-
     public Location getMineLocation() {
         return mineLocation;
-    }
-
-    public PrivateMine setLocation(Location location) {
-        this.mineLocation = location;
-        return this;
     }
 
     public List<Location> getCornerBlocks() {
         return cornerBlocks;
     }
 
-    public PrivateMine setCornerBlocks(List<Location> cornerBlocks) {
-        this.cornerBlocks = cornerBlocks;
-        return this;
-    }
-
     public File getMineFile() {
         return mineFile;
     }
 
-    public PrivateMine setFile(File file) {
-        this.mineFile = file;
-        return this;
-    }
-
     public List<ItemStack> getBlocks() {
         return blocks;
-    }
-
-    public PrivateMine setBlocks(List<ItemStack> blocks) {
-        this.blocks = blocks;
-        return this;
-    }
-
-    public PrivateMine build() {
-        return new PrivateMine(owner, mineLocation, cornerBlocks, mineFile, blocks);
     }
 }
