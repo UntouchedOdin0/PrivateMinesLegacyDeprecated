@@ -171,4 +171,8 @@ public class MainMenuGui {
 
         gui.open(player);
     }
+
+    public void teleportToMine(Player player) {
+        player.teleport(teleportLocation);
+    }
 }
