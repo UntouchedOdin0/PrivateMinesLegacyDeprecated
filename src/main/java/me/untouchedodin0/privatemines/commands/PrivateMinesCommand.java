@@ -284,8 +284,6 @@ public class PrivateMinesCommand extends BaseCommand {
             cornerBlocks.add(corner2);
 
             if (mineBlocks.isEmpty()) {
-                Bukkit.broadcastMessage(ChatColor.RED + "Failed to reset the mine due to no Materials being listed!");
-                Bukkit.broadcastMessage(ChatColor.GREEN + "Adding Stone to the list and trying again!");
                 mineBlocks.add(new ItemStack(Material.STONE));
             }
 
@@ -297,24 +295,18 @@ public class PrivateMinesCommand extends BaseCommand {
             Location miningRegionStart = miningRegion.getStart();
             Location miningRegionEnd = miningRegion.getEnd();
 
-            Bukkit.broadcastMessage("corner blocks: " + cornerBlocks);
+//            Bukkit.broadcastMessage("corner blocks: " + cornerBlocks);
             startBlock = miningRegionStart.getBlock();
             endBlock = miningRegionEnd.getBlock();
 
             privateMine = new PrivateMine(p, p.getLocation(), cornerBlocks, file, mineBlocks);
 
-            p.sendMessage("privateMine : " + privateMine);
-            p.sendMessage("privateMine Owner: " + privateMine.getOwner());
-            p.sendMessage("privateMine Location: " + privateMine.getMineLocation());
-            p.sendMessage("privateMine CornerBlocks: " + privateMine.getCornerBlocks());
-            p.sendMessage("privateMine mineFile: " + privateMine.getMineFile());
-            p.sendMessage("privateMine blocks: " + privateMine.getBlocks());
-
-//            Bukkit.broadcastMessage("privateMine builder owner = " + privateMine.getOwner());
-//            Bukkit.broadcastMessage("privateMine builder mineLocation = " + privateMine.getMineLocation());
-//            Bukkit.broadcastMessage("privateMine builder cornerblocks = " + privateMine.getCornerBlocks());
-//            Bukkit.broadcastMessage("privateMine builder mineFile = " + privateMine.getMineFile());
-//            Bukkit.broadcastMessage("privateMine builder blocks = " + privateMine.getBlocks());
+//            p.sendMessage("privateMine : " + privateMine);
+//            p.sendMessage("privateMine Owner: " + privateMine.getOwner());
+//            p.sendMessage("privateMine Location: " + privateMine.getMineLocation());
+//            p.sendMessage("privateMine CornerBlocks: " + privateMine.getCornerBlocks());
+//            p.sendMessage("privateMine mineFile: " + privateMine.getMineFile());
+//            p.sendMessage("privateMine blocks: " + privateMine.getBlocks());
 
             mineConfig.set("corner1", corner1);
             mineConfig.set("corner2", corner2);
