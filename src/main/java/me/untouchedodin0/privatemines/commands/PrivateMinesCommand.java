@@ -40,6 +40,8 @@ import java.util.List;
 @CommandAlias("privatemines|privatemine|pm|pmine")
 public class PrivateMinesCommand extends BaseCommand {
 
+    private static final String utilDirectory = "plugins/PrivateMinesRewrite/util/";
+    private static final String minesDirectory = "plugins/PrivateMinesRewrite/mines/";
     Util util;
     Location to;
     Location position1;
@@ -55,21 +57,16 @@ public class PrivateMinesCommand extends BaseCommand {
     Location placeLocation;
     Location nextLocation;
     Location teleportLocation;
-
     World world;
     Structure structure;
     MultiBlockStructure multiBlockStructure;
     Rotator rotator;
     InputStream inputStream;
-
     CuboidRegion cuboidRegion;
     CuboidRegion miningRegion;
-
     ItemStack cornerMaterial = new ItemStack(Material.POWERED_RAIL);
-
     List<ItemStack> mineBlocks = new ArrayList<>();
     List<Location> cornerBlocks = new ArrayList<>();
-
     WeightedRandom<Material> weightedRandom = new WeightedRandom<>();
     MineFillManager fillManager;
     PrivateMines privateMines;
@@ -78,37 +75,25 @@ public class PrivateMinesCommand extends BaseCommand {
     MineFactory mineFactory;
     File userFile;
     File locationsFile;
-
     YamlConfiguration mineConfig;
     YamlConfiguration locationConfig;
-
     String coords1 = "";
     String coords2 = "";
-
     String x1 = "";
     String y1 = "";
     String z1 = "";
-
     String x2 = "";
     String y2 = "";
     String z2 = "";
-
     String playerID;
-
     Block startBlock;
     Block endBlock;
     DataBlock startDataBlock;
     DataBlock endDataBlock;
-
     Gui gui;
     MainMenuGui mainMenuGui;
-
     MineWorldManager mineWorldManager;
-
     PrivateMine privateMine;
-
-    private static final String utilDirectory = "plugins/PrivateMinesRewrite/util/";
-    private static final String minesDirectory = "plugins/PrivateMinesRewrite/mines/";
 
     public PrivateMinesCommand(Util util,
                                MineFillManager fillManager,
@@ -192,7 +177,7 @@ public class PrivateMinesCommand extends BaseCommand {
             GuiItem teleportToMine = ItemBuilder.from(bedStack).asGuiItem(event -> {
                 event.setCancelled(true);
                 p.sendMessage(ChatColor.GREEN + "Teleporting to your mine!");
-                p.teleport(teleportLocation);
+                mainMenuGui.teleportToMine(p);
             });
 
             mainMenuGui.openMainMenuGui(p);
@@ -218,6 +203,7 @@ public class PrivateMinesCommand extends BaseCommand {
     @Subcommand("give")
     @Description("Gives a privatemines to a player (only pastes at the moment)")
     @CommandPermission("privatemines.give")
+    @CommandCompletion("@players")
     public void give(Player p) {
         File file = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
         userFile = new File(minesDirectory + p.getUniqueId() + ".yml");
@@ -226,13 +212,9 @@ public class PrivateMinesCommand extends BaseCommand {
         locationConfig = YamlConfiguration.loadConfiguration(locationsFile);
 
         if (placeLocation == null) {
-            placeLocation = p.getLocation();
+            placeLocation = mineWorldManager.nextFreeLocation();
         }
 
-        Bukkit.broadcastMessage("nextLocation after clone: " + nextLocation);
-        nextLocation = placeLocation.add(100, 0, 0);
-
-        to = p.getLocation();
         playerID = p.getUniqueId().toString();
 
         try {
@@ -240,9 +222,9 @@ public class PrivateMinesCommand extends BaseCommand {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-//        if (mineStorage.hasMine(p)) {
-//            p.sendMessage(ChatColor.RED + "Er, you do know you already have a mine. Right?");
-//        } else {
+        if (mineStorage.hasMine(p)) {
+            p.sendMessage(ChatColor.RED + "Er, you do know you already have a mine. Right?");
+        } else {
             if (inputStream != null) {
                 multiBlockStructure = MultiBlockStructure
                         .create(inputStream,
@@ -250,12 +232,12 @@ public class PrivateMinesCommand extends BaseCommand {
                                 false,
                                 false);
             }
-            world = to.getWorld();
-            cuboidRegion = multiBlockStructure.getRegion(nextLocation);
+            world = placeLocation.getWorld();
+            cuboidRegion = multiBlockStructure.getRegion(placeLocation);
             start = cuboidRegion.getStart().clone();
             end = cuboidRegion.getEnd().clone();
 
-            multiBlockStructure.build(nextLocation);
+            multiBlockStructure.build(placeLocation);
 
             if (start == null || end == null) {
                 Bukkit.getLogger().info("Failed to create the mine due to either");
@@ -289,7 +271,6 @@ public class PrivateMinesCommand extends BaseCommand {
                             placeLocation.getBlock().setType(Material.AIR);
                             Bukkit.broadcastMessage("placeLocation after setair: " + placeLocation);
                             Bukkit.broadcastMessage("nextLocation after add: " + nextLocation);
-                            placeLocation = nextLocation;
                             Bukkit.broadcastMessage("placeLocation = next: " + placeLocation);
                         }
                     }
@@ -362,26 +343,7 @@ public class PrivateMinesCommand extends BaseCommand {
             npcLocation = null;
             corner1 = null;
             corner2 = null;
-        }
-
-
-    @Subcommand("teleport")
-    @Description("Teleports you to your mine")
-    @CommandPermission("privatemines.teleport")
-    public void teleport(Player p) {
-        if (p != null) {
-            if (spawnLocation == null) {
-                p.sendMessage(ChatColor.RED + "The spawn location was null!");
-            } else {
-                World world = Bukkit.getWorld(mineConfig.getString("spawnLocation.world"));
-                double x = mineConfig.getDouble("spawnLocation.x");
-                double y = mineConfig.getDouble("spawnLocation.y");
-                double z = mineConfig.getDouble("spawnLocation.z");
-                spawnLocation = new Location(world, x, y, z);
-
-                p.sendMessage(ChatColor.GREEN + "Teleporting you to your mine!");
-                p.teleport(spawnLocation);
-            }
+            placeLocation = null;
         }
     }
 
