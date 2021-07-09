@@ -414,4 +414,3 @@ public class PrivateMinesCommand extends BaseCommand {
 }
 
 
-

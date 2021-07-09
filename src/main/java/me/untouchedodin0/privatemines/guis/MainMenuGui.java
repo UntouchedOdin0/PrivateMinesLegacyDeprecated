@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import redempt.redlib.misc.ChatPrompt;
 
 import java.io.File;
 
@@ -21,9 +22,11 @@ public class MainMenuGui {
     File userFile;
     YamlConfiguration mineConfig;
     Location teleportLocation;
+    Location corner1;
+    Location corner2;
     MineFillManager mineFillManager;
-
     boolean isClosed = false;
+    double size;
 
     public MainMenuGui(MineFillManager mineFillManager) {
         this.mineFillManager = mineFillManager;
@@ -38,6 +41,9 @@ public class MainMenuGui {
         userFile = new File("plugins/PrivateMinesRewrite/mines/" + player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         this.teleportLocation = mineConfig.getLocation("spawnLocation");
+        this.corner1 = mineConfig.getLocation("corner1");
+        this.corner2 = mineConfig.getLocation("corner2");
+        size = corner2.distance(corner1);
 
         ItemStack bedStack = new ItemStack(Material.RED_BED);
         ItemMeta bedStackItemMeta = bedStack.getItemMeta();
@@ -61,7 +67,7 @@ public class MainMenuGui {
 
         ItemStack mineSize = new ItemStack(Material.LAVA_BUCKET);
         ItemMeta mineSizeItemMeta = mineSize.getItemMeta();
-        mineSizeItemMeta.setDisplayName(ChatColor.GREEN + "Mine Size");
+        mineSizeItemMeta.setDisplayName(ChatColor.GREEN + "Mine Size " + ChatColor.YELLOW + size);
         mineSize.setItemMeta(mineSizeItemMeta);
 
         ItemStack resetMine = new ItemStack(Material.MINECART);
@@ -124,7 +130,10 @@ public class MainMenuGui {
 
         GuiItem setTaxItem = ItemBuilder.from(setTax).asGuiItem(event -> {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.GREEN + "Opening the set tax menu!");
+            ChatPrompt.prompt(player, "Please enter a tax amount",
+                    response -> {
+                player.sendMessage("Your response was: " + response);
+            });
         });
 
         GuiItem mineSizeItem = ItemBuilder.from(mineSize).asGuiItem(event -> {

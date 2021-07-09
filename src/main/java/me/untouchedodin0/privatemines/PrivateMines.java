@@ -15,7 +15,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.List;
+
+/*
+    Thanks to Redempt for creating RedLib what helped me with a lot of the
+    creation of this plugin
+
+    RedLib: https://github.com/Redempt/RedLib
+    Redempt: https://github.com/Redempt
+ */
 
 public class PrivateMines extends JavaPlugin {
 
