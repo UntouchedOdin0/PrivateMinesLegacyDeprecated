@@ -350,14 +350,12 @@ public class PrivateMinesCommand extends BaseCommand {
         if (p != null) {
             userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
             mineConfig = YamlConfiguration.loadConfiguration(userFile);
-            corner1 = mineConfig.getLocation("corner1");
-            corner2 = mineConfig.getLocation("corner2");
+            corner1 = mineConfig.getLocation("Corner1");
+            corner2 = mineConfig.getLocation("Corner2");
             mineBlocks = (List<ItemStack>) mineConfig.getList(BLOCKS_STRING);
 
-            if (corner1 != null && corner2 != null && mineBlocks != null) {
-                Bukkit.getScheduler().runTaskLater(privateMines, ()
-                        -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
-            }
+            Bukkit.getScheduler().runTaskLater(privateMines, ()
+                    -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
         }
     }
 
