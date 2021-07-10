@@ -7,7 +7,12 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.util.List;
 
-public class PrivateMine {
+/**
+ * @deprecated  As of this commit, I poorly wrote this and it'll be removed
+ * soon so it doesn't mess with the future code.
+ */
+
+public class PrivateMineOld {
 
     private final Player owner;
     private final Location mineLocation;
@@ -15,11 +20,11 @@ public class PrivateMine {
     private final File mineFile;
     private final List<ItemStack> blocks;
 
-    public PrivateMine(Player owner,
-                       Location location,
-                       List<Location> cornerBlocks,
-                       File mineFile,
-                       List<ItemStack> blocks) {
+    public PrivateMineOld(Player owner,
+                          Location location,
+                          List<Location> cornerBlocks,
+                          File mineFile,
+                          List<ItemStack> blocks) {
         this.owner = owner;
         this.mineLocation = location;
         this.cornerBlocks = cornerBlocks;
@@ -27,8 +32,8 @@ public class PrivateMine {
         this.blocks = blocks;
     }
 
-    public PrivateMine getPrivateMine() {
-        return new PrivateMine(this.owner, this.mineLocation, this.cornerBlocks, this.mineFile, this.blocks);
+    public PrivateMineOld getPrivateMine() {
+        return new PrivateMineOld(this.owner, this.mineLocation, this.cornerBlocks, this.mineFile, this.blocks);
     }
 
     public Player getOwner() {
