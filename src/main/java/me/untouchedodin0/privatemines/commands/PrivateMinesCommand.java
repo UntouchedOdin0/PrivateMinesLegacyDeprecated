@@ -7,11 +7,11 @@ import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import me.untouchedodin0.privatemines.PrivateMines;
-import me.untouchedodin0.privatemines.data.PrivateMine;
 import me.untouchedodin0.privatemines.factory.MineFactory;
 import me.untouchedodin0.privatemines.guis.MainMenuGui;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
+import me.untouchedodin0.privatemines.utils.mine.PrivateMine;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import net.kyori.adventure.text.Component;
@@ -40,8 +40,15 @@ import java.util.List;
 @CommandAlias("privatemines|privatemine|pm|pmine")
 public class PrivateMinesCommand extends BaseCommand {
 
-    private static final String utilDirectory = "plugins/PrivateMinesRewrite/util/";
-    private static final String minesDirectory = "plugins/PrivateMinesRewrite/mines/";
+    private static final String UTIL_DIRECTORY = "plugins/PrivateMinesRewrite/util/";
+    private static final String MINE_DIRECTORY = "plugins/PrivateMinesRewrite/mines/";
+    private static final String CORNER_1_STRING = "Corner1";
+    private static final String CORNER_2_STRING = "Corner2";
+    private static final String SPAWN_LOCATION_STRING = "spawnLocation";
+    private static final String NPC_LOCATION_STRING = "npcLocation";
+    private static final String PLACE_LOCATION_STRING = "placeLocation";
+    private static final String BLOCKS_STRING = "blocks";
+
     Util util;
     Location to;
     Location position1;
@@ -117,9 +124,9 @@ public class PrivateMinesCommand extends BaseCommand {
         if (p.hasPermission("privatemines.owner")) {
             p.sendMessage("opening gui.");
 
-            userFile = new File(minesDirectory + p.getUniqueId() + ".yml");
+            userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
             mineConfig = YamlConfiguration.loadConfiguration(userFile);
-            this.teleportLocation = mineConfig.getLocation("spawnLocation");
+            this.teleportLocation = mineConfig.getLocation(SPAWN_LOCATION_STRING);
 
             /*
                 Add gui menu with following items
@@ -206,8 +213,8 @@ public class PrivateMinesCommand extends BaseCommand {
     @CommandCompletion("@players")
     public void give(Player p) {
         File file = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
-        userFile = new File(minesDirectory + p.getUniqueId() + ".yml");
-        locationsFile = new File(utilDirectory, "locations.yml");
+        userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
+        locationsFile = new File(UTIL_DIRECTORY, "locations.yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         locationConfig = YamlConfiguration.loadConfiguration(locationsFile);
 
@@ -224,29 +231,26 @@ public class PrivateMinesCommand extends BaseCommand {
         }
         if (mineStorage.hasMine(p)) {
             p.sendMessage(ChatColor.RED + "Er, you do know you already have a mine. Right?");
+        } else if (inputStream != null) {
+            multiBlockStructure = MultiBlockStructure
+                    .create(inputStream,
+                            "mine",
+                            false,
+                            false);
+        }
+        world = placeLocation.getWorld();
+        cuboidRegion = multiBlockStructure.getRegion(placeLocation);
+        start = cuboidRegion.getStart().clone();
+        end = cuboidRegion.getEnd().clone();
+
+        multiBlockStructure.build(placeLocation);
+
+        if (start == null || end == null) {
+            Bukkit.getLogger().info("Failed to create the mine due to either");
+            Bukkit.getLogger().info("the start of the end being null");
+            Bukkit.broadcastMessage("The main cause of this is because the location is");
+            Bukkit.broadcastMessage("either to high or to low.");
         } else {
-            if (inputStream != null) {
-                multiBlockStructure = MultiBlockStructure
-                        .create(inputStream,
-                                "mine",
-                                false,
-                                false);
-            }
-            world = placeLocation.getWorld();
-            cuboidRegion = multiBlockStructure.getRegion(placeLocation);
-            start = cuboidRegion.getStart().clone();
-            end = cuboidRegion.getEnd().clone();
-
-            multiBlockStructure.build(placeLocation);
-
-            if (start == null || end == null) {
-                Bukkit.getLogger().info("Failed to create the mine due to either");
-                Bukkit.getLogger().info("the start of the end being null");
-                Bukkit.broadcastMessage("The main cause of this is because the location is");
-                Bukkit.broadcastMessage("either to high or to low.");
-                return;
-            }
-
             for (int x = start.getBlockX(); x <= end.getBlockX(); x++) {
                 for (int y = start.getBlockY(); y <= end.getBlockY(); y++) {
                     for (int z = start.getBlockZ(); z <= end.getBlockZ(); z++) {
@@ -276,59 +280,54 @@ public class PrivateMinesCommand extends BaseCommand {
                     }
                 }
             }
-
             miningRegion = new CuboidRegion(corner1, corner2)
                     .expand(1, 0, 1, 0, 1, 0);
-
             cornerBlocks.add(corner1);
             cornerBlocks.add(corner2);
-
             if (mineBlocks.isEmpty()) {
                 mineBlocks.add(new ItemStack(Material.STONE));
             }
-
             Sign s = (Sign) world.getBlockAt(npcLocation).getState();
             s.setLine(0, "I'm an NPC");
             s.setLine(1, "I should be fixed.");
             s.update();
-
             Location miningRegionStart = miningRegion.getStart();
             Location miningRegionEnd = miningRegion.getEnd();
-
-//            Bukkit.broadcastMessage("corner blocks: " + cornerBlocks);
+            // Bukkit.broadcastMessage("corner blocks: " + cornerBlocks);
             startBlock = miningRegionStart.getBlock();
             endBlock = miningRegionEnd.getBlock();
-
-            privateMine = new PrivateMine(p, p.getLocation(), cornerBlocks, file, mineBlocks);
-
-//            p.sendMessage("privateMine : " + privateMine);
-//            p.sendMessage("privateMine Owner: " + privateMine.getOwner());
-//            p.sendMessage("privateMine Location: " + privateMine.getMineLocation());
-//            p.sendMessage("privateMine CornerBlocks: " + privateMine.getCornerBlocks());
-//            p.sendMessage("privateMine mineFile: " + privateMine.getMineFile());
-//            p.sendMessage("privateMine blocks: " + privateMine.getBlocks());
-
-            mineConfig.set("corner1", corner1);
-            mineConfig.set("corner2", corner2);
-            mineConfig.set("spawnLocation", spawnLocation);
-            mineConfig.set("npcLocation", npcLocation);
-            mineConfig.set("placeLocation", placeLocation);
-            mineConfig.set("blocks", mineBlocks);
+            Bukkit.getLogger().info("Creating the event...");
+            privateMine = new PrivateMine(
+                    p,
+                    file,
+                    placeLocation,
+                    spawnLocation,
+                    npcLocation,
+                    corner1,
+                    corner2);
+            Bukkit.getLogger().info("Calling the event...");
+            Bukkit.getPluginManager().callEvent(privateMine);
+            Bukkit.getLogger().info("Event Details:");
+            Bukkit.getLogger().info(privateMine.getEventName());
+            mineConfig.set(CORNER_1_STRING, corner1);
+            mineConfig.set(CORNER_2_STRING, corner2);
+            mineConfig.set(SPAWN_LOCATION_STRING, spawnLocation);
+            mineConfig.set(NPC_LOCATION_STRING, npcLocation);
+            mineConfig.set(PLACE_LOCATION_STRING, placeLocation);
+            mineConfig.set(BLOCKS_STRING, mineBlocks);
             try {
                 mineConfig.save(userFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             if (mineBlocks.toArray().length >= 2) {
                 Task.syncRepeating(() -> fillManager.fillPlayerMine(p), 0L, 20L);
             } else {
                 Task.syncRepeating(() -> fillManager.fillPlayerMine(p), 0L, 2 * 20 * 60L);
                 fillManager.fillMine(corner1, corner2, mineBlocks.get(0));
             }
-
             Bukkit.broadcastMessage("cornerBlocks debug: ");
-            Bukkit.broadcastMessage("count: " + cornerBlocks.stream().count());
+            Bukkit.broadcastMessage("size: " + cornerBlocks.size());
             cornerBlocks = new ArrayList<>();
             p.teleport(spawnLocation);
             p.sendMessage(ChatColor.GREEN + "You've been teleported to your mine!");
@@ -337,6 +336,8 @@ public class PrivateMinesCommand extends BaseCommand {
             corner2 = null;
             placeLocation = null;
         }
+
+
     }
 
     /*
@@ -348,11 +349,11 @@ public class PrivateMinesCommand extends BaseCommand {
     @CommandPermission("privatemines.reset")
     public void reset(Player p) {
         if (p != null) {
-            userFile = new File(minesDirectory + p.getUniqueId() + ".yml");
+            userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
             mineConfig = YamlConfiguration.loadConfiguration(userFile);
             corner1 = mineConfig.getLocation("corner1");
             corner2 = mineConfig.getLocation("corner2");
-            mineBlocks = (List<ItemStack>) mineConfig.getList("blocks");
+            mineBlocks = (List<ItemStack>) mineConfig.getList(BLOCKS_STRING);
 
             if (corner1 != null && corner2 != null && mineBlocks != null) {
                 Bukkit.getScheduler().runTaskLater(privateMines, ()
@@ -370,11 +371,11 @@ public class PrivateMinesCommand extends BaseCommand {
     @CommandPermission("privatemines.reset.other")
     @CommandCompletion("@players")
     public void reset(Player p, OnlinePlayer target) {
-        userFile = new File(minesDirectory + target.player.getUniqueId() + ".yml");
+        userFile = new File(MINE_DIRECTORY + target.player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         corner1 = mineConfig.getLocation("corner1");
         corner2 = mineConfig.getLocation("corner2");
-        mineBlocks = (List<ItemStack>) mineConfig.getList("blocks");
+        mineBlocks = (List<ItemStack>) mineConfig.getList(BLOCKS_STRING);
 
         if (corner1 != null && corner2 != null && mineBlocks != null) {
             Bukkit.getScheduler().runTaskLater(privateMines, ()
