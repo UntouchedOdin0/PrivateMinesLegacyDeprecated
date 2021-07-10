@@ -48,52 +48,74 @@ public class MainMenuGui {
 
         ItemStack bedStack = new ItemStack(Material.RED_BED);
         ItemMeta bedStackItemMeta = bedStack.getItemMeta();
-        bedStackItemMeta.setDisplayName(ChatColor.GREEN + "Go to your mine");
+        if (bedStackItemMeta != null) {
+            bedStackItemMeta.setDisplayName(ChatColor.GREEN + "Go to your mine");
+        }
         bedStack.setItemMeta(bedStackItemMeta);
 
         ItemStack statusClosed = new ItemStack(Material.RED_WOOL);
         ItemMeta statusClosedItemMeta = statusClosed.getItemMeta();
-        statusClosedItemMeta.setDisplayName("" + ChatColor.GRAY + "Mine Status: " + ChatColor.RED + "Closed");
+        if (statusClosedItemMeta != null) {
+            statusClosedItemMeta.setDisplayName("" + ChatColor.GRAY + "Mine Status: " + ChatColor.RED + "Closed");
+        }
         statusClosed.setItemMeta(statusClosedItemMeta);
 
         ItemStack statusOpen = new ItemStack(Material.GREEN_WOOL);
         ItemMeta statusOpenItemMeta = statusOpen.getItemMeta();
-        statusOpenItemMeta.setDisplayName("" + ChatColor.GRAY + "Mine Status: " + ChatColor.GREEN + "Open");
+        if (statusOpenItemMeta != null) {
+            statusOpenItemMeta.setDisplayName("" + ChatColor.GRAY + "Mine Status: " + ChatColor.GREEN + "Open");
+        }
         statusOpen.setItemMeta(statusOpenItemMeta);
 
         ItemStack setTax = new ItemStack(Material.OAK_SIGN);
         ItemMeta setTaxItemMeta = setTax.getItemMeta();
-        setTaxItemMeta.setDisplayName(ChatColor.GREEN + "Set Tax");
+        if (setTaxItemMeta != null) {
+            setTaxItemMeta.setDisplayName(ChatColor.GREEN + "Set Tax");
+        }
         setTax.setItemMeta(setTaxItemMeta);
 
         ItemStack mineSize = new ItemStack(Material.LAVA_BUCKET);
         ItemMeta mineSizeItemMeta = mineSize.getItemMeta();
-        mineSizeItemMeta.setDisplayName(ChatColor.GREEN + "Mine Size " + ChatColor.YELLOW + size);
+        if (mineSizeItemMeta != null) {
+            mineSizeItemMeta.setDisplayName(ChatColor.GREEN + "Mine Size " + ChatColor.YELLOW + size);
+        }
         mineSize.setItemMeta(mineSizeItemMeta);
 
         ItemStack resetMine = new ItemStack(Material.MINECART);
         ItemMeta resetMineItemMeta = resetMine.getItemMeta();
-        resetMineItemMeta.setDisplayName(ChatColor.GREEN + "Reset Mine");
+        if (resetMineItemMeta != null) {
+            resetMineItemMeta.setDisplayName(ChatColor.GREEN + "Reset Mine");
+        }
         resetMine.setItemMeta(resetMineItemMeta);
 
         ItemStack whitelistedMembers = new ItemStack(Material.WATER_BUCKET);
         ItemMeta whitelistedMembersItemMeta = whitelistedMembers.getItemMeta();
-        whitelistedMembersItemMeta.setDisplayName(ChatColor.GREEN + "Whitelisted Members");
+        if (whitelistedMembersItemMeta != null) {
+            whitelistedMembersItemMeta.setDisplayName(ChatColor.GREEN + "Whitelisted Members");
+        }
         whitelistedMembers.setItemMeta(whitelistedMembersItemMeta);
 
         ItemStack bannedMembers = new ItemStack(Material.LAVA_BUCKET);
         ItemMeta bannedMembersItemMeta = bannedMembers.getItemMeta();
-        bannedMembersItemMeta.setDisplayName(ChatColor.GREEN + "Banned Members");
+        if (bannedMembersItemMeta != null) {
+            bannedMembersItemMeta.setDisplayName(ChatColor.GREEN + "Banned Members");
+        }
+
         bannedMembers.setItemMeta(bannedMembersItemMeta);
 
         ItemStack priorityMembers = new ItemStack(Material.EMERALD);
         ItemMeta priorityMembersItemMeta = priorityMembers.getItemMeta();
-        priorityMembersItemMeta.setDisplayName(ChatColor.GREEN + "Priority Members");
+        if (priorityMembersItemMeta != null) {
+            priorityMembersItemMeta.setDisplayName(ChatColor.GREEN + "Priority Members");
+        }
+
         priorityMembers.setItemMeta(priorityMembersItemMeta);
 
         ItemStack coowner = new ItemStack(Material.DRAGON_EGG);
         ItemMeta coownerItemMeta = coowner.getItemMeta();
-        coownerItemMeta.setDisplayName(ChatColor.LIGHT_PURPLE + "Co-Owner");
+        if (coownerItemMeta != null) {
+            coownerItemMeta.setDisplayName(ChatColor.LIGHT_PURPLE + "Co-Owner");
+        }
         coowner.setItemMeta(coownerItemMeta);
 
         gui = Gui.gui().title(Component.text("Private Mine")).rows(1).create();
