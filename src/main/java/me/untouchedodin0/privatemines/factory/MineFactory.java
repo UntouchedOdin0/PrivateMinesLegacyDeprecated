@@ -1,6 +1,5 @@
 package me.untouchedodin0.privatemines.factory;
 
-import me.untouchedodin0.privatemines.data.PrivateMine;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
