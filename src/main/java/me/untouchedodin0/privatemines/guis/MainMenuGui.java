@@ -27,6 +27,7 @@ public class MainMenuGui {
     MineFillManager mineFillManager;
     boolean isClosed = false;
     double size;
+    int tax;
 
     public MainMenuGui(MineFillManager mineFillManager) {
         this.mineFillManager = mineFillManager;
@@ -41,9 +42,9 @@ public class MainMenuGui {
         userFile = new File("plugins/PrivateMinesRewrite/mines/" + player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         this.teleportLocation = mineConfig.getLocation("spawnLocation");
-        this.corner1 = mineConfig.getLocation("corner1");
-        this.corner2 = mineConfig.getLocation("corner2");
-        size = corner2.distance(corner1);
+        corner1 = mineConfig.getLocation("Corner1");
+        corner2 = mineConfig.getLocation("Corner2");
+        size = corner2.distanceSquared(corner1);
 
         ItemStack bedStack = new ItemStack(Material.RED_BED);
         ItemMeta bedStackItemMeta = bedStack.getItemMeta();
@@ -130,15 +131,25 @@ public class MainMenuGui {
 
         GuiItem setTaxItem = ItemBuilder.from(setTax).asGuiItem(event -> {
             event.setCancelled(true);
+            player.closeInventory();
             ChatPrompt.prompt(player, "Please enter a tax amount",
                     response -> {
-                player.sendMessage("Your response was: " + response);
-            });
+                        tax = Integer.parseInt(response);
+                        if (tax < 0) {
+                            // less than 0...
+                            player.sendMessage(ChatColor.RED + "It's impossible to set your tax below 0%!");
+                        } else if (tax > 100) {
+                            // more than 100...
+                            player.sendMessage(ChatColor.RED + "If you taxed yourself more than 100% you'd be taxing yourself!");
+                        } else {
+                            player.sendMessage(ChatColor.GREEN + "Setting your mine tax to " + response + "%");
+                        }
+                    });
         });
 
         GuiItem mineSizeItem = ItemBuilder.from(mineSize).asGuiItem(event -> {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.GREEN + "Your mine size is...");
+            player.sendMessage(ChatColor.GREEN + "Your mine size is " + size + "x" + size);
         });
 
         GuiItem resetMineItem = ItemBuilder.from(resetMine).asGuiItem(event -> {

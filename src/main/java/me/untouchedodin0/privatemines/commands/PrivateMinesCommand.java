@@ -309,6 +309,7 @@ public class PrivateMinesCommand extends BaseCommand {
             Bukkit.getPluginManager().callEvent(privateMine);
             Bukkit.getLogger().info("Event Details:");
             Bukkit.getLogger().info(privateMine.getEventName());
+            Bukkit.broadcastMessage("event details: " + privateMine);
             mineConfig.set(CORNER_1_STRING, corner1);
             mineConfig.set(CORNER_2_STRING, corner2);
             mineConfig.set(SPAWN_LOCATION_STRING, spawnLocation);
@@ -336,8 +337,6 @@ public class PrivateMinesCommand extends BaseCommand {
             corner2 = null;
             placeLocation = null;
         }
-
-
     }
 
     /*

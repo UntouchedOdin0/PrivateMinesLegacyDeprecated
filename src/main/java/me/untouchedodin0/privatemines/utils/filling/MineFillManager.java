@@ -55,8 +55,8 @@ public class MineFillManager {
     public void fillPlayerMine(Player player) {
         userFile = new File("plugins/PrivateMinesRewrite/mines/" + player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        corner1 = mineConfig.getLocation("corner1");
-        corner2 = mineConfig.getLocation("corner2");
+        corner1 = mineConfig.getLocation("Corner1");
+        corner2 = mineConfig.getLocation("Corner2");
         mineBlocks = (List<ItemStack>) mineConfig.getList("blocks");
 
         if (corner1 != null && corner2 != null && mineBlocks != null) {

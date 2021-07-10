@@ -50,6 +50,14 @@ shadowJar {
     relocate("dev.triumphteam.gui", "me.untouchedodin0.privatemines.gui")
 }
 
+tasks.register('buildAndMoveJar') {
+    doLast {
+        println 'Building and moving Jar...'
+        println 'Executing the shadowJar...'
+        shadowJar
+    }
+}
+
 test {
     useJUnitPlatform()
 }
