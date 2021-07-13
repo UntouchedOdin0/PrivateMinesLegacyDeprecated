@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class MineFactory {
 
@@ -32,6 +33,10 @@ public class MineFactory {
     private static final String NPC_LOCATION_STRING = "npcLocation";
     private static final String PLACE_LOCATION_STRING = "placeLocation";
     private static final String BLOCKS_STRING = "blocks";
+    private static final String WHITELISTED_PLAYERS = "whitelistedPlayers";
+    private static final String BANNED_PLAYERS = "bannedPlayers";
+    private static final String PRIORITY_PLAYERS = "priorityPlayers";
+    private static final String CO_OWNER = "coowner";
 
     MineStorage mineStorage;
     MultiBlockStructure multiBlockStructure;
@@ -58,6 +63,10 @@ public class MineFactory {
 
     List<ItemStack> mineBlocks = new ArrayList<>();
     List<Location> cornerBlocks = new ArrayList<>();
+    List<UUID> whitelistedPlayers = new ArrayList<>();
+    List<UUID> bannedPlayers = new ArrayList<>();
+    List<UUID> priorityPlayers = new ArrayList<>();
+    UUID coowner = null;
 
     PrivateMine privateMine;
 
@@ -165,6 +174,11 @@ public class MineFactory {
             mineConfig.set(NPC_LOCATION_STRING, npcLocation);
             mineConfig.set(PLACE_LOCATION_STRING, placeLocation);
             mineConfig.set(BLOCKS_STRING, mineBlocks);
+            mineConfig.set(WHITELISTED_PLAYERS, whitelistedPlayers);
+            mineConfig.set(BANNED_PLAYERS, bannedPlayers);
+            mineConfig.set(PRIORITY_PLAYERS, priorityPlayers);
+            mineConfig.set(CO_OWNER, coowner);
+
             try {
                 mineConfig.save(userFile);
             } catch (IOException e) {
@@ -186,6 +200,9 @@ public class MineFactory {
             npcLocation = null;
             corner1 = null;
             corner2 = null;
+
+            Bukkit.broadcastMessage("start: " + start);
+            Bukkit.broadcastMessage("end: " + end);
         }
     }
 }

@@ -28,6 +28,8 @@ public class MainMenuGui {
     boolean isClosed = false;
     double size;
     int tax;
+    WhitelistedPlayersGui whitelistedPlayersGui;
+
 
     public MainMenuGui(MineFillManager mineFillManager) {
         this.mineFillManager = mineFillManager;
@@ -45,6 +47,7 @@ public class MainMenuGui {
         corner1 = mineConfig.getLocation("Corner1");
         corner2 = mineConfig.getLocation("Corner2");
         size = corner2.distanceSquared(corner1);
+        whitelistedPlayersGui = new WhitelistedPlayersGui();
 
         ItemStack bedStack = new ItemStack(Material.RED_BED);
         ItemMeta bedStackItemMeta = bedStack.getItemMeta();
@@ -141,12 +144,14 @@ public class MainMenuGui {
             event.setCancelled(true);
             if (isClosed) {
                 player.sendMessage(ChatColor.GREEN + "Opened your mine!");
-                gui.updateItem(event.getSlot(), openItem);
                 setIsClosed(false);
+                gui.removeItem(event.getSlot());
+                gui.setItem(event.getSlot(), openItem);
             } else {
                 player.sendMessage(ChatColor.GREEN + "Closed your mine your mine!");
+                gui.removeItem(event.getSlot());
                 gui.setItem(event.getSlot(), closeItem);
-                gui.update();
+//                gui.updateItem(event.getSlot(), closeItem);
                 setIsClosed(true);
             }
         });
@@ -184,6 +189,8 @@ public class MainMenuGui {
         GuiItem whitelistItem = ItemBuilder.from(whitelistedMembers).asGuiItem(event -> {
             event.setCancelled(true);
             player.sendMessage(ChatColor.GREEN + "Lets manage those whitelisted players!");
+            player.closeInventory();
+            whitelistedPlayersGui.openWhitelistedPlayersMenu(player);
         });
 
         GuiItem bannedMembersItem = ItemBuilder.from(bannedMembers).asGuiItem(event -> {

@@ -86,7 +86,6 @@ public class PrivateMines extends JavaPlugin {
                 this,
                 mineStorage,
                 mineFactory,
-                mainMenuGui,
                 mineManager));
         Bukkit.getLogger().info("Command registered!");
     }

@@ -25,10 +25,7 @@ import redempt.redlib.multiblock.Rotator;
 import redempt.redlib.multiblock.Structure;
 import redempt.redlib.region.CuboidRegion;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,14 +100,13 @@ public class PrivateMinesCommand extends BaseCommand {
                                PrivateMines privateMines,
                                MineStorage mineStorage,
                                MineFactory mineFactory,
-                               MainMenuGui mainMenuGui,
                                MineWorldManager mineWorldManager) {
         this.util = util;
         this.fillManager = fillManager;
         this.privateMines = privateMines;
         this.mineStorage = mineStorage;
         this.mineFactory = mineFactory;
-        this.mainMenuGui = mainMenuGui;
+        this.mainMenuGui = new MainMenuGui(fillManager);
         this.mineWorldManager = mineWorldManager;
     }
 
@@ -295,8 +291,11 @@ public class PrivateMinesCommand extends BaseCommand {
             corner2 = mineConfig.getLocation("Corner2");
             mineBlocks = (List<ItemStack>) mineConfig.getList(BLOCKS_STRING);
 
-            Bukkit.getScheduler().runTaskLater(privateMines, ()
-                    -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
+            if (corner1 != null && corner2 != null && mineBlocks != null) {
+                Bukkit.getScheduler().runTaskLater(privateMines, ()
+                        -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
+            }
+            p.sendMessage(ChatColor.GREEN + "Your mine has been reset!");
         }
     }
 
@@ -319,6 +318,7 @@ public class PrivateMinesCommand extends BaseCommand {
             Bukkit.getScheduler().runTaskLater(privateMines, ()
                     -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
         }
+        target.getPlayer().sendMessage(ChatColor.GREEN + "Your mine has been reset!");
     }
 
     /*
@@ -347,9 +347,34 @@ public class PrivateMinesCommand extends BaseCommand {
     @Subcommand("upgrade")
     @Description("Force upgrades a player mine")
     @CommandPermission("privatemines.upgrade")
+    @CommandCompletion("@players")
     public void upgrade(Player p) {
         p.sendMessage(ChatColor.GREEN + "Attempting to upgrade your mine. (no function here yet)");
     }
+
+    @Subcommand("whitelist")
+    @Description("Whitelist a player at your mine")
+    @CommandPermission("privatemine.whitelist")
+    @CommandCompletion("@players")
+    public void whitelist(Player player, OnlinePlayer target) {
+        userFile = new File(MINE_DIRECTORY + target.player.getUniqueId() + ".yml");
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        List<String> whitelistedPlayers = mineConfig.getStringList("whitelistedPlayers");
+
+        if (whitelistedPlayers.contains(target.player.getUniqueId().toString())) {
+            player.sendMessage(ChatColor.RED + "Player was already whitelisted!");
+        } else {
+            player.sendMessage("Whitelisting " + target.player.getName());
+            whitelistedPlayers.add(target.player.getUniqueId().toString());
+        }
+        mineConfig.set("whitelistedPlayers", whitelistedPlayers);
+        try {
+            mineConfig.save(userFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
+
 
 
