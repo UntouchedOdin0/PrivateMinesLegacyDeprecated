@@ -2,7 +2,8 @@ package me.untouchedodin0.privatemines.factory;
 
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
-import me.untouchedodin0.privatemines.utils.mine.PrivateMine;
+import me.untouchedodin0.privatemines.utils.mine.PrivateMineLocations;
+import me.untouchedodin0.privatemines.utils.mine.PrivateMineUtil;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.*;
@@ -68,7 +69,8 @@ public class MineFactory {
     List<UUID> priorityPlayers = new ArrayList<>();
     UUID coowner = null;
 
-    PrivateMine privateMine;
+    PrivateMineUtil privateMineUtil;
+    PrivateMineLocations privateMineLocations;
 
     public MineFactory(MineStorage storage,
                        MineWorldManager mineWorldManager,
@@ -155,29 +157,27 @@ public class MineFactory {
             startBlock = miningRegionStart.getBlock();
             endBlock = miningRegionEnd.getBlock();
             Bukkit.getLogger().info("Creating the event...");
-            privateMine = new PrivateMine(
-                    player,
-                    file,
-                    location,
-                    spawnLocation,
-                    npcLocation,
-                    corner1,
-                    corner2);
-            Bukkit.getLogger().info("Calling the event...");
-            Bukkit.getPluginManager().callEvent(privateMine);
-            Bukkit.getLogger().info("Event Details:");
-            Bukkit.getLogger().info(privateMine.getEventName());
-            Bukkit.broadcastMessage("event details: " + privateMine);
-            mineConfig.set(CORNER_1_STRING, corner1);
-            mineConfig.set(CORNER_2_STRING, corner2);
-            mineConfig.set(SPAWN_LOCATION_STRING, spawnLocation);
-            mineConfig.set(NPC_LOCATION_STRING, npcLocation);
-            mineConfig.set(PLACE_LOCATION_STRING, placeLocation);
-            mineConfig.set(BLOCKS_STRING, mineBlocks);
-            mineConfig.set(WHITELISTED_PLAYERS, whitelistedPlayers);
-            mineConfig.set(BANNED_PLAYERS, bannedPlayers);
-            mineConfig.set(PRIORITY_PLAYERS, priorityPlayers);
-            mineConfig.set(CO_OWNER, coowner);
+            privateMineUtil = new PrivateMineUtil(player, file, mineBlocks, whitelistedPlayers, bannedPlayers, priorityPlayers, coowner);
+            privateMineLocations = new PrivateMineLocations(player, nextLocation, spawnLocation, npcLocation, corner1, corner2);
+
+            Bukkit.getLogger().info("Calling the events...");
+            Bukkit.getPluginManager().callEvent(privateMineUtil);
+            Bukkit.getPluginManager().callEvent(privateMineLocations);
+
+//            Bukkit.getPluginManager().callEvent(privateMine);
+//            Bukkit.getLogger().info("Event Details:");
+//            Bukkit.getLogger().info(privateMine.getEventName());
+//            Bukkit.broadcastMessage("event details: " + privateMine);
+//            mineConfig.set(CORNER_1_STRING, privateMine.getCorner1());
+//            mineConfig.set(CORNER_2_STRING, privateMine.getCorner2());
+//            mineConfig.set(SPAWN_LOCATION_STRING, privateMine.getSpawnLocation());
+//            mineConfig.set(NPC_LOCATION_STRING, privateMine.getNpcLocation());
+//            mineConfig.set(PLACE_LOCATION_STRING, privateMine.getMineLocation());
+//            mineConfig.set(BLOCKS_STRING, privateMine.getMineBlocks());
+//            mineConfig.set(WHITELISTED_PLAYERS, privateMine.getWhitelistedPlayers());
+//            mineConfig.set(BANNED_PLAYERS, privateMine.getBannedPlayers());
+//            mineConfig.set(PRIORITY_PLAYERS, privateMine.getPriorityPlayers());
+//            mineConfig.set(CO_OWNER, privateMine.getCoOwner());
 
             try {
                 mineConfig.save(userFile);
@@ -189,7 +189,7 @@ public class MineFactory {
                 Task.syncRepeating(() -> fillManager.fillPlayerMine(player), 0L, 20L);
             } else {
                 Task.syncRepeating(() -> fillManager.fillPlayerMine(player), 0L, 2 * 20 * 60L);
-                fillManager.fillMine(corner1, corner2, mineBlocks.get(0));
+                fillManager.fillMine(privateMineLocations.getCorner1(), privateMineLocations.getCorner2(), mineBlocks.get(0));
             }
 
             Bukkit.broadcastMessage("cornerBlocks debug: ");
