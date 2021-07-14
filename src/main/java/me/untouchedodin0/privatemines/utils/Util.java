@@ -1,8 +1,17 @@
 package me.untouchedodin0.privatemines.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
+import redempt.redlib.multiblock.MultiBlockStructure;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class Util {
+
+    MultiBlockStructure multiBlockStructure;
 
     /*
     holy fuck it's empty here, i'll put more stuff later
@@ -28,5 +37,31 @@ public class Util {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    public void loadStructure(String structureName,
+                              File file) {
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if (inputStream == null) {
+            Bukkit.broadcastMessage("Failed to load structure," +
+                    " inputStream was null!");
+        }
+        multiBlockStructure = MultiBlockStructure.create(inputStream, structureName);
+        Bukkit.getLogger().info("loadStructureMultiBlockStructure: " + multiBlockStructure.getName());
+    }
+
+    public MultiBlockStructure getMultiBlockStructure() {
+        if (multiBlockStructure == null) {
+            Bukkit.getLogger().info("Failed to load structure" +
+                    " due to not existing!");
+            return null;
+        }
+        return multiBlockStructure;
     }
 }

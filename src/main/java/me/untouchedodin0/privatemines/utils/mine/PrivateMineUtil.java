@@ -61,11 +61,6 @@ public class PrivateMineUtil extends Event implements Cancellable {
 
     public PrivateMineUtil(Player player,
                        File file,
-//                       Location mineLocation,
-//                       Location spawnLocation,
-//                       Location npcLocation,
-//                       Location corner1,
-//                       Location corner2,
                        List<ItemStack> mineBlocks,
                        List<UUID> whitelistedPlayers,
                        List<UUID> bannedPlayers,

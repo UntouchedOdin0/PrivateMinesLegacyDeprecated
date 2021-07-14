@@ -36,7 +36,8 @@ public class PrivateMines extends JavaPlugin {
     private MineFillManager fillManager;
     private MineWorldManager mineManager;
     private MineStorage mineStorage = new MineStorage();
-    private MineFactory mineFactory = new MineFactory(mineStorage, mineManager, fillManager);
+    private MineFactory mineFactory;
+
 
     @Override
     public void onEnable() {
@@ -52,7 +53,7 @@ public class PrivateMines extends JavaPlugin {
 
         Bukkit.getLogger().info("Setting up the Private Mines Storage and Factory...");
         mineStorage = new MineStorage();
-        mineFactory = new MineFactory(mineStorage, mineManager, fillManager);
+        mineFactory = new MineFactory(mineStorage, mineManager, fillManager, util);
         Bukkit.getLogger().info("Private Mines storage and factory has been setup!");
 
         BukkitCommandManager manager = new PaperCommandManager(this);
@@ -69,7 +70,8 @@ public class PrivateMines extends JavaPlugin {
         structuresList = structureFolder.listFiles();
 
         for (File file : structuresList) {
-            structureManagers.loadStructureData(file);
+            Bukkit.getLogger().info("Loading structure " + file.getName());
+            util.loadStructure(file.getName(), file);
         }
 
 //        structureManagers.loadStructureData(structure);

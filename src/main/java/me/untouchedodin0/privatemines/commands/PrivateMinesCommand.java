@@ -9,7 +9,6 @@ import me.untouchedodin0.privatemines.factory.MineFactory;
 import me.untouchedodin0.privatemines.guis.MainMenuGui;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
-import me.untouchedodin0.privatemines.utils.mine.PrivateMine;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.*;
@@ -93,7 +92,6 @@ public class PrivateMinesCommand extends BaseCommand {
     Gui gui;
     MainMenuGui mainMenuGui;
     MineWorldManager mineWorldManager;
-    PrivateMine privateMine;
 
     public PrivateMinesCommand(Util util,
                                MineFillManager fillManager,
@@ -164,7 +162,7 @@ public class PrivateMinesCommand extends BaseCommand {
             e.printStackTrace();
         }
 
-        mineFactory.createMine(p, inputStream, placeLocation);
+        mineFactory.createMine(p, placeLocation);
 
 //        if (mineStorage.hasMine(p)) {
 //            p.sendMessage(ChatColor.RED + "Er, you do know you already have a mine. Right?");
