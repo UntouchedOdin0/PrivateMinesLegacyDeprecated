@@ -347,7 +347,9 @@ public class PrivateMinesCommand extends BaseCommand {
     @CommandPermission("privatemines.upgrade")
     @CommandCompletion("@players")
     public void upgrade(Player p) {
+        File file = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
         p.sendMessage(ChatColor.GREEN + "Attempting to upgrade your mine. (no function here yet)");
+        mineFactory.upgradeMine(p, file, p.getLocation());
     }
 
     @Subcommand("whitelist")

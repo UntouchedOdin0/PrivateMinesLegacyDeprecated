@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import redempt.redlib.misc.Task;
 import redempt.redlib.multiblock.MultiBlockStructure;
+import redempt.redlib.multiblock.Structure;
 import redempt.redlib.region.CuboidRegion;
 
 import java.io.File;
@@ -71,6 +72,9 @@ public class MineFactory {
     PrivateMineUtil privateMineUtil;
     PrivateMineLocations privateMineLocations;
     Util util;
+    Structure currentStructure;
+    Structure upgradeStructure;
+
 
     public MineFactory(MineStorage storage,
                        MineWorldManager mineWorldManager,
@@ -151,24 +155,24 @@ public class MineFactory {
             privateMineUtil = new PrivateMineUtil(player, file, mineBlocks, whitelistedPlayers, bannedPlayers, priorityPlayers, coowner);
             privateMineLocations = new PrivateMineLocations(player, nextLocation, spawnLocation, npcLocation, corner1, corner2);
 
-            Bukkit.getLogger().info("Calling the events...");
-            Bukkit.getPluginManager().callEvent(privateMineUtil);
-            Bukkit.getPluginManager().callEvent(privateMineLocations);
+//            Bukkit.getLogger().info("Calling the events...");
+//            Bukkit.getPluginManager().callEvent(privateMineUtil);
+//            Bukkit.getPluginManager().callEvent(privateMineLocations);
 
 //            Bukkit.getPluginManager().callEvent(privateMine);
 //            Bukkit.getLogger().info("Event Details:");
 //            Bukkit.getLogger().info(privateMine.getEventName());
 //            Bukkit.broadcastMessage("event details: " + privateMine);
-//            mineConfig.set(CORNER_1_STRING, privateMine.getCorner1());
-//            mineConfig.set(CORNER_2_STRING, privateMine.getCorner2());
-//            mineConfig.set(SPAWN_LOCATION_STRING, privateMine.getSpawnLocation());
-//            mineConfig.set(NPC_LOCATION_STRING, privateMine.getNpcLocation());
-//            mineConfig.set(PLACE_LOCATION_STRING, privateMine.getMineLocation());
-//            mineConfig.set(BLOCKS_STRING, privateMine.getMineBlocks());
-//            mineConfig.set(WHITELISTED_PLAYERS, privateMine.getWhitelistedPlayers());
-//            mineConfig.set(BANNED_PLAYERS, privateMine.getBannedPlayers());
-//            mineConfig.set(PRIORITY_PLAYERS, privateMine.getPriorityPlayers());
-//            mineConfig.set(CO_OWNER, privateMine.getCoOwner());
+            mineConfig.set(CORNER_1_STRING, privateMineLocations.getCorner1());
+            mineConfig.set(CORNER_2_STRING, privateMineLocations.getCorner2());
+            mineConfig.set(SPAWN_LOCATION_STRING, privateMineLocations.getSpawnLocation());
+            mineConfig.set(NPC_LOCATION_STRING, privateMineLocations.getNpcLocation());
+            mineConfig.set(PLACE_LOCATION_STRING, privateMineLocations.getMineLocation());
+            mineConfig.set(BLOCKS_STRING, privateMineUtil.getMineBlocks());
+            mineConfig.set(WHITELISTED_PLAYERS, privateMineUtil.getWhitelistedPlayers());
+            mineConfig.set(BANNED_PLAYERS, privateMineUtil.getBannedPlayers());
+            mineConfig.set(PRIORITY_PLAYERS, privateMineUtil.getPriorityPlayers());
+            mineConfig.set(CO_OWNER, privateMineUtil.getCoOwner());
 
             try {
                 mineConfig.save(userFile);
@@ -199,8 +203,13 @@ public class MineFactory {
         }
     }
 
-    public void upgradeMine(Player player, File newMineFile) {
-
+    public void upgradeMine(Player player, File newMineFile, Location location) {
+        player.sendMessage(newMineFile.toString());
+        currentStructure = multiBlockStructure.assumeAt(location);
+        if (currentStructure != null) {
+            player.sendMessage("Found a structure: " + currentStructure);
+            player.sendMessage("Structure Location: " + currentStructure.getLocation());
+        }
     }
 }
 
