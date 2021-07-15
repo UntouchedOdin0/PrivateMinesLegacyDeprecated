@@ -143,6 +143,7 @@ public class MineFactory {
             if (mineBlocks.isEmpty()) {
                 mineBlocks.add(new ItemStack(Material.STONE));
             }
+
             Sign s = (Sign) world.getBlockAt(npcLocation).getState();
             s.setLine(0, "I'm an NPC");
             s.setLine(1, "I should be fixed.");
@@ -212,6 +213,7 @@ public class MineFactory {
         }
     }
 }
+
 
 
 
