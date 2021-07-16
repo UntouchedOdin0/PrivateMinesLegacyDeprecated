@@ -9,26 +9,26 @@ import java.util.UUID;
 
 public class MineQueueSystem {
 
-    final Queue<UUID> mine_queue = new LinkedList<>();
+    final Queue<UUID> mineQueue = new LinkedList<>();
 
     public void queueMineCreation(Player player) {
-        mine_queue.add(player.getUniqueId());
+        mineQueue.add(player.getUniqueId());
     }
 
     public void removeFromQueue(Player player) {
-        mine_queue.remove(player.getUniqueId());
+        mineQueue.remove(player.getUniqueId());
     }
 
     public boolean queueContainsPlayer(Player player) {
-        return mine_queue.contains(player.getUniqueId());
+        return mineQueue.contains(player.getUniqueId());
     }
 
     public Queue<UUID> getMine_queue() {
-        return mine_queue;
+        return mineQueue;
     }
 
     public int getQueueSize() {
-        return mine_queue.size();
+        return mineQueue.size();
     }
 
     /*
@@ -37,7 +37,7 @@ public class MineQueueSystem {
 
     public int getQueueSlot(UUID uuid) {
         int count = 0;
-        for (UUID id : mine_queue) {
+        for (UUID id : mineQueue) {
             count++;
             if (id == uuid) {
                 Bukkit.broadcastMessage(String.format("%s is at position %d in the queue.",
