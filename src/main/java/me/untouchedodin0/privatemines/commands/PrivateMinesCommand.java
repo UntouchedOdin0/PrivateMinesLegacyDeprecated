@@ -9,6 +9,7 @@ import me.untouchedodin0.privatemines.factory.MineFactory;
 import me.untouchedodin0.privatemines.guis.MainMenuGui;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
+import me.untouchedodin0.privatemines.utils.queue.MineQueueSystem;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.*;
@@ -92,6 +93,7 @@ public class PrivateMinesCommand extends BaseCommand {
     Gui gui;
     MainMenuGui mainMenuGui;
     MineWorldManager mineWorldManager;
+    MineQueueSystem mineQueueSystem;
 
     public PrivateMinesCommand(Util util,
                                MineFillManager fillManager,
@@ -106,6 +108,7 @@ public class PrivateMinesCommand extends BaseCommand {
         this.mineFactory = mineFactory;
         this.mainMenuGui = new MainMenuGui(fillManager);
         this.mineWorldManager = mineWorldManager;
+        this.mineQueueSystem = new MineQueueSystem();
     }
 
     @Default
@@ -161,8 +164,16 @@ public class PrivateMinesCommand extends BaseCommand {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        if (mineQueueSystem.queueContainsPlayer(p)) {
+            p.sendMessage("You're already in the queue #"
+                    + mineQueueSystem.getQueueSlot(p.getUniqueId()));
+        } else {
+            mineQueueSystem.queueMineCreation(p);
+            p.sendMessage("Queue Size: " + mineQueueSystem.getQueueSize());
+        }
 
-        mineFactory.createMine(p, placeLocation);
+
+//        mineFactory.createMine(p, placeLocation);
 
 //        if (mineStorage.hasMine(p)) {
 //            p.sendMessage(ChatColor.RED + "Er, you do know you already have a mine. Right?");
