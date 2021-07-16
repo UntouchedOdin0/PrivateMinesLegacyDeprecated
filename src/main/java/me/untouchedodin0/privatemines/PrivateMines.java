@@ -8,6 +8,7 @@ import me.untouchedodin0.privatemines.guis.MainMenuGui;
 import me.untouchedodin0.privatemines.structure.StructureManagers;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
+import me.untouchedodin0.privatemines.utils.mine.PrivateMineResetUtil;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
@@ -15,6 +16,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.UUID;
 
 /*
     Thanks to Redempt for creating RedLib what helped me with a lot of the
@@ -33,6 +35,7 @@ public class PrivateMines extends JavaPlugin {
     File structureFolder = new File("plugins/PrivateMinesRewrite/schematics/");
     File structure = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
     private PrivateMines privateMine;
+    private PrivateMineResetUtil privateMineResetUtil;
     private MineFillManager fillManager;
     private MineWorldManager mineManager;
     private MineStorage mineStorage = new MineStorage();
@@ -90,6 +93,18 @@ public class PrivateMines extends JavaPlugin {
                 mineFactory,
                 mineManager));
         Bukkit.getLogger().info("Command registered!");
+
+        Bukkit.getLogger().info("Setting up the private mine util...");
+        privateMineResetUtil = new PrivateMineResetUtil(this);
+
+        Bukkit.getLogger().info("Starting the private mine reset task...");
+        for (File file : mineStorage.getMineFiles()) {
+            UUID uuid = UUID.fromString(file.getName());
+            privateMineResetUtil.startResetTask(this, uuid);
+        }
+
+//        Bukkit.getLogger().info("Starting the reset scheduler!");
+//        privateMineResetUtil.startResetTask(this);
     }
 
     @Override
