@@ -29,17 +29,6 @@ public class MineFillManager {
         this.privateMines = privateMines;
     }
 
-    public void fillMine(Location location1,
-                         Location location2,
-                         ItemStack itemStack) {
-        cuboidRegion = new CuboidRegion(location1, location2)
-                .expand(1, 0, 1, 0, 1, 0);
-        cuboidRegion.forEachBlock(block -> {
-            Material toSet = itemStack.getType();
-            block.setType(toSet);
-        });
-    }
-
     public void fillMineMultiple(Location location1, Location location2, List<ItemStack> items) {
         cuboidRegion = new CuboidRegion(location1, location2)
                 .expand(1, 0, 1, 0, 1, 0);
@@ -52,13 +41,13 @@ public class MineFillManager {
         });
     }
 
+    @SuppressWarnings("unchecked")
     public void fillPlayerMine(Player player) {
         userFile = new File("plugins/PrivateMinesRewrite/mines/" + player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         corner1 = mineConfig.getLocation("Corner1");
         corner2 = mineConfig.getLocation("Corner2");
         mineBlocks = (List<ItemStack>) mineConfig.getList("blocks");
-
         if (corner1 != null && corner2 != null && mineBlocks != null) {
             Bukkit.getScheduler().runTaskLater(privateMines, ()
                     -> fillMineMultiple(corner1, corner2, mineBlocks), 20L);
