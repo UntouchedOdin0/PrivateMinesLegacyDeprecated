@@ -13,6 +13,7 @@ import redempt.redlib.region.CuboidRegion;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class MineFillManager {
 
@@ -44,6 +45,19 @@ public class MineFillManager {
     @SuppressWarnings("unchecked")
     public void fillPlayerMine(Player player) {
         userFile = new File("plugins/PrivateMinesRewrite/mines/" + player.getUniqueId() + ".yml");
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        corner1 = mineConfig.getLocation("Corner1");
+        corner2 = mineConfig.getLocation("Corner2");
+        mineBlocks = (List<ItemStack>) mineConfig.getList("blocks");
+        if (corner1 != null && corner2 != null && mineBlocks != null) {
+            Bukkit.getScheduler().runTaskLater(privateMines, ()
+                    -> fillMineMultiple(corner1, corner2, mineBlocks), 20L);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void fillPlayerMine(UUID uuid) {
+        userFile = new File("plugins/PrivateMinesRewrite/mines/" + uuid + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         corner1 = mineConfig.getLocation("Corner1");
         corner2 = mineConfig.getLocation("Corner2");
