@@ -31,17 +31,20 @@ public class MineQueueSystem {
         return mine_queue.size();
     }
 
+    /*
+        Gets the current queue slot for the UUID specified.
+     */
+
     public int getQueueSlot(UUID uuid) {
         int count = 0;
         for (UUID id : mine_queue) {
+            count++;
             if (id == uuid) {
-
-                Bukkit.broadcastMessage(uuid
-                        + " is at position "
-                        + count + " in the queue.");
+                Bukkit.broadcastMessage(String.format("%s is at position %d in the queue.",
+                        Bukkit.getPlayer(uuid).getName(),
+                        count));
                 break;
             }
-            else count++;
         }
         return count;
     }

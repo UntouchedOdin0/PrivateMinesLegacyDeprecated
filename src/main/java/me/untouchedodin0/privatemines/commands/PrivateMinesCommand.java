@@ -94,6 +94,7 @@ public class PrivateMinesCommand extends BaseCommand {
     MainMenuGui mainMenuGui;
     MineWorldManager mineWorldManager;
     MineQueueSystem mineQueueSystem;
+    int queueSlot;
 
     public PrivateMinesCommand(Util util,
                                MineFillManager fillManager,
@@ -164,14 +165,44 @@ public class PrivateMinesCommand extends BaseCommand {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        if (mineQueueSystem.queueContainsPlayer(p)) {
-            p.sendMessage("You're already in the queue #"
-                    + mineQueueSystem.getQueueSlot(p.getUniqueId()));
-        } else {
-            mineQueueSystem.queueMineCreation(p);
-            p.sendMessage("Queue Size: " + mineQueueSystem.getQueueSize());
-        }
 
+        if (mineStorage.hasMine(p)) {
+            p.sendMessage(ChatColor.RED + "You already have a mine!");
+        } else {
+            if (mineQueueSystem.queueContainsPlayer(p)) {
+                p.sendMessage("You're already in the queue #"
+                        + mineQueueSystem.getQueueSlot(p.getUniqueId()));
+            } else {
+                mineQueueSystem.queueMineCreation(p);
+                p.sendMessage("Queue Size: " + mineQueueSystem.getQueueSize());
+            }
+        }
+    }
+
+    @Subcommand("give")
+    @Description("Gives a privatemines to a player (only pastes at the moment)")
+    @CommandPermission("privatemines.give")
+    @CommandCompletion("@players")
+    public void give(Player p, OnlinePlayer target) {
+        if (mineStorage.hasMine(target.player)) {
+            target.player.sendMessage(ChatColor.RED + "An error occurred while giving you a mine" +
+                    " please inform a operator!");
+        } else {
+            if (mineQueueSystem.queueContainsPlayer(target.player)) {
+                target.player.sendMessage("You're already in the queue #"
+                        + mineQueueSystem.getQueueSlot(target.player.getUniqueId()));
+            } else {
+                target.getPlayer().sendMessage("Queuing your private mine creation...");
+                mineQueueSystem.queueContainsPlayer(target.player);
+                queueSlot = mineQueueSystem.getQueueSlot(target.player.getUniqueId());
+                target.getPlayer().sendMessage(ChatColor.GREEN
+                        + "Your mine has been queued for creation "
+                        + ChatColor.GRAY
+                        + "#"
+                        + ChatColor.GOLD
+                        + queueSlot);
+            }
+        }
 
 //        mineFactory.createMine(p, placeLocation);
 
