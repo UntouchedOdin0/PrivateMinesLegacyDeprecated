@@ -12,6 +12,7 @@ import java.io.InputStream;
 public class Util {
 
     MultiBlockStructure multiBlockStructure;
+    File[] mines = new File("plugins/PrivateMinesRewrite/mines/").listFiles();
 
     /*
     holy fuck it's empty here, i'll put more stuff later
