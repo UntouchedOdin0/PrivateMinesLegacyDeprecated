@@ -22,7 +22,7 @@ public class PrivateMineResetUtil extends BukkitRunnable {
         mineFillManager = new MineFillManager(privateMines);
     }
 
-    public void startResetTask(PrivateMines privateMines, UUID uuid) {
+    public void startResetTask(PrivateMines privateMines, UUID uuid, int minutesDelay) {
         this.playerId = uuid;
 
         if (bukkitTask == null && playerId != null) {
@@ -30,7 +30,7 @@ public class PrivateMineResetUtil extends BukkitRunnable {
             bukkitTask = this.runTaskTimer(
                     privateMines,
                     0L,
-                    5 * 20L); // Should fix the lag?
+                    minutesDelay * 60 * 20L); // Should fix the lag?
         }
     }
 
