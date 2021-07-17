@@ -61,6 +61,7 @@ public class PrivateMineLocations extends Event implements Cancellable {
      *
      * @return true if this event is cancelled
      */
+
     @Override
     public boolean isCancelled() {
         return false;
@@ -72,6 +73,7 @@ public class PrivateMineLocations extends Event implements Cancellable {
      *
      * @param cancel true if you wish to cancel this event
      */
+
     @Override
     public void setCancelled(boolean cancel) {
 
