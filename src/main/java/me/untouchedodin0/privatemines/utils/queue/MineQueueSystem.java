@@ -16,7 +16,7 @@ public class MineQueueSystem {
      */
 
     public void queueMineCreation(Player player) {
-        mineQueue.offer(player.getUniqueId());
+        mineQueue.add(player.getUniqueId());
     }
 
     /*
