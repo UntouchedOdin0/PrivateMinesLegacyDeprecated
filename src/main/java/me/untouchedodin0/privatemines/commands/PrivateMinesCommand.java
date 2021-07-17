@@ -169,13 +169,15 @@ public class PrivateMinesCommand extends BaseCommand {
         if (mineStorage.hasMine(p)) {
             p.sendMessage(ChatColor.RED + "You already have a mine!");
         } else {
-            if (mineQueueSystem.queueContainsPlayer(p)) {
-                p.sendMessage("You're already in the queue #"
-                        + mineQueueSystem.getQueueSlot(p.getUniqueId()));
-            } else {
-                mineQueueSystem.queueMineCreation(p);
-                p.sendMessage("Queue Size: " + mineQueueSystem.getQueueSize());
-            }
+            mineFactory.createMine(p, placeLocation);
+//
+//            if (mineQueueSystem.queueContainsPlayer(p)) {
+//                p.sendMessage("You're already in the queue #"
+//                        + mineQueueSystem.getQueueSlot(p.getUniqueId()));
+//            } else {
+////                mineQueueSystem.queueMineCreation(p);
+////                p.sendMessage("Queue Size: " + mineQueueSystem.getQueueSize());
+//            }
         }
     }
 
@@ -187,24 +189,11 @@ public class PrivateMinesCommand extends BaseCommand {
         if (mineStorage.hasMine(target.player)) {
             target.player.sendMessage(ChatColor.RED + "An error occurred while giving you a mine" +
                     " please inform a operator!");
+            Bukkit.getLogger().warning(target.player.getName() + " already has a mine, not able to give another one!");
         } else {
-            if (mineQueueSystem.queueContainsPlayer(target.player)) {
-                target.player.sendMessage("You're already in the queue #"
-                        + mineQueueSystem.getQueueSlot(target.player.getUniqueId()));
-            } else {
-                target.getPlayer().sendMessage("Queuing your private mine creation...");
-                mineQueueSystem.queueContainsPlayer(target.player);
-                queueSlot = mineQueueSystem.getQueueSlot(target.player.getUniqueId());
-                target.getPlayer().sendMessage(ChatColor.GREEN
-                        + "Your mine has been queued for creation "
-                        + ChatColor.GRAY
-                        + "#"
-                        + ChatColor.GOLD
-                        + queueSlot);
-            }
+            mineFactory.createMine(target.player, placeLocation);
         }
 
-//        mineFactory.createMine(p, placeLocation);
 
 //        if (mineStorage.hasMine(p)) {
 //            p.sendMessage(ChatColor.RED + "Er, you do know you already have a mine. Right?");
@@ -410,6 +399,93 @@ public class PrivateMinesCommand extends BaseCommand {
             whitelistedPlayers.add(target.player.getUniqueId().toString());
         }
         mineConfig.set("whitelistedPlayers", whitelistedPlayers);
+        try {
+            mineConfig.save(userFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Subcommand("ban")
+    @Description("Bans a player from your mine")
+    @CommandPermission("privatemine.ban")
+    @CommandCompletion("@players")
+    public void ban(Player player, OnlinePlayer target) {
+        userFile = new File(MINE_DIRECTORY + target.player.getUniqueId() + ".yml");
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        List<String> bannedPlayers = mineConfig.getStringList("bannedPlayers");
+
+        if (bannedPlayers.contains(target.player.getUniqueId().toString())) {
+            player.sendMessage(ChatColor.RED + "Player was already banned!");
+        } else {
+            player.sendMessage(ChatColor.GREEN + "Banning player " + target.player.getName());
+            bannedPlayers.add(target.player.getUniqueId().toString());
+        }
+        mineConfig.set("bannedPlayers", bannedPlayers);
+        try {
+            mineConfig.save(userFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        player.sendMessage(ChatColor.GREEN + target.player.getName() + " has been banned from your mine!");
+    }
+
+    @Subcommand("unban")
+    @Description("Unbans a player from your mine")
+    @CommandPermission("privatemine.unban")
+    @CommandCompletion("@players")
+    public void unban(Player player, OnlinePlayer target) {
+        userFile = new File(MINE_DIRECTORY + target.player.getUniqueId() + ".yml");
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        List<String> bannedPlayers = mineConfig.getStringList("bannedPlayers");
+
+        if (!bannedPlayers.contains(target.player.getUniqueId().toString())) {
+            player.sendMessage(ChatColor.RED + "Player wasn't banned!");
+        } else {
+            player.sendMessage(ChatColor.GREEN + "Unbanning player " + target.player.getName());
+            bannedPlayers.remove(target.player.getUniqueId().toString());
+        }
+        mineConfig.set("bannedPlayers", bannedPlayers);
+        try {
+            mineConfig.save(userFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        player.sendMessage(ChatColor.GREEN + target.player.getName() + " has been unbanned from your mine!");
+    }
+
+    @Subcommand("priority")
+    @Description("Toggles priority for a player")
+    @CommandPermission("privatemine.priority")
+    @CommandCompletion("@players")
+    public void priority(Player player, OnlinePlayer target) {
+        userFile = new File(MINE_DIRECTORY + target.player.getUniqueId() + ".yml");
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        List<String> priorityPlayers = mineConfig.getStringList("priorityPlayers");
+
+        if (!priorityPlayers.contains(target.player.getUniqueId().toString())) {
+            player.sendMessage(ChatColor.GREEN + "Adding " + target.player.getName() + " to the priority list!");
+            priorityPlayers.add(target.player.getUniqueId().toString());
+        } else {
+            player.sendMessage(ChatColor.RED + "Removing " + target.player.getName() + " from the priority list!");
+            priorityPlayers.remove(target.player.getUniqueId().toString());
+        }
+        mineConfig.set("priorityPlayers", priorityPlayers);
+        try {
+            mineConfig.save(userFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Subcommand("coowner")
+    @Description("Sets the co-owner for the mine")
+    @CommandPermission("privatemine.setcoowner")
+    @CommandCompletion("@players")
+    public void coowner(Player player, OnlinePlayer target) {
+        userFile = new File(MINE_DIRECTORY + target.player.getUniqueId() + ".yml");
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        mineConfig.set("coowner", target.player.getUniqueId());
         try {
             mineConfig.save(userFile);
         } catch (IOException e) {
