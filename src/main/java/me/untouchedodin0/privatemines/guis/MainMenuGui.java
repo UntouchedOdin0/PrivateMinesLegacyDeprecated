@@ -29,7 +29,8 @@ public class MainMenuGui {
     double size;
     int tax;
     WhitelistedPlayersGui whitelistedPlayersGui;
-
+    BannedPlayersGui bannedPlayersGui;
+    PriorityPlayersGui priorityPlayersGui;
 
     public MainMenuGui(MineFillManager mineFillManager) {
         this.mineFillManager = mineFillManager;
@@ -48,6 +49,8 @@ public class MainMenuGui {
         corner2 = mineConfig.getLocation("Corner2");
         size = corner2.distanceSquared(corner1);
         whitelistedPlayersGui = new WhitelistedPlayersGui();
+        bannedPlayersGui = new BannedPlayersGui();
+        priorityPlayersGui = new PriorityPlayersGui();
 
         ItemStack bedStack = new ItemStack(Material.RED_BED);
         ItemMeta bedStackItemMeta = bedStack.getItemMeta();
@@ -196,11 +199,14 @@ public class MainMenuGui {
         GuiItem bannedMembersItem = ItemBuilder.from(bannedMembers).asGuiItem(event -> {
             event.setCancelled(true);
             player.sendMessage(ChatColor.GREEN + "Lets manage those banned players >:(");
+            player.closeInventory();
+            bannedPlayersGui.openBannedPlayersMenu(player);
         });
 
         GuiItem priorityMembersItem = ItemBuilder.from(priorityMembers).asGuiItem(event -> {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.GREEN + "oooh fancy...");
+            player.closeInventory();
+            priorityPlayersGui.openPriorityPlayersMenu(player);
         });
 
         GuiItem coOwnerItem = ItemBuilder.from(coowner).asGuiItem(event -> {

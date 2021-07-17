@@ -35,17 +35,16 @@ public class WhitelistedPlayersGui {
         }
 
         for (String str : whitelistedPlayersNames) {
-            BaseComponent[] component = new ComponentBuilder("- " )
-                    .color(ChatColor.GRAY
-                            .asBungee())
-                    .append(str)
-                    .color(ChatColor.GOLD
-                            .asBungee()).append(str).create();
+//            BaseComponent[] component = new ComponentBuilder("- " )
+//                    .color(ChatColor.GRAY
+//                            .asBungee())
+//                    .color(ChatColor.GOLD
+//                            .asBungee()).append(str).create();
 
-            TextComponent message = new TextComponent("- " + str);
-            message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to un-whitelist " + str)));
+            TextComponent message = new TextComponent(ChatColor.GRAY + "- " + ChatColor.GOLD + str);
+            message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.AQUA + "Click to un-whitelist " + str)));
             message.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/pmine unwhitelist " + str));
-            player.spigot().sendMessage(component);
+            player.spigot().sendMessage(message);
         }
 
         player.sendMessage(whitelistedPlayers.toString());

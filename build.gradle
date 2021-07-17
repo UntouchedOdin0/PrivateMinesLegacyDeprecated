@@ -19,6 +19,16 @@ repositories {
         name = "sonatype-oss-snapshots"
         url = "https://oss.sonatype.org/content/repositories/snapshots/"
     }
+    maven {
+        name = 'minecraft-repo'
+        url = 'https://libraries.minecraft.net/'
+        // this lets gradle know where to look for authlib
+    }
+
+    maven {
+        name = 'skullcreator-repo'
+        url = 'https://github.com/deanveloper/SkullCreator/raw/mvn-repo/'
+    }
 }
 
 dependencies {
@@ -30,6 +40,7 @@ dependencies {
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
     compileOnly "co.aikar:acf-paper:0.5.0-SNAPSHOT"
     compileOnly 'com.github.Redempt:RedLib:5.0.4'
+    compileOnly 'dev.dbassett:skullcreator:3.0.1'
 
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
     implementation("net.citizensnpcs:citizensapi:2.0.16-SNAPSHOT")

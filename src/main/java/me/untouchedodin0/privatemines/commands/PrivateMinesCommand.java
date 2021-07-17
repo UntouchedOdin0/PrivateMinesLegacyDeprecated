@@ -108,7 +108,7 @@ public class PrivateMinesCommand extends BaseCommand {
         this.mineStorage = mineStorage;
         this.mineFactory = mineFactory;
         this.mainMenuGui = new MainMenuGui(fillManager);
-        this.mineWorldManager = mineWorldManager;
+        this.mineWorldManager = new MineWorldManager();
         this.mineQueueSystem = new MineQueueSystem();
     }
 
@@ -186,6 +186,8 @@ public class PrivateMinesCommand extends BaseCommand {
     @CommandPermission("privatemines.give")
     @CommandCompletion("@players")
     public void give(Player p, OnlinePlayer target) {
+        placeLocation = mineWorldManager.nextFreeLocation();
+
         if (mineStorage.hasMine(target.player)) {
             target.player.sendMessage(ChatColor.RED + "An error occurred while giving you a mine" +
                     " please inform a operator!");
@@ -397,6 +399,29 @@ public class PrivateMinesCommand extends BaseCommand {
         } else {
             player.sendMessage("Whitelisting " + target.player.getName());
             whitelistedPlayers.add(target.player.getUniqueId().toString());
+        }
+        mineConfig.set("whitelistedPlayers", whitelistedPlayers);
+        try {
+            mineConfig.save(userFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Subcommand("unwhitelist")
+    @Description("Removes a player from your whitelist")
+    @CommandPermission("privatemine.whitelist")
+    @CommandCompletion("@players")
+    public void unwhitelist(Player player, OnlinePlayer target) {
+        userFile = new File(MINE_DIRECTORY + target.player.getUniqueId() + ".yml");
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        List<String> whitelistedPlayers = mineConfig.getStringList("whitelistedPlayers");
+
+        if (!whitelistedPlayers.contains(target.player.getUniqueId().toString())) {
+            player.sendMessage(ChatColor.RED + "Player wasn't whitelisted!");
+        } else {
+            player.sendMessage("Removing " + target.player.getName() + " from your whitelist!");
+            whitelistedPlayers.remove(target.player.getUniqueId().toString());
         }
         mineConfig.set("whitelistedPlayers", whitelistedPlayers);
         try {

@@ -1,7 +1,9 @@
 package me.untouchedodin0.privatemines.utils;
 
+import dev.dbassett.skullcreator.SkullCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
+import org.bukkit.inventory.ItemStack;
 import redempt.redlib.multiblock.MultiBlockStructure;
 
 import java.io.File;
@@ -64,5 +66,13 @@ public class Util {
             return null;
         }
         return multiBlockStructure;
+    }
+
+    public static ItemStack getPlayerSkull() {
+        // Got this base64 string from minecraft-heads.com
+        String base64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L" +
+                "3RleHR1cmUvNTIyODRlMTMyYmZkNjU5YmM2YWRhNDk3YzRmYTMwOTRjZDkzMjMxYTZiNTA1YTEyY2U3Y2Q1MTM1YmE4ZmY5MyJ9fX0=";
+
+        return SkullCreator.itemFromBase64(base64);
     }
 }
