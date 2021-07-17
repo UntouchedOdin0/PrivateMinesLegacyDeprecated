@@ -1,8 +1,6 @@
 package me.untouchedodin0.privatemines.guis;
 
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,10 +35,17 @@ public class WhitelistedPlayersGui {
         }
 
         for (String str : whitelistedPlayersNames) {
+            BaseComponent[] component = new ComponentBuilder("- " )
+                    .color(ChatColor.GRAY
+                            .asBungee())
+                    .append(str)
+                    .color(ChatColor.GOLD
+                            .asBungee()).append(str).create();
+
             TextComponent message = new TextComponent("- " + str);
-            message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org"));
-            message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Visit the Spigot website!")));
-            player.spigot().sendMessage(message);
+            message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to un-whitelist " + str)));
+            message.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/pmine unwhitelist " + str));
+            player.spigot().sendMessage(component);
         }
 
         player.sendMessage(whitelistedPlayers.toString());
