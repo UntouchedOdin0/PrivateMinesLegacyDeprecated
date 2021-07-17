@@ -174,7 +174,6 @@ public class MineFactory {
             mineConfig.set(BANNED_PLAYERS, privateMineUtil.getBannedPlayers());
             mineConfig.set(PRIORITY_PLAYERS, privateMineUtil.getPriorityPlayers());
             mineConfig.set(CO_OWNER, privateMineUtil.getCoOwner());
-
             try {
                 mineConfig.save(userFile);
             } catch (IOException e) {
