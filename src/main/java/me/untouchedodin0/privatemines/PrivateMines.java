@@ -16,6 +16,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.UUID;
 
 /*
@@ -99,8 +100,8 @@ public class PrivateMines extends JavaPlugin {
 
         Bukkit.getLogger().info("Starting the private mine reset task...");
         for (File file : mineStorage.getMineFiles()) {
-            UUID uuid = UUID.fromString(file.getName());
-            privateMineResetUtil.startResetTask(this, uuid);
+            UUID uuid = UUID.fromString(fileNameWithOutExt(file.getName()));
+            privateMineResetUtil.startResetTask(this, uuid, 5);
         }
 
 //        Bukkit.getLogger().info("Starting the reset scheduler!");
@@ -114,5 +115,10 @@ public class PrivateMines extends JavaPlugin {
 
     public PrivateMines getPrivateMines() {
         return privateMine;
+    }
+
+    public static String fileNameWithOutExt (String fileName) {
+        return Optional.of(fileName.lastIndexOf(".")).filter(i-> i >= 0)
+                .map(i-> fileName.substring(0, i)).orElse(fileName);
     }
 }
