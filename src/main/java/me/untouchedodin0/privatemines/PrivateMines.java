@@ -4,16 +4,14 @@ import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
 import me.untouchedodin0.privatemines.commands.PrivateMinesCommand;
 import me.untouchedodin0.privatemines.factory.MineFactory;
-import me.untouchedodin0.privatemines.guis.MainMenuGui;
-import me.untouchedodin0.privatemines.structure.StructureManagers;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.mine.PrivateMineResetUtil;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import redempt.redlib.commandmanager.Messages;
 
 import java.io.File;
 import java.util.Optional;
@@ -30,11 +28,14 @@ import java.util.UUID;
 public class PrivateMines extends JavaPlugin {
 
     public static final String MINES_FOLDER_NAME = "mines";
-    private static final YamlConfiguration schematicsConfig = new YamlConfiguration();
     int minesCount;
+    int resetDelay;
+
     File[] structuresList;
     File structureFolder = new File("plugins/PrivateMinesRewrite/schematics/");
-    File structure = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
+    File structure;
+
+//    File structure = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
     private PrivateMines privateMine;
     private PrivateMineResetUtil privateMineResetUtil;
     private MineFillManager fillManager;
@@ -42,6 +43,10 @@ public class PrivateMines extends JavaPlugin {
     private MineStorage mineStorage = new MineStorage();
     private MineFactory mineFactory;
 
+    public static String fileNameWithOutExt(String fileName) {
+        return Optional.of(fileName.lastIndexOf(".")).filter(i -> i >= 0)
+                .map(i -> fileName.substring(0, i)).orElse(fileName);
+    }
 
     @Override
     public void onEnable() {
@@ -57,19 +62,22 @@ public class PrivateMines extends JavaPlugin {
 
         Bukkit.getLogger().info("Setting up the Private Mines Storage and Factory...");
         mineStorage = new MineStorage();
-        mineFactory = new MineFactory(mineStorage, mineManager, fillManager, util);
+        mineFactory = new MineFactory(
+                this,
+                mineStorage,
+                mineManager,
+                fillManager,
+                util);
+
         Bukkit.getLogger().info("Private Mines storage and factory has been setup!");
 
         BukkitCommandManager manager = new PaperCommandManager(this);
-        MainMenuGui mainMenuGui = new MainMenuGui(fillManager);
 
         if (!minesFolder.exists()) {
             Bukkit.getLogger().info("Creating mines directory...");
             minesFolder.mkdir();
         }
         privateMine = this;
-        StructureManagers structureManagers = new StructureManagers();
-
         Bukkit.getLogger().info("Loading structures...");
         structuresList = structureFolder.listFiles();
 
@@ -78,14 +86,11 @@ public class PrivateMines extends JavaPlugin {
             util.loadStructure(file.getName(), file);
         }
 
-//        structureManagers.loadStructureData(structure);
-
         Bukkit.getLogger().info("Loading mines...");
         minesCount = minesFolder.list().length;
         Bukkit.getLogger().info(String.format("Found a total of %d mines!", minesCount));
 
         Bukkit.getLogger().info("Registering the command...");
-
         manager.registerCommand(new PrivateMinesCommand(
                 util,
                 fillManager,
@@ -98,27 +103,28 @@ public class PrivateMines extends JavaPlugin {
         Bukkit.getLogger().info("Setting up the private mine util...");
         privateMineResetUtil = new PrivateMineResetUtil(this);
 
+        resetDelay = getConfig().getInt("resetDelay");
+
         Bukkit.getLogger().info("Starting the private mine reset task...");
         for (File file : mineStorage.getMineFiles()) {
             UUID uuid = UUID.fromString(fileNameWithOutExt(file.getName()));
-            privateMineResetUtil.startResetTask(this, uuid, 5);
+            privateMineResetUtil.startResetTask(this, uuid, resetDelay);
         }
-
-//        Bukkit.getLogger().info("Starting the reset scheduler!");
-//        privateMineResetUtil.startResetTask(this);
+        Bukkit.getLogger().info("Loading messages...");
+        Messages.load(this);
+        Bukkit.getLogger().info("Loaded messages!");
     }
 
     @Override
     public void onDisable() {
-        Bukkit.getLogger().info("Disabling PrivateMinesRewrite...");
+        Bukkit.getLogger().info("Disabling PrivateMinesRewrite v" + getDescription().getVersion());
     }
 
     public PrivateMines getPrivateMines() {
         return privateMine;
     }
 
-    public static String fileNameWithOutExt (String fileName) {
-        return Optional.of(fileName.lastIndexOf(".")).filter(i-> i >= 0)
-                .map(i-> fileName.substring(0, i)).orElse(fileName);
+    public String getStructureFileName() {
+        return getConfig().getString("structureFile");
     }
 }

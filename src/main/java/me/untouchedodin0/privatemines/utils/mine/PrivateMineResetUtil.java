@@ -3,7 +3,9 @@ package me.untouchedodin0.privatemines.utils.mine;
 import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -17,6 +19,7 @@ public class PrivateMineResetUtil extends BukkitRunnable {
     UUID playerId;
     File userFile;
     YamlConfiguration mineConfig;
+    Player player;
 
     public PrivateMineResetUtil(PrivateMines privateMines) {
         mineFillManager = new MineFillManager(privateMines);
@@ -43,7 +46,8 @@ public class PrivateMineResetUtil extends BukkitRunnable {
 
     @Override
     public void run() {
-        Bukkit.broadcastMessage("reset task, pog!");
+        player = Bukkit.getPlayer(playerId);
+        player.sendMessage(ChatColor.GREEN + "Resetting your private mine!");
         userFile = new File("plugins/PrivateMinesRewrite/mines/" + playerId + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         mineFillManager.fillPlayerMine(playerId);

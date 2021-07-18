@@ -5,6 +5,7 @@ import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import redempt.redlib.misc.ChatPrompt;
 
 import java.io.File;
+import java.io.IOException;
 
 public class MainMenuGui {
 
@@ -24,6 +26,8 @@ public class MainMenuGui {
     Location teleportLocation;
     Location corner1;
     Location corner2;
+    Location corner1flat;
+    Location corner2flat;
     MineFillManager mineFillManager;
     boolean isClosed = false;
     double size;
@@ -31,6 +35,7 @@ public class MainMenuGui {
     WhitelistedPlayersGui whitelistedPlayersGui;
     BannedPlayersGui bannedPlayersGui;
     PriorityPlayersGui priorityPlayersGui;
+    Player coowner;
 
     public MainMenuGui(MineFillManager mineFillManager) {
         this.mineFillManager = mineFillManager;
@@ -47,7 +52,11 @@ public class MainMenuGui {
         this.teleportLocation = mineConfig.getLocation("spawnLocation");
         corner1 = mineConfig.getLocation("Corner1");
         corner2 = mineConfig.getLocation("Corner2");
-        size = corner2.distanceSquared(corner1);
+        corner1flat = new Location(corner1.getWorld(), corner1.getX(), corner1.getY(), corner1.getZ());
+        corner2flat = new Location(corner2.getWorld(), corner2.getX(), corner1.getY(), corner2.getZ());
+
+        size = corner2flat.distance(corner1flat);
+//        size = corner2.distance(corner1);
         whitelistedPlayersGui = new WhitelistedPlayersGui();
         bannedPlayersGui = new BannedPlayersGui();
         priorityPlayersGui = new PriorityPlayersGui();
@@ -183,35 +192,52 @@ public class MainMenuGui {
         });
 
         GuiItem resetMineItem = ItemBuilder.from(resetMine).asGuiItem(event -> {
+            player.closeInventory();
             event.setCancelled(true);
             mineFillManager.fillPlayerMine(player);
             player.sendMessage(ChatColor.GREEN + "Resetting your mine!");
-            player.closeInventory();
         });
 
         GuiItem whitelistItem = ItemBuilder.from(whitelistedMembers).asGuiItem(event -> {
-            event.setCancelled(true);
-            player.sendMessage(ChatColor.GREEN + "Lets manage those whitelisted players!");
             player.closeInventory();
+            event.setCancelled(true);
             whitelistedPlayersGui.openWhitelistedPlayersMenu(player);
         });
 
         GuiItem bannedMembersItem = ItemBuilder.from(bannedMembers).asGuiItem(event -> {
+            player.closeInventory();
             event.setCancelled(true);
-            player.sendMessage(ChatColor.GREEN + "Lets manage those banned players >:(");
             player.closeInventory();
             bannedPlayersGui.openBannedPlayersMenu(player);
         });
 
         GuiItem priorityMembersItem = ItemBuilder.from(priorityMembers).asGuiItem(event -> {
+            player.closeInventory();
             event.setCancelled(true);
             player.closeInventory();
             priorityPlayersGui.openPriorityPlayersMenu(player);
+            player.sendMessage("priority players item clicked?");
         });
 
         GuiItem coOwnerItem = ItemBuilder.from(coowner).asGuiItem(event -> {
+            player.closeInventory();
             event.setCancelled(true);
-            player.sendMessage(ChatColor.GREEN + "someone's lucky to be the co-owner");
+            ChatPrompt.prompt(player, ChatColor.RED + "Please specify a player name",
+                    response -> {
+                        Player target = Bukkit.getPlayer(response);
+                        if (target != null) {
+                            target.sendMessage(ChatColor.GREEN + "You've been set as a co-owner in "
+                                    + player.getName()
+                                    + "'s private mine!");
+                            mineConfig.set("coowner", player.getName());
+                            try {
+                                mineConfig.save(userFile);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            player.sendMessage(ChatColor.GREEN + player.getName() + " has set you as co-owner of your mine!");
+                        }
+                    });
         });
 
         gui.setItem(0, teleportToMine);

@@ -1,0 +1,1 @@
+recievedMine: You've recieved a private mine!

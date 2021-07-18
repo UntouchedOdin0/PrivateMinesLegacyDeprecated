@@ -1,5 +1,6 @@
 package me.untouchedodin0.privatemines.factory;
 
+import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.mine.PrivateMineLocations;
@@ -8,11 +9,13 @@ import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import redempt.redlib.commandmanager.Messages;
 import redempt.redlib.misc.Task;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
@@ -21,6 +24,7 @@ import redempt.redlib.region.CuboidRegion;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,7 +42,9 @@ public class MineFactory {
     private static final String BANNED_PLAYERS = "bannedPlayers";
     private static final String PRIORITY_PLAYERS = "priorityPlayers";
     private static final String CO_OWNER = "coowner";
+    private static final String MINE_SIZE = "mineSize";
 
+    PrivateMines privateMines;
     MineStorage mineStorage;
     MultiBlockStructure multiBlockStructure;
     World world;
@@ -74,12 +80,14 @@ public class MineFactory {
     Util util;
     Structure currentStructure;
     Structure upgradeStructure;
+    int mineSize = 0;
 
-
-    public MineFactory(MineStorage storage,
+    public MineFactory(PrivateMines privateMines,
+                       MineStorage storage,
                        MineWorldManager mineWorldManager,
                        MineFillManager fillManager,
                        Util util) {
+        this.privateMines = privateMines;
         this.mineStorage = storage;
         this.mineWorldManager = mineWorldManager;
         this.fillManager = fillManager;
@@ -98,6 +106,7 @@ public class MineFactory {
         multiBlockStructure = util.getMultiBlockStructure();
 
         if (mineStorage.hasMine(player)) {
+            Bukkit.getLogger().warning("Couldn't give mine, due to player already having a mine!");
             player.sendMessage(ChatColor.RED + "Er, you do know you already have a mine. Right?");
         } else {
             world = location.getWorld();
@@ -129,15 +138,17 @@ public class MineFactory {
                         } else if (block.getType() == Material.SPONGE && placeLocation == null) {
                             placeLocation = block.getLocation();
                             placeLocation.getBlock().setType(Material.AIR);
-                            Bukkit.broadcastMessage("placeLocation after setair: " + placeLocation);
-                            Bukkit.broadcastMessage("nextLocation after add: " + nextLocation);
-                            Bukkit.broadcastMessage("placeLocation = next: " + placeLocation);
                         }
                     }
                 }
             }
             miningRegion = new CuboidRegion(corner1, corner2)
                     .expand(1, 0, 1, 0, 1, 0);
+//            mineSize = miningRegion.getFace(BlockFace.UP).getBlockVolume();
+            mineSize = miningRegion.getBlockDimensions()[0];
+            Bukkit.broadcastMessage("mineSize: " + mineSize);
+            Bukkit.broadcastMessage("Redempt Dimensions: " + Arrays.toString(miningRegion.getBlockDimensions()));
+
             cornerBlocks.add(corner1);
             cornerBlocks.add(corner2);
             if (mineBlocks.isEmpty()) {
@@ -170,6 +181,7 @@ public class MineFactory {
             mineConfig.set(NPC_LOCATION_STRING, privateMineLocations.getNpcLocation());
             mineConfig.set(PLACE_LOCATION_STRING, privateMineLocations.getMineLocation());
             mineConfig.set(BLOCKS_STRING, privateMineUtil.getMineBlocks());
+            mineConfig.set(MINE_SIZE, mineSize);
             mineConfig.set(WHITELISTED_PLAYERS, privateMineUtil.getWhitelistedPlayers());
             mineConfig.set(BANNED_PLAYERS, privateMineUtil.getBannedPlayers());
             mineConfig.set(PRIORITY_PLAYERS, privateMineUtil.getPriorityPlayers());
@@ -181,28 +193,20 @@ public class MineFactory {
             }
 
             Task.syncRepeating(() -> fillManager.fillPlayerMine(player), 0L, 20L);
-//
-//            if (mineBlocks.toArray().length >= 2) {
-//                Task.syncRepeating(() -> fillManager.fillPlayerMine(player), 0L, 20L);
-//            } else {
-//                Task.syncRepeating(() -> fillManager.fillPlayerMine(player), 0L, 2 * 20 * 60L);
-//                fillManager.fillMine(privateMineLocations.getCorner1(), privateMineLocations.getCorner2(), mineBlocks.get(0));
-//            }
-
-            Bukkit.broadcastMessage("cornerBlocks debug: ");
-            Bukkit.broadcastMessage("count: " + cornerBlocks.stream().count());
             cornerBlocks = new ArrayList<>();
+            Messages.msg("recievedMine");
             player.teleport(spawnLocation);
             player.sendMessage(ChatColor.GREEN + "You've been teleported to your mine!");
             npcLocation = null;
             corner1 = null;
             corner2 = null;
-
-            Bukkit.broadcastMessage("start: " + start);
-            Bukkit.broadcastMessage("end: " + end);
+            start = null;
+            end = null;
+            mineSize = 0;
         }
     }
 
+    //TODO Implement a working version of this.
     public void upgradeMine(Player player, File newMineFile, Location location) {
         player.sendMessage(newMineFile.toString());
         currentStructure = multiBlockStructure.assumeAt(location);
@@ -213,32 +217,4 @@ public class MineFactory {
     }
 }
 
-
-
-
-//        this.inputStream = stream;
-//        if (mineStorage.hasMine(player)) {
-//            Bukkit.getLogger().info("Player was already in the storage, no need to give another mine!");
-//        } else if (inputStream != null) {
-//            player.sendMessage("Creating mine from storage");
-//            to = location;
-//            multiBlockStructure = MultiBlockStructure
-//                    .create(inputStream,
-//                            "mine",
-//                            false,
-//                            false);
-//            world = mineWorldManager.getMinesWorld();
-//            multiBlockStructure.build(to);
-//            cuboidRegion = multiBlockStructure.getRegion(to);
-//            start = cuboidRegion.getStart().clone();
-//            end = cuboidRegion.getEnd().clone();
-//            cornerBlocks = findCornerBlocks(start, end);
-//            spawnLocation = findSpawnLocation(start, end);
-//            npcLocation = findNPCLocation(start, end);
-//
-//            miningRegion = new CuboidRegion(cornerBlocks.get(0), cornerBlocks.get(1))
-//                    .expand(1, 0, 1, 0, 1, 0);
-//        }
-//        player.teleport(spawnLocation);
-//        player.sendMessage(ChatColor.GREEN + "You've been given a mine!");
 
