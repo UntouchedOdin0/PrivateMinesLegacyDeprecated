@@ -116,8 +116,6 @@ public class PrivateMinesCommand extends BaseCommand {
     @Description("Manage privatemines")
     public void main(Player p) {
         if (p.hasPermission("privatemines.owner")) {
-            p.sendMessage("opening gui.");
-
             userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
             mineConfig = YamlConfiguration.loadConfiguration(userFile);
             this.teleportLocation = mineConfig.getLocation(SPAWN_LOCATION_STRING);
@@ -127,6 +125,7 @@ public class PrivateMinesCommand extends BaseCommand {
                 BED: Teleports to mine?
                 ENDER_PEARL: resets the mine
              */
+
             mainMenuGui.openMainMenuGui(p);
         }
     }
@@ -396,6 +395,7 @@ public class PrivateMinesCommand extends BaseCommand {
 
         if (whitelistedPlayers.contains(target.player.getUniqueId().toString())) {
             player.sendMessage(ChatColor.RED + "Player was already whitelisted!");
+            return;
         } else {
             player.sendMessage("Whitelisting " + target.player.getName());
             whitelistedPlayers.add(target.player.getUniqueId().toString());
@@ -442,6 +442,7 @@ public class PrivateMinesCommand extends BaseCommand {
 
         if (bannedPlayers.contains(target.player.getUniqueId().toString())) {
             player.sendMessage(ChatColor.RED + "Player was already banned!");
+            return;
         } else {
             player.sendMessage(ChatColor.GREEN + "Banning player " + target.player.getName());
             bannedPlayers.add(target.player.getUniqueId().toString());
