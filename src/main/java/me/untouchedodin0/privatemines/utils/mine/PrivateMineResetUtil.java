@@ -6,15 +6,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
+import redempt.redlib.misc.Task;
 
 import java.io.File;
 import java.util.UUID;
 
-public class PrivateMineResetUtil extends BukkitRunnable {
+public class PrivateMineResetUtil {
 
-    private BukkitTask bukkitTask;
     MineFillManager mineFillManager;
     UUID playerId;
     File userFile;
@@ -25,31 +23,33 @@ public class PrivateMineResetUtil extends BukkitRunnable {
         mineFillManager = new MineFillManager(privateMines);
     }
 
-    public void startResetTask(PrivateMines privateMines, UUID uuid, int minutesDelay) {
+    public void startResetTask(UUID uuid, int minutesDelay) {
         this.playerId = uuid;
 
-        if (bukkitTask == null && playerId != null) {
-            Bukkit.getLogger().info("Starting reset task for UUID: " + playerId);
-            bukkitTask = this.runTaskTimer(
-                    privateMines,
-                    0L,
-                    minutesDelay * 60 * 20L); // Should fix the lag?
-        }
-    }
+        Task.syncRepeating(new Runnable() {
 
-    @Override
-    public synchronized void cancel() {
-        if (bukkitTask != null) {
-            bukkitTask.cancel();
-        }
-    }
+            /**
+             * When an object implementing interface <code>Runnable</code> is used
+             * to create a thread, starting the thread causes the object's
+             * <code>run</code> method to be called in that separately executing
+             * thread.
+             * <p>
+             * The general contract of the method <code>run</code> is that it may
+             * take any action whatsoever.
+             *
+             * @see Thread#run()
+             */
 
-    @Override
-    public void run() {
-        player = Bukkit.getPlayer(playerId);
-        player.sendMessage(ChatColor.GREEN + "Resetting your private mine!");
-        userFile = new File("plugins/PrivateMinesRewrite/mines/" + playerId + ".yml");
-        mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        mineFillManager.fillPlayerMine(playerId);
+            @Override
+            public void run() {
+                player = Bukkit.getPlayer(playerId);
+                if (player != null) {
+                    player.sendMessage(ChatColor.GREEN + "Resetting your private mine!");
+                }
+                userFile = new File("plugins/PrivateMinesRewrite/mines/" + playerId + ".yml");
+                mineConfig = YamlConfiguration.loadConfiguration(userFile);
+                mineFillManager.fillPlayerMine(playerId);
+            }
+        }, 0L, 20L * 60 * minutesDelay);
     }
 }
