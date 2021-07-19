@@ -29,6 +29,8 @@ repositories {
         name = 'skullcreator-repo'
         url = 'https://github.com/deanveloper/SkullCreator/raw/mvn-repo/'
     }
+
+    maven { url = "https://repo.citizensnpcs.co/" }
 }
 
 dependencies {
@@ -41,6 +43,8 @@ dependencies {
     compileOnly "co.aikar:acf-paper:0.5.0-SNAPSHOT"
     compileOnly 'com.github.Redempt:RedLib:5.0.4'
     compileOnly 'dev.dbassett:skullcreator:3.0.1'
+
+    compileOnly 'net.citizensnpcs:citizens-main:2.0.28-SNAPSHOT'
 
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
     implementation("net.citizensnpcs:citizensapi:2.0.16-SNAPSHOT")
