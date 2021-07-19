@@ -30,7 +30,7 @@ public class MainMenuGui {
     Location corner2flat;
     MineFillManager mineFillManager;
     boolean isClosed = false;
-    double size;
+    int size;
     int tax;
     WhitelistedPlayersGui whitelistedPlayersGui;
     BannedPlayersGui bannedPlayersGui;
@@ -55,7 +55,7 @@ public class MainMenuGui {
         corner1flat = new Location(corner1.getWorld(), corner1.getX(), corner1.getY(), corner1.getZ());
         corner2flat = new Location(corner2.getWorld(), corner2.getX(), corner1.getY(), corner2.getZ());
 
-        size = corner2flat.distance(corner1flat);
+        size = mineConfig.getInt("mineSize");
 //        size = corner2.distance(corner1);
         whitelistedPlayersGui = new WhitelistedPlayersGui();
         bannedPlayersGui = new BannedPlayersGui();
@@ -92,7 +92,7 @@ public class MainMenuGui {
         ItemStack mineSize = new ItemStack(Material.LAVA_BUCKET);
         ItemMeta mineSizeItemMeta = mineSize.getItemMeta();
         if (mineSizeItemMeta != null) {
-            mineSizeItemMeta.setDisplayName(ChatColor.GREEN + "Mine Size " + ChatColor.YELLOW + size);
+            mineSizeItemMeta.setDisplayName(ChatColor.GREEN + "Mine Size " + ChatColor.YELLOW + size + "x" + size);
         }
         mineSize.setItemMeta(mineSizeItemMeta);
 
@@ -149,7 +149,6 @@ public class MainMenuGui {
         GuiItem closeItem = ItemBuilder.from(statusClosed).asGuiItem(event -> {
             event.setCancelled(true);
             setIsClosed(true);
-            //TODO close mine logic...
         });
 
         GuiItem openCloseItem = ItemBuilder.from(statusClosed).asGuiItem(event -> {
@@ -216,7 +215,6 @@ public class MainMenuGui {
             event.setCancelled(true);
             player.closeInventory();
             priorityPlayersGui.openPriorityPlayersMenu(player);
-            player.sendMessage("priority players item clicked?");
         });
 
         GuiItem coOwnerItem = ItemBuilder.from(coowner).asGuiItem(event -> {
