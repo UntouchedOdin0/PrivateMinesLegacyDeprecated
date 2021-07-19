@@ -26,6 +26,7 @@ import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
 import me.untouchedodin0.privatemines.commands.PrivateMinesCommand;
 import me.untouchedodin0.privatemines.factory.MineFactory;
+import me.untouchedodin0.privatemines.utils.Metrics;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.mine.PrivateMineResetUtil;
@@ -52,6 +53,8 @@ public class PrivateMines extends JavaPlugin {
     public static final String MINES_FOLDER_NAME = "mines";
     int minesCount;
     int resetDelay;
+    private final int pluginId = 11413; // Metrics ID.
+
 
     File[] structuresList;
     File structureFolder = new File("plugins/PrivateMinesRewrite/schematics/");
@@ -136,6 +139,9 @@ public class PrivateMines extends JavaPlugin {
         Bukkit.getLogger().info("Loading messages...");
         Messages.load(this);
         Bukkit.getLogger().info("Loaded messages!");
+
+        Metrics metrics = new Metrics(this, pluginId);
+        Bukkit.getLogger().info("Loaded metrics!");
     }
 
     @Override
