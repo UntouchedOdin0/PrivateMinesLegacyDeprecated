@@ -62,11 +62,13 @@ public class PrivateMines extends JavaPlugin {
 
         Bukkit.getLogger().info("Setting up the Private Mines Storage and Factory...");
         mineStorage = new MineStorage();
+        privateMineResetUtil = new PrivateMineResetUtil(this);
         mineFactory = new MineFactory(
                 this,
                 mineStorage,
                 mineManager,
                 fillManager,
+                privateMineResetUtil,
                 util);
 
         Bukkit.getLogger().info("Private Mines storage and factory has been setup!");
@@ -101,14 +103,13 @@ public class PrivateMines extends JavaPlugin {
         Bukkit.getLogger().info("Command registered!");
 
         Bukkit.getLogger().info("Setting up the private mine util...");
-        privateMineResetUtil = new PrivateMineResetUtil(this);
 
         resetDelay = getConfig().getInt("resetDelay");
 
         Bukkit.getLogger().info("Starting the private mine reset task...");
         for (File file : mineStorage.getMineFiles()) {
             UUID uuid = UUID.fromString(fileNameWithOutExt(file.getName()));
-            privateMineResetUtil.startResetTask(this, uuid, resetDelay);
+            privateMineResetUtil.startResetTask(uuid, resetDelay);
         }
         Bukkit.getLogger().info("Loading messages...");
         Messages.load(this);
