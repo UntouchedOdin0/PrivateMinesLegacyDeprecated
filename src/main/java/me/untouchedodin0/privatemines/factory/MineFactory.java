@@ -4,19 +4,17 @@ import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.mine.PrivateMineLocations;
+import me.untouchedodin0.privatemines.utils.mine.PrivateMineResetUtil;
 import me.untouchedodin0.privatemines.utils.mine.PrivateMineUtil;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import redempt.redlib.commandmanager.Messages;
-import redempt.redlib.misc.Task;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
 import redempt.redlib.region.CuboidRegion;
@@ -24,7 +22,6 @@ import redempt.redlib.region.CuboidRegion;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -77,6 +74,7 @@ public class MineFactory {
 
     PrivateMineUtil privateMineUtil;
     PrivateMineLocations privateMineLocations;
+    PrivateMineResetUtil resetUtil;
     Util util;
     Structure currentStructure;
     Structure upgradeStructure;
@@ -86,11 +84,13 @@ public class MineFactory {
                        MineStorage storage,
                        MineWorldManager mineWorldManager,
                        MineFillManager fillManager,
+                       PrivateMineResetUtil resetUtil,
                        Util util) {
         this.privateMines = privateMines;
         this.mineStorage = storage;
         this.mineWorldManager = mineWorldManager;
         this.fillManager = fillManager;
+        this.resetUtil = resetUtil;
         this.util = util;
     }
 
@@ -134,7 +134,8 @@ public class MineFactory {
                             spawnLocation.getBlock().setType(Material.AIR);
                         } else if (block.getType() == Material.WHITE_WOOL && npcLocation == null) {
                             npcLocation = block.getLocation();
-                            npcLocation.getBlock().setType(Material.OAK_SIGN);
+                            npcLocation.getBlock().setType(Material.AIR);
+                            //TODO Create a npc here!
                         } else if (block.getType() == Material.SPONGE && placeLocation == null) {
                             placeLocation = block.getLocation();
                             placeLocation.getBlock().setType(Material.AIR);
@@ -144,37 +145,20 @@ public class MineFactory {
             }
             miningRegion = new CuboidRegion(corner1, corner2)
                     .expand(1, 0, 1, 0, 1, 0);
-//            mineSize = miningRegion.getFace(BlockFace.UP).getBlockVolume();
             mineSize = miningRegion.getBlockDimensions()[0];
-            Bukkit.broadcastMessage("mineSize: " + mineSize);
-            Bukkit.broadcastMessage("Redempt Dimensions: " + Arrays.toString(miningRegion.getBlockDimensions()));
-
             cornerBlocks.add(corner1);
             cornerBlocks.add(corner2);
             if (mineBlocks.isEmpty()) {
                 mineBlocks.add(new ItemStack(Material.STONE));
             }
 
-            Sign s = (Sign) world.getBlockAt(npcLocation).getState();
-            s.setLine(0, "I'm an NPC");
-            s.setLine(1, "I should be fixed.");
-            s.update();
             Location miningRegionStart = miningRegion.getStart();
             Location miningRegionEnd = miningRegion.getEnd();
             startBlock = miningRegionStart.getBlock();
             endBlock = miningRegionEnd.getBlock();
-            Bukkit.getLogger().info("Creating the event...");
             privateMineUtil = new PrivateMineUtil(player, file, mineBlocks, whitelistedPlayers, bannedPlayers, priorityPlayers, coowner);
             privateMineLocations = new PrivateMineLocations(player, nextLocation, spawnLocation, npcLocation, corner1, corner2);
 
-//            Bukkit.getLogger().info("Calling the events...");
-//            Bukkit.getPluginManager().callEvent(privateMineUtil);
-//            Bukkit.getPluginManager().callEvent(privateMineLocations);
-
-//            Bukkit.getPluginManager().callEvent(privateMine);
-//            Bukkit.getLogger().info("Event Details:");
-//            Bukkit.getLogger().info(privateMine.getEventName());
-//            Bukkit.broadcastMessage("event details: " + privateMine);
             mineConfig.set(CORNER_1_STRING, privateMineLocations.getCorner1());
             mineConfig.set(CORNER_2_STRING, privateMineLocations.getCorner2());
             mineConfig.set(SPAWN_LOCATION_STRING, privateMineLocations.getSpawnLocation());
@@ -192,11 +176,11 @@ public class MineFactory {
                 e.printStackTrace();
             }
 
-            Task.syncRepeating(() -> fillManager.fillPlayerMine(player), 0L, 20L);
+            resetUtil.startResetTask(player.getUniqueId(), privateMines.getConfig().getInt("resetDelay"));
             cornerBlocks = new ArrayList<>();
             Messages.msg("recievedMine");
             player.teleport(spawnLocation);
-            player.sendMessage(ChatColor.GREEN + "You've been teleported to your mine!");
+            Messages.msg("teleportedToMine");
             npcLocation = null;
             corner1 = null;
             corner2 = null;
