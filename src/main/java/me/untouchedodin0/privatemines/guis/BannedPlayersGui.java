@@ -37,9 +37,9 @@ public class BannedPlayersGui {
         }
 
         for (String str : bannedPlayersNames) {
-            TextComponent message = new TextComponent("- " + str);
-            message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org"));
-            message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Visit the Spigot website!")));
+            TextComponent message = new TextComponent(ChatColor.GRAY + "- " + ChatColor.GOLD + str);
+            message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.AQUA + "Click to unban " + str)));
+            message.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/pmine unban " + str));
             player.spigot().sendMessage(message);
         }
     }
