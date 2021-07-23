@@ -22,6 +22,7 @@
 
 package me.untouchedodin0.privatemines.factory;
 
+import com.cryptomorin.xseries.XMaterial;
 import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
@@ -149,38 +150,6 @@ public class MineFactory {
 
             multiBlockStructure.build(location);
             mineLoopUtil.setBlockLocations(start, end, cornerMaterial, npcMaterial, spawnMaterial);
-            Bukkit.broadcastMessage(mineLoopUtil.getCornerLocations().toString());
-
-            /*
-            for (int x = start.getBlockX(); x <= end.getBlockX(); x++) {
-                for (int y = start.getBlockY(); y <= end.getBlockY(); y++) {
-                    for (int z = start.getBlockZ(); z <= end.getBlockZ(); z++) {
-                        Block block = world.getBlockAt(x, y, z);
-                        if (block.getType() == Material.POWERED_RAIL) {
-                            if (corner1 == null) {
-                                corner1 = block.getLocation();
-                            } else if (corner2 == null) {
-                                corner2 = block.getLocation();
-                            }
-                        } else if (block.getType() == Material.CHEST && spawnLocation == null) {
-                            spawnLocation = block.getLocation();
-                            if (block.getState().getData() instanceof Directional) {
-                                spawnLocation.setYaw(Util.getYaw((((Directional) block.getState().getData()).getFacing())));
-                            }
-                            spawnLocation.getBlock().setType(Material.AIR);
-                        } else if (block.getType() == Material.WHITE_WOOL && npcLocation == null) {
-                            npcLocation = block.getLocation();
-                            npcLocation.getBlock().setType(Material.AIR);
-                            //TODO Create a npc here!
-                        } else if (block.getType() == Material.SPONGE && placeLocation == null) {
-                            placeLocation = block.getLocation();
-                            placeLocation.getBlock().setType(Material.AIR);
-                        }
-                    }
-                }
-            }
-        */
-
             corner1 = mineLoopUtil.getCorner1();
             corner2 = mineLoopUtil.getCorner2();
 
@@ -189,46 +158,46 @@ public class MineFactory {
             mineSize = miningRegion.getBlockDimensions()[0];
             cornerBlocks.add(corner1);
             cornerBlocks.add(corner2);
-            if (mineBlocks.isEmpty()) {
-                mineBlocks.add(new ItemStack(Material.STONE));
+            if (mineBlocks.isEmpty() && XMaterial.STONE.parseMaterial() != null) {
+                mineBlocks.add(new ItemStack(XMaterial.STONE.parseMaterial()));
             }
-
-            Location miningRegionStart = miningRegion.getStart();
-            Location miningRegionEnd = miningRegion.getEnd();
-            startBlock = miningRegionStart.getBlock();
-            endBlock = miningRegionEnd.getBlock();
-            privateMineUtil = new PrivateMineUtil(player, file, mineBlocks, whitelistedPlayers, bannedPlayers, priorityPlayers, coowner);
-            privateMineLocations = new PrivateMineLocations(player, nextLocation, spawnLocation, npcLocation, corner1, corner2);
-
-            mineConfig.set(CORNER_1_STRING, mineLoopUtil.getCorner1());
-            mineConfig.set(CORNER_2_STRING, mineLoopUtil.getCorner2());
-            mineConfig.set(SPAWN_LOCATION_STRING, mineLoopUtil.getSpawnLocation());
-            mineConfig.set(NPC_LOCATION_STRING, mineLoopUtil.getNpcLocation());
-            mineConfig.set(PLACE_LOCATION_STRING, privateMineLocations.getMineLocation());
-            mineConfig.set(BLOCKS_STRING, privateMineUtil.getMineBlocks());
-            mineConfig.set(MINE_SIZE, mineSize);
-            mineConfig.set(WHITELISTED_PLAYERS, privateMineUtil.getWhitelistedPlayers());
-            mineConfig.set(BANNED_PLAYERS, privateMineUtil.getBannedPlayers());
-            mineConfig.set(PRIORITY_PLAYERS, privateMineUtil.getPriorityPlayers());
-            mineConfig.set(CO_OWNER, privateMineUtil.getCoOwner());
-            try {
-                mineConfig.save(userFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            resetUtil.startResetTask(player.getUniqueId(), privateMines.getConfig().getInt("resetDelay"));
-            cornerBlocks = new ArrayList<>();
-            Messages.msg("recievedMine");
-            player.teleport(mineLoopUtil.getSpawnLocation());
-            Messages.msg("teleportedToMine");
-            npcLocation = null;
-            corner1 = null;
-            corner2 = null;
-            start = null;
-            end = null;
-            mineSize = 0;
         }
+
+        Location miningRegionStart = miningRegion.getStart();
+        Location miningRegionEnd = miningRegion.getEnd();
+        startBlock = miningRegionStart.getBlock();
+        endBlock = miningRegionEnd.getBlock();
+        privateMineUtil = new PrivateMineUtil(player, file, mineBlocks, whitelistedPlayers, bannedPlayers, priorityPlayers, coowner);
+        privateMineLocations = new PrivateMineLocations(player, nextLocation, spawnLocation, npcLocation, corner1, corner2);
+
+        mineConfig.set(CORNER_1_STRING, mineLoopUtil.getCorner1());
+        mineConfig.set(CORNER_2_STRING, mineLoopUtil.getCorner2());
+        mineConfig.set(SPAWN_LOCATION_STRING, mineLoopUtil.getSpawnLocation());
+        mineConfig.set(NPC_LOCATION_STRING, mineLoopUtil.getNpcLocation());
+        mineConfig.set(PLACE_LOCATION_STRING, privateMineLocations.getMineLocation());
+        mineConfig.set(BLOCKS_STRING, privateMineUtil.getMineBlocks());
+        mineConfig.set(MINE_SIZE, mineSize);
+        mineConfig.set(WHITELISTED_PLAYERS, privateMineUtil.getWhitelistedPlayers());
+        mineConfig.set(BANNED_PLAYERS, privateMineUtil.getBannedPlayers());
+        mineConfig.set(PRIORITY_PLAYERS, privateMineUtil.getPriorityPlayers());
+        mineConfig.set(CO_OWNER, privateMineUtil.getCoOwner());
+        try {
+            mineConfig.save(userFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        resetUtil.startResetTask(player.getUniqueId(), privateMines.getConfig().getInt("resetDelay"));
+        cornerBlocks = new ArrayList<>();
+        Messages.msg("recievedMine");
+        player.teleport(mineLoopUtil.getSpawnLocation());
+        Messages.msg("teleportedToMine");
+        npcLocation = null;
+        corner1 = null;
+        corner2 = null;
+        start = null;
+        end = null;
+        mineSize = 0;
     }
 }
 
