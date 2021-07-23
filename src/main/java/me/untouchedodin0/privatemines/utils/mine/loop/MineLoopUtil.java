@@ -10,57 +10,58 @@ import java.util.List;
 
 public class MineLoopUtil {
 
-    //    private final List<Location> locations = new ArrayList<>();
     World world;
     List<Location> cornerLocations = new ArrayList<>();
     Location spawnLocation;
     Location npcLocation;
 
     public List<Location> findCornerLocations(Location startLocation, Location endLocation, Material cornerMaterial) {
-        List<Location> cornerLocations = new ArrayList<>();
-
+        List<Location> cornerLocation = new ArrayList<>();
         world = startLocation.getWorld();
         for (int x = startLocation.getBlockX(); x <= endLocation.getBlockX(); x++) {
             for (int y = startLocation.getBlockY(); y <= endLocation.getBlockY(); y++) {
                 for (int z = startLocation.getBlockZ(); z <= endLocation.getBlockZ(); z++) {
                     Block block = world.getBlockAt(x, y, z);
                     if (block.getType() == cornerMaterial) {
-                        cornerLocations.add(block.getLocation());
+                        cornerLocation.add(block.getLocation());
+                        block.setType(Material.AIR);
                     }
                 }
             }
         }
-        return cornerLocations;
+        return cornerLocation;
     }
 
     public Location findSpawnPointLocation(Location startLocation, Location endLocation, Material spawnPointMaterial) {
-        Location spawnLocation = null;
+        Location spawnLoc = null;
         for (int x = startLocation.getBlockX(); x <= endLocation.getBlockX(); x++) {
             for (int y = startLocation.getBlockY(); y <= endLocation.getBlockY(); y++) {
                 for (int z = startLocation.getBlockZ(); z <= endLocation.getBlockZ(); z++) {
                     Block block = world.getBlockAt(x, y, z);
-                    if (block.getType() == spawnPointMaterial && spawnLocation == null) {
-                        spawnLocation = block.getLocation();
+                    if (block.getType() == spawnPointMaterial && spawnLoc == null) {
+                        spawnLoc = block.getLocation();
+                        block.setType(Material.AIR);
                     }
                 }
             }
         }
-        return spawnLocation;
+        return spawnLoc;
     }
 
     public Location findNpcLocation(Location startLocation, Location endLocation, Material npcMaterial) {
-        Location npcLocation = null;
+        Location npcLoc = null;
         for (int x = startLocation.getBlockX(); x <= endLocation.getBlockX(); x++) {
             for (int y = startLocation.getBlockY(); y <= endLocation.getBlockY(); y++) {
                 for (int z = startLocation.getBlockZ(); z <= endLocation.getBlockZ(); z++) {
                     Block block = world.getBlockAt(x, y, z);
-                    if (block.getType() == npcMaterial && npcLocation == null) {
-                        npcLocation = block.getLocation();
+                    if (block.getType() == npcMaterial && npcLoc == null) {
+                        npcLoc = block.getLocation();
+                        block.setType(Material.AIR);
                     }
                 }
             }
         }
-        return npcLocation;
+        return npcLoc;
     }
 
     public void setBlockLocations(Location startLocation,
@@ -83,6 +84,10 @@ public class MineLoopUtil {
 
     public Location getCorner2() {
         return cornerLocations.get(1);
+    }
+
+    public Location getSpawnLocation() {
+        return spawnLocation;
     }
 
     public Location getNpcLocation() {
