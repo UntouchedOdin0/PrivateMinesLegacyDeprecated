@@ -31,6 +31,7 @@ import me.untouchedodin0.privatemines.factory.MineFactory;
 import me.untouchedodin0.privatemines.guis.MainMenuGui;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
+import me.untouchedodin0.privatemines.utils.mine.MineUpgradeUtil;
 import me.untouchedodin0.privatemines.utils.queue.MineQueueSystem;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
@@ -95,6 +96,8 @@ public class PrivateMinesCommand extends BaseCommand {
     BlockDataManager manager;
     MineStorage mineStorage;
     MineFactory mineFactory;
+    MineUpgradeUtil mineUpgradeUtil;
+
     File userFile;
     File locationsFile;
     YamlConfiguration mineConfig;
@@ -123,6 +126,7 @@ public class PrivateMinesCommand extends BaseCommand {
                                PrivateMines privateMines,
                                MineStorage mineStorage,
                                MineFactory mineFactory,
+                               MineUpgradeUtil mineUpgradeUtil,
                                MineWorldManager mineWorldManager) {
         this.util = util;
         this.fillManager = fillManager;
@@ -131,6 +135,7 @@ public class PrivateMinesCommand extends BaseCommand {
         this.mineFactory = mineFactory;
         this.mainMenuGui = new MainMenuGui(fillManager);
         this.mineWorldManager = new MineWorldManager();
+        this.mineUpgradeUtil = new MineUpgradeUtil();
         this.mineQueueSystem = new MineQueueSystem();
     }
 
@@ -401,9 +406,14 @@ public class PrivateMinesCommand extends BaseCommand {
     @CommandPermission("privatemines.upgrade")
     @CommandCompletion("@players")
     public void upgrade(Player p) {
+        userFile = new File("plugins/PrivateMinesRewrite/mines/" + p.getUniqueId() + ".yml");
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        Location location = mineConfig.getLocation("placeLocation");
+
         File file = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
         p.sendMessage(ChatColor.GREEN + "Attempting to upgrade your mine. (no function here yet)");
-        mineFactory.upgradeMine(p, file, p.getLocation());
+        mineUpgradeUtil.upgradeMine(p, file, location, util);
+//        mineFactory.upgradeMine(p, file, p.getLocation());
     }
 
     @Subcommand("whitelist")
