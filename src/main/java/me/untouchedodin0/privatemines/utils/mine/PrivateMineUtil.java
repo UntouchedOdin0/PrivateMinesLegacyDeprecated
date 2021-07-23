@@ -90,11 +90,6 @@ public class PrivateMineUtil extends Event implements Cancellable {
                        UUID coowner) {
         this.player = player;
         this.mineFile = file;
-//        this.mineLocation = mineLocation;
-//        this.spawnLocation = spawnLocation;
-//        this.npcLocation = npcLocation;
-//        this.corner1 = corner1;
-//        this.corner2 = corner2;
         this.mineBlocks = mineBlocks;
         this.whitelistedPlayers = whitelistedPlayers;
         this.bannedPlayers = bannedPlayers;
