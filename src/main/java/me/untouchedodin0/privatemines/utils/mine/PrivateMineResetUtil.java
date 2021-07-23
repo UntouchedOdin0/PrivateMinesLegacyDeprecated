@@ -26,6 +26,7 @@ import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import redempt.redlib.misc.Task;
@@ -40,6 +41,7 @@ public class PrivateMineResetUtil {
     File userFile;
     YamlConfiguration mineConfig;
     Player player;
+    Location teleportLocation;
 
     public PrivateMineResetUtil(PrivateMines privateMines) {
         mineFillManager = new MineFillManager(privateMines);
@@ -71,6 +73,11 @@ public class PrivateMineResetUtil {
                 userFile = new File("plugins/PrivateMinesRewrite/mines/" + playerId + ".yml");
                 mineConfig = YamlConfiguration.loadConfiguration(userFile);
                 mineFillManager.fillPlayerMine(playerId);
+                teleportLocation = mineConfig.getLocation("spawnLocation");
+                if (teleportLocation != null) {
+                    player.teleport(teleportLocation);
+                    player.sendMessage(ChatColor.GREEN + "You've been teleported to your mine!");
+                }
             }
         }, 0L, 20L * 60 * minutesDelay);
     }
