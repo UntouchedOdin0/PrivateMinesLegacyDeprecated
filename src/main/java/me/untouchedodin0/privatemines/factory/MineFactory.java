@@ -28,11 +28,12 @@ import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.mine.PrivateMineLocations;
 import me.untouchedodin0.privatemines.utils.mine.PrivateMineResetUtil;
 import me.untouchedodin0.privatemines.utils.mine.PrivateMineUtil;
+import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
+import me.untouchedodin0.privatemines.utils.mine.paste.PasteBuilder;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -66,6 +67,7 @@ public class MineFactory {
     PrivateMines privateMines;
     MineStorage mineStorage;
     MultiBlockStructure multiBlockStructure;
+
     World world;
     CuboidRegion cuboidRegion;
     CuboidRegion miningRegion;
@@ -97,23 +99,32 @@ public class MineFactory {
     PrivateMineUtil privateMineUtil;
     PrivateMineLocations privateMineLocations;
     PrivateMineResetUtil resetUtil;
+    MineLoopUtil mineLoopUtil;
     Util util;
+    PasteBuilder pasteBuilder;
     Structure currentStructure;
     Structure upgradeStructure;
     int mineSize = 0;
 
+    Material cornerMaterial = Material.POWERED_RAIL;
+    Material npcMaterial = Material.WHITE_WOOL;
+    Material spawnMaterial = Material.CHEST;
+
     public MineFactory(PrivateMines privateMines,
                        MineStorage storage,
-                       MineWorldManager mineWorldManager,
                        MineFillManager fillManager,
                        PrivateMineResetUtil resetUtil,
-                       Util util) {
+                       MineLoopUtil mineLoopUtil,
+                       Util util,
+                       PasteBuilder pasteBuilder) {
         this.privateMines = privateMines;
         this.mineStorage = storage;
-        this.mineWorldManager = mineWorldManager;
+        this.mineWorldManager = privateMines.getMineWorldManagerManager();
         this.fillManager = fillManager;
         this.resetUtil = resetUtil;
+        this.mineLoopUtil = mineLoopUtil;
         this.util = util;
+        this.pasteBuilder = pasteBuilder;
     }
 
     public void createMine(Player player, Location location) {
@@ -137,7 +148,10 @@ public class MineFactory {
             end = cuboidRegion.getEnd().clone();
 
             multiBlockStructure.build(location);
+            mineLoopUtil.setBlockLocations(start, end, cornerMaterial, npcMaterial, spawnMaterial);
+            Bukkit.broadcastMessage(mineLoopUtil.getCornerLocations().toString());
 
+            /*
             for (int x = start.getBlockX(); x <= end.getBlockX(); x++) {
                 for (int y = start.getBlockY(); y <= end.getBlockY(); y++) {
                     for (int z = start.getBlockZ(); z <= end.getBlockZ(); z++) {
@@ -165,6 +179,11 @@ public class MineFactory {
                     }
                 }
             }
+        */
+
+            corner1 = mineLoopUtil.getCorner1();
+            corner2 = mineLoopUtil.getCorner2();
+
             miningRegion = new CuboidRegion(corner1, corner2)
                     .expand(1, 0, 1, 0, 1, 0);
             mineSize = miningRegion.getBlockDimensions()[0];
@@ -181,10 +200,10 @@ public class MineFactory {
             privateMineUtil = new PrivateMineUtil(player, file, mineBlocks, whitelistedPlayers, bannedPlayers, priorityPlayers, coowner);
             privateMineLocations = new PrivateMineLocations(player, nextLocation, spawnLocation, npcLocation, corner1, corner2);
 
-            mineConfig.set(CORNER_1_STRING, privateMineLocations.getCorner1());
-            mineConfig.set(CORNER_2_STRING, privateMineLocations.getCorner2());
+            mineConfig.set(CORNER_1_STRING, mineLoopUtil.getCorner1());
+            mineConfig.set(CORNER_2_STRING, mineLoopUtil.getCorner2());
             mineConfig.set(SPAWN_LOCATION_STRING, privateMineLocations.getSpawnLocation());
-            mineConfig.set(NPC_LOCATION_STRING, privateMineLocations.getNpcLocation());
+            mineConfig.set(NPC_LOCATION_STRING, mineLoopUtil.getNpcLocation());
             mineConfig.set(PLACE_LOCATION_STRING, privateMineLocations.getMineLocation());
             mineConfig.set(BLOCKS_STRING, privateMineUtil.getMineBlocks());
             mineConfig.set(MINE_SIZE, mineSize);
@@ -209,16 +228,6 @@ public class MineFactory {
             start = null;
             end = null;
             mineSize = 0;
-        }
-    }
-
-    //TODO Implement a working version of this.
-    public void upgradeMine(Player player, File newMineFile, Location location) {
-        player.sendMessage(newMineFile.toString());
-        currentStructure = multiBlockStructure.assumeAt(location);
-        if (currentStructure != null) {
-            player.sendMessage("Found a structure: " + currentStructure);
-            player.sendMessage("Structure Location: " + currentStructure.getLocation());
         }
     }
 }
