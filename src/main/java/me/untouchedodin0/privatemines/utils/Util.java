@@ -32,11 +32,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Util {
 
     MultiBlockStructure multiBlockStructure;
     File[] mines = new File("plugins/PrivateMinesRewrite/mines/").listFiles();
+    Map<String, MultiBlockStructure> structureMap = new HashMap<>();
 
     // stops it from saying the class is empty.
 
@@ -60,7 +63,7 @@ public class Util {
         return super.toString();
     }
 
-    public void loadStructure(String structureName,
+    public MultiBlockStructure loadStructure(String structureName,
                               File file) {
         InputStream inputStream = null;
         try {
@@ -75,6 +78,7 @@ public class Util {
         }
         multiBlockStructure = MultiBlockStructure.create(inputStream, structureName);
         Bukkit.getLogger().info("loadStructureMultiBlockStructure: " + multiBlockStructure.getName());
+        return multiBlockStructure;
     }
 
     public MultiBlockStructure getMultiBlockStructure() {
@@ -84,6 +88,14 @@ public class Util {
             return null;
         }
         return multiBlockStructure;
+    }
+
+    public void saveToStructureMap(String structureName, MultiBlockStructure multiBlockStructure) {
+        structureMap.putIfAbsent(structureName, multiBlockStructure);
+    }
+
+    public Map<String, MultiBlockStructure> getStructureMap() {
+        return structureMap;
     }
 
     public static ItemStack getPlayerSkull() {
