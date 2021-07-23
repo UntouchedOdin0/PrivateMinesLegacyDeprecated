@@ -22,14 +22,18 @@
 
 package me.untouchedodin0.privatemines.utils.storage;
 
+import me.untouchedodin0.privatemines.utils.mine.MineType;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MineStorage {
 
     File userFile;
     File[] mineFiles = new File("plugins/PrivateMinesRewrite/mines").listFiles();
+    public Map<File, MineType> mines = new HashMap<>();
 
     public boolean hasMine(Player player) {
         userFile = new File("plugins/PrivateMinesRewrite/mines/" + player.getUniqueId() + ".yml");
@@ -39,4 +43,12 @@ public class MineStorage {
     public File[] getMineFiles() {
         return mineFiles;
     }
+
+//    public void loadMineTypes(YamlConfiguration config) {
+//        List<String> types = config.getStringList("Types");
+//
+//        for (String str : types) {
+//            Bukkit.getLogger().info("types: " + str);
+//        }
+//    }
 }
