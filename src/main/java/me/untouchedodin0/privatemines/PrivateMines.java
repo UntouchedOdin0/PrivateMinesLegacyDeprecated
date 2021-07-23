@@ -29,14 +29,22 @@ import me.untouchedodin0.privatemines.factory.MineFactory;
 import me.untouchedodin0.privatemines.utils.Metrics;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
+import me.untouchedodin0.privatemines.utils.mine.MineType;
+import me.untouchedodin0.privatemines.utils.mine.MineUpgradeUtil;
 import me.untouchedodin0.privatemines.utils.mine.PrivateMineResetUtil;
+import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
+import me.untouchedodin0.privatemines.utils.mine.paste.PasteBuilder;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import redempt.redlib.commandmanager.Messages;
+import redempt.redlib.multiblock.MultiBlockStructure;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -58,7 +66,11 @@ public class PrivateMines extends JavaPlugin {
 
     File[] structuresList;
     File structureFolder = new File("plugins/PrivateMinesRewrite/schematics/");
+    File schematicsFile = new File("plugins/PrivateMinesRewrite/schematics/schematics.yml");
     File structure;
+    MultiBlockStructure multiBlockStructure;
+
+    List<MineType> mineTypes = new ArrayList<>();
 
 //    File structure = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
     private PrivateMines privateMine;
@@ -67,6 +79,10 @@ public class PrivateMines extends JavaPlugin {
     private MineWorldManager mineManager;
     private MineStorage mineStorage = new MineStorage();
     private MineFactory mineFactory;
+    private MineUpgradeUtil mineUpgradeUtil;
+    private PasteBuilder pasteBuilder;
+    private MineLoopUtil mineLoopUtil;
+    private YamlConfiguration schematicsYml;
 
     public static String fileNameWithOutExt(String fileName) {
         return Optional.of(fileName.lastIndexOf(".")).filter(i -> i >= 0)
@@ -88,13 +104,19 @@ public class PrivateMines extends JavaPlugin {
         Bukkit.getLogger().info("Setting up the Private Mines Storage and Factory...");
         mineStorage = new MineStorage();
         privateMineResetUtil = new PrivateMineResetUtil(this);
+        pasteBuilder = new PasteBuilder();
+        mineLoopUtil = new MineLoopUtil();
+
         mineFactory = new MineFactory(
                 this,
                 mineStorage,
-                mineManager,
                 fillManager,
                 privateMineResetUtil,
-                util);
+                mineLoopUtil,
+                util,
+                pasteBuilder);
+
+        mineUpgradeUtil = new MineUpgradeUtil();
 
         Bukkit.getLogger().info("Private Mines storage and factory has been setup!");
 
@@ -110,8 +132,11 @@ public class PrivateMines extends JavaPlugin {
 
         for (File file : structuresList) {
             Bukkit.getLogger().info("Loading structure " + file.getName());
-            util.loadStructure(file.getName(), file);
+            multiBlockStructure = util.loadStructure(file.getName(), file);
+            util.saveToStructureMap(file.getName(), multiBlockStructure);
         }
+
+        Bukkit.getLogger().info("Structure Map Size: " + util.getStructureMap().size());
 
         Bukkit.getLogger().info("Loading mines...");
         minesCount = minesFolder.list().length;
@@ -124,6 +149,7 @@ public class PrivateMines extends JavaPlugin {
                 this,
                 mineStorage,
                 mineFactory,
+                mineUpgradeUtil,
                 mineManager));
         Bukkit.getLogger().info("Command registered!");
 
@@ -142,6 +168,23 @@ public class PrivateMines extends JavaPlugin {
 
         Metrics metrics = new Metrics(this, pluginId);
         Bukkit.getLogger().info("Loaded metrics!");
+
+        /*
+
+        TODO Fix this from trying to load in the structure system.
+        schematicsFile = new File(getDataFolder(), "schematics/schematics.yml");
+
+        saveResource("schematics/schematics.yml", false);
+        schematicsYml = YamlConfiguration.loadConfiguration(schematicsFile);
+         */
+
+//        try {
+//            schematicsYml.save(schematicsFile);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        schematicsYml = YamlConfiguration.loadConfiguration(schematicsFile);
+//        mineStorage.loadMineTypes(schematicsYml);
     }
 
     @Override
@@ -155,5 +198,9 @@ public class PrivateMines extends JavaPlugin {
 
     public String getStructureFileName() {
         return getConfig().getString("structureFile");
+    }
+
+    public MineWorldManager getMineWorldManagerManager() {
+        return mineManager;
     }
 }
