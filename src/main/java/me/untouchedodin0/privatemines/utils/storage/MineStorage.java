@@ -43,12 +43,4 @@ public class MineStorage {
     public File[] getMineFiles() {
         return mineFiles;
     }
-
-//    public void loadMineTypes(YamlConfiguration config) {
-//        List<String> types = config.getStringList("Types");
-//
-//        for (String str : types) {
-//            Bukkit.getLogger().info("types: " + str);
-//        }
-//    }
 }
