@@ -72,7 +72,6 @@ public class PrivateMines extends JavaPlugin {
 
     List<MineType> mineTypes = new ArrayList<>();
 
-//    File structure = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
     private PrivateMines privateMine;
     private PrivateMineResetUtil privateMineResetUtil;
     private MineFillManager fillManager;
@@ -126,6 +125,11 @@ public class PrivateMines extends JavaPlugin {
             Bukkit.getLogger().info("Creating mines directory...");
             minesFolder.mkdir();
         }
+
+        if (!structureFolder.exists()) {
+            structureFolder.mkdir();
+        }
+
         privateMine = this;
         Bukkit.getLogger().info("Loading structures...");
         structuresList = structureFolder.listFiles();
