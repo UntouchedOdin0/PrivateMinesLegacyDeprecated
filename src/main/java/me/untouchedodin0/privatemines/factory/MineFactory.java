@@ -202,7 +202,7 @@ public class MineFactory {
 
             mineConfig.set(CORNER_1_STRING, mineLoopUtil.getCorner1());
             mineConfig.set(CORNER_2_STRING, mineLoopUtil.getCorner2());
-            mineConfig.set(SPAWN_LOCATION_STRING, privateMineLocations.getSpawnLocation());
+            mineConfig.set(SPAWN_LOCATION_STRING, mineLoopUtil.getSpawnLocation());
             mineConfig.set(NPC_LOCATION_STRING, mineLoopUtil.getNpcLocation());
             mineConfig.set(PLACE_LOCATION_STRING, privateMineLocations.getMineLocation());
             mineConfig.set(BLOCKS_STRING, privateMineUtil.getMineBlocks());
@@ -220,7 +220,7 @@ public class MineFactory {
             resetUtil.startResetTask(player.getUniqueId(), privateMines.getConfig().getInt("resetDelay"));
             cornerBlocks = new ArrayList<>();
             Messages.msg("recievedMine");
-            player.teleport(spawnLocation);
+            player.teleport(mineLoopUtil.getSpawnLocation());
             Messages.msg("teleportedToMine");
             npcLocation = null;
             corner1 = null;
