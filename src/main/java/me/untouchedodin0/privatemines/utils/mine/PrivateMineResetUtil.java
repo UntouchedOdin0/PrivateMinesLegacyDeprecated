@@ -75,6 +75,9 @@ public class PrivateMineResetUtil {
                 mineFillManager.fillPlayerMine(playerId);
                 teleportLocation = mineConfig.getLocation("spawnLocation");
                 if (teleportLocation != null) {
+                    if (player == null) {
+                        return;
+                    }
                     player.teleport(teleportLocation);
                     player.sendMessage(ChatColor.GREEN + "You've been teleported to your mine!");
                 }
