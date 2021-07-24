@@ -22,7 +22,9 @@
 
 package me.untouchedodin0.privatemines.guis;
 
-import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,27 +34,31 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class WhitelistedPlayersGui {
 
+    private static final String MINE_DIRECTORY = "plugins/PrivateMinesRewrite/mines/";
     File userFile;
     YamlConfiguration mineConfig;
+    List<?> whitelistedList = new ArrayList<>();
     List<UUID> whitelistedPlayers = new ArrayList<>();
     List<String> whitelistedPlayersNames = new ArrayList<>();
-
-    private static final String MINE_DIRECTORY = "plugins/PrivateMinesRewrite/mines/";
 
     public void openWhitelistedPlayersMenu(Player player) {
         userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        whitelistedList = mineConfig.getList("whitelistedPlayers");
 
-        if (mineConfig.getList("whitelistedPlayers").isEmpty()) {
-            player.sendMessage(ChatColor.RED + "There were no whitelisted players!");
-        } else {
-            for (String id : mineConfig.getStringList("whitelistedPlayers")) {
-                whitelistedPlayers.add(UUID.fromString(id));
-                whitelistedPlayersNames.add(Bukkit.getPlayer(UUID.fromString(id)).getName());
+        if (whitelistedPlayers != null) {
+            if (whitelistedPlayers.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "There were no whitelisted players!");
+            } else {
+                for (String id : mineConfig.getStringList("whitelistedPlayers")) {
+                    whitelistedPlayers.add(UUID.fromString(id));
+                    whitelistedPlayersNames.add(Objects.requireNonNull(Bukkit.getPlayer(UUID.fromString(id))).getName());
+                }
             }
         }
 
