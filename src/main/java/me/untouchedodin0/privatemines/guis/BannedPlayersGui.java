@@ -40,21 +40,25 @@ public class BannedPlayersGui {
 
     File userFile;
     YamlConfiguration mineConfig;
+    List<?> bannedList = new ArrayList<>();
+
     List<UUID> bannedPlayers = new ArrayList<>();
     List<String> bannedPlayersNames = new ArrayList<>();
-
     private static final String MINE_DIRECTORY = "plugins/PrivateMinesRewrite/mines/";
 
     public void openBannedPlayersMenu(Player player) {
         userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        bannedList = mineConfig.getList("bannedPlayers");
 
-        if (mineConfig.getList("bannedPlayers").isEmpty()) {
-            player.sendMessage(ChatColor.RED + "There were no banned players!");
-        } else {
-            for (String id : mineConfig.getStringList("bannedPlayers")) {
-                bannedPlayers.add(UUID.fromString(id));
-                bannedPlayersNames.add(Bukkit.getPlayer(UUID.fromString(id)).getName());
+        if (bannedList != null) {
+            if (bannedList.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "There were no banned players!");
+            } else {
+                for (String id : mineConfig.getStringList("bannedPlayers")) {
+                    bannedPlayers.add(UUID.fromString(id));
+                    bannedPlayersNames.add(Bukkit.getPlayer(UUID.fromString(id)).getName());
+                }
             }
         }
 

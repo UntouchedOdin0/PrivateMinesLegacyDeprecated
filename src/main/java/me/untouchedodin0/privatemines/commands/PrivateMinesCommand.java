@@ -126,7 +126,6 @@ public class PrivateMinesCommand extends BaseCommand {
                                PrivateMines privateMines,
                                MineStorage mineStorage,
                                MineFactory mineFactory,
-                               MineUpgradeUtil mineUpgradeUtil,
                                MineWorldManager mineWorldManager) {
         this.util = util;
         this.fillManager = fillManager;
