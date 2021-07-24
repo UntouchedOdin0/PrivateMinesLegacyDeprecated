@@ -34,6 +34,7 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class PriorityPlayersGui {
@@ -42,19 +43,23 @@ public class PriorityPlayersGui {
     YamlConfiguration mineConfig;
     List<UUID> prioritylayers = new ArrayList<>();
     List<String> priorityPlayersNames = new ArrayList<>();
+    List<?> priorityList = new ArrayList<>();
 
     private static final String MINE_DIRECTORY = "plugins/PrivateMinesRewrite/mines/";
 
     public void openPriorityPlayersMenu(Player player) {
         userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        priorityList = mineConfig.getList("priorityPlayers");
 
-        if (mineConfig.getList("priorityPlayers").isEmpty()) {
-            player.sendMessage(ChatColor.RED + "There were no priority players!");
-        } else {
-            for (String id : mineConfig.getStringList("priorityPlayers")) {
-                prioritylayers.add(UUID.fromString(id));
-                priorityPlayersNames.add(Bukkit.getPlayer(UUID.fromString(id)).getName());
+        if (priorityList != null) {
+            if (priorityList.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "There were no priority players!");
+            } else {
+                for (String id : mineConfig.getStringList("priorityPlayers")) {
+                    prioritylayers.add(UUID.fromString(id));
+                    priorityPlayersNames.add(Objects.requireNonNull(Bukkit.getPlayer(UUID.fromString(id))).getName());
+                }
             }
         }
 
