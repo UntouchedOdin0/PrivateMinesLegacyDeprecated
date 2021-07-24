@@ -34,6 +34,7 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class BannedPlayersGui {
@@ -57,7 +58,7 @@ public class BannedPlayersGui {
             } else {
                 for (String id : mineConfig.getStringList("bannedPlayers")) {
                     bannedPlayers.add(UUID.fromString(id));
-                    bannedPlayersNames.add(Bukkit.getPlayer(UUID.fromString(id)).getName());
+                    bannedPlayersNames.add(Objects.requireNonNull(Bukkit.getPlayer(UUID.fromString(id))).getName());
                 }
             }
         }
