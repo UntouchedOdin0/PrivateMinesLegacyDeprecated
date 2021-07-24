@@ -58,11 +58,7 @@ public class PrivateMinesCommand extends BaseCommand {
 
     private static final String UTIL_DIRECTORY = "plugins/PrivateMinesRewrite/util/";
     private static final String MINE_DIRECTORY = "plugins/PrivateMinesRewrite/mines/";
-    private static final String CORNER_1_STRING = "Corner1";
-    private static final String CORNER_2_STRING = "Corner2";
     private static final String SPAWN_LOCATION_STRING = "spawnLocation";
-    private static final String NPC_LOCATION_STRING = "npcLocation";
-    private static final String PLACE_LOCATION_STRING = "placeLocation";
     private static final String BLOCKS_STRING = "blocks";
 
     Util util;
