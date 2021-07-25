@@ -25,7 +25,6 @@ package me.untouchedodin0.privatemines.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
-import dev.triumphteam.gui.guis.Gui;
 import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.factory.MineFactory;
 import me.untouchedodin0.privatemines.guis.MainMenuGui;
@@ -35,18 +34,12 @@ import me.untouchedodin0.privatemines.utils.mine.MineUpgradeUtil;
 import me.untouchedodin0.privatemines.utils.queue.MineQueueSystem;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
-import org.bukkit.*;
-import org.bukkit.block.Block;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import redempt.redlib.blockdata.BlockDataManager;
-import redempt.redlib.blockdata.DataBlock;
-import redempt.redlib.misc.WeightedRandom;
-import redempt.redlib.multiblock.MultiBlockStructure;
-import redempt.redlib.multiblock.Rotator;
-import redempt.redlib.multiblock.Structure;
-import redempt.redlib.region.CuboidRegion;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -59,37 +52,31 @@ public class PrivateMinesCommand extends BaseCommand {
     private static final String UTIL_DIRECTORY = "plugins/PrivateMinesRewrite/util/";
     private static final String MINE_DIRECTORY = "plugins/PrivateMinesRewrite/mines/";
     private static final String SPAWN_LOCATION_STRING = "spawnLocation";
+    private static final String WHITELISTED_PLAYERS_STRING = "whitelistedPlayers";
+    private static final String BANNED_PLAYERS_STRING = "bannedPlayers";
+    private static final String PRIORITY_PLAYERS_STRING = "priorityPlayers";
+    private static final String COOWNER_STRING = "coowner";
     private static final String BLOCKS_STRING = "blocks";
 
     Util util;
-    Location to;
-    Location position1;
-    Location position2;
-    Location start;
-    Location startFix;
-    Location end;
-    Location endFix;
+
+    // currently using these two to get the mine corners, need to set and get elsewhere.
     Location corner1;
     Location corner2;
-    Location spawnLocation;
-    Location npcLocation;
-    Location placeLocation;
-    Location nextLocation;
+
+    // The next place location for a mine, likely can do better.
     Location teleportLocation;
-    World world;
-    Structure structure;
-    MultiBlockStructure multiBlockStructure;
-    Rotator rotator;
+
+    // The file stream for the mine file
     InputStream inputStream;
-    CuboidRegion cuboidRegion;
-    CuboidRegion miningRegion;
-    ItemStack cornerMaterial = new ItemStack(Material.POWERED_RAIL);
+
+    // The mine blocks :)
     List<ItemStack> mineBlocks = new ArrayList<>();
-    List<Location> cornerBlocks = new ArrayList<>();
-    WeightedRandom<Material> weightedRandom = new WeightedRandom<>();
+
+    // This is what is used to fill the mines.
     MineFillManager fillManager;
+
     PrivateMines privateMines;
-    BlockDataManager manager;
     MineStorage mineStorage;
     MineFactory mineFactory;
     MineUpgradeUtil mineUpgradeUtil;
@@ -98,20 +85,7 @@ public class PrivateMinesCommand extends BaseCommand {
     File locationsFile;
     YamlConfiguration mineConfig;
     YamlConfiguration locationConfig;
-    String coords1 = "";
-    String coords2 = "";
-    String x1 = "";
-    String y1 = "";
-    String z1 = "";
-    String x2 = "";
-    String y2 = "";
-    String z2 = "";
     String playerID;
-    Block startBlock;
-    Block endBlock;
-    DataBlock startDataBlock;
-    DataBlock endDataBlock;
-    Gui gui;
     MainMenuGui mainMenuGui;
     MineWorldManager mineWorldManager;
     MineQueueSystem mineQueueSystem;
@@ -121,8 +95,7 @@ public class PrivateMinesCommand extends BaseCommand {
                                MineFillManager fillManager,
                                PrivateMines privateMines,
                                MineStorage mineStorage,
-                               MineFactory mineFactory,
-                               MineWorldManager mineWorldManager) {
+                               MineFactory mineFactory) {
         this.util = util;
         this.fillManager = fillManager;
         this.privateMines = privateMines;
@@ -152,22 +125,6 @@ public class PrivateMinesCommand extends BaseCommand {
         }
     }
 
-    @Subcommand("setpos1")
-    @Description("Sets the first position")
-    public void setpos1(Player player) {
-        if (position1 == null) {
-            position1 = player.getLocation();
-        }
-    }
-
-    @Subcommand("setpos2")
-    @Description("Sets the second position")
-    public void setpos2(Player player) {
-        if (position2 == null) {
-            position2 = player.getLocation();
-        }
-    }
-
     @Subcommand("give")
     @Description("Gives a privatemines to a player (only pastes at the moment)")
     @CommandPermission("privatemines.give")
@@ -179,7 +136,6 @@ public class PrivateMinesCommand extends BaseCommand {
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         locationConfig = YamlConfiguration.loadConfiguration(locationsFile);
         playerID = p.getUniqueId().toString();
-        placeLocation = mineWorldManager.nextFreeLocation();
 
         try {
             inputStream = new FileInputStream(file);
@@ -190,15 +146,7 @@ public class PrivateMinesCommand extends BaseCommand {
         if (mineStorage.hasMine(p)) {
             p.sendMessage(ChatColor.RED + "You already have a mine!");
         } else {
-            mineFactory.createMine(p, placeLocation);
-//
-//            if (mineQueueSystem.queueContainsPlayer(p)) {
-//                p.sendMessage("You're already in the queue #"
-//                        + mineQueueSystem.getQueueSlot(p.getUniqueId()));
-//            } else {
-////                mineQueueSystem.queueMineCreation(p);
-////                p.sendMessage("Queue Size: " + mineQueueSystem.getQueueSize());
-//            }
+            mineFactory.createMine(p, mineWorldManager.nextFreeLocation());
         }
     }
 
@@ -207,125 +155,13 @@ public class PrivateMinesCommand extends BaseCommand {
     @CommandPermission("privatemines.give")
     @CommandCompletion("@players")
     public void give(Player p, OnlinePlayer target) {
-        placeLocation = mineWorldManager.nextFreeLocation();
-
         if (mineStorage.hasMine(target.player)) {
             target.player.sendMessage(ChatColor.RED + "An error occurred while giving you a mine" +
                     " please inform a operator!");
             Bukkit.getLogger().warning(target.player.getName() + " already has a mine, not able to give another one!");
         } else {
-            mineFactory.createMine(target.player, placeLocation);
+            mineFactory.createMine(target.player, mineWorldManager.nextFreeLocation());
         }
-
-
-//        if (mineStorage.hasMine(p)) {
-//            p.sendMessage(ChatColor.RED + "Er, you do know you already have a mine. Right?");
-//        } else if (inputStream != null) {
-//            multiBlockStructure = MultiBlockStructure
-//                    .create(inputStream,
-//                            "mine",
-//                            false,
-//                            false);
-//        }
-//        world = placeLocation.getWorld();
-//        cuboidRegion = multiBlockStructure.getRegion(placeLocation);
-//        start = cuboidRegion.getStart().clone();
-//        end = cuboidRegion.getEnd().clone();
-//
-//        multiBlockStructure.build(placeLocation);
-//
-//        if (start == null || end == null) {
-//            Bukkit.getLogger().info("Failed to create the mine due to either");
-//            Bukkit.getLogger().info("the start of the end being null");
-//            Bukkit.broadcastMessage("The main cause of this is because the location is");
-//            Bukkit.broadcastMessage("either to high or to low.");
-//        } else {
-//            for (int x = start.getBlockX(); x <= end.getBlockX(); x++) {
-//                for (int y = start.getBlockY(); y <= end.getBlockY(); y++) {
-//                    for (int z = start.getBlockZ(); z <= end.getBlockZ(); z++) {
-//                        Block block = world.getBlockAt(x, y, z);
-//                        if (block.getType() == Material.POWERED_RAIL) {
-//                            if (corner1 == null) {
-//                                corner1 = block.getLocation();
-//                            } else if (corner2 == null) {
-//                                corner2 = block.getLocation();
-//                            }
-//                        } else if (block.getType() == Material.CHEST && spawnLocation == null) {
-//                            spawnLocation = block.getLocation();
-//                            if (block.getState().getData() instanceof Directional) {
-//                                spawnLocation.setYaw(Util.getYaw((((Directional) block.getState().getData()).getFacing())));
-//                            }
-//                            spawnLocation.getBlock().setType(Material.AIR);
-//                        } else if (block.getType() == Material.WHITE_WOOL && npcLocation == null) {
-//                            npcLocation = block.getLocation();
-//                            npcLocation.getBlock().setType(Material.OAK_SIGN);
-//                        } else if (block.getType() == Material.SPONGE && placeLocation == null) {
-//                            placeLocation = block.getLocation();
-//                            placeLocation.getBlock().setType(Material.AIR);
-//                            Bukkit.broadcastMessage("placeLocation after setair: " + placeLocation);
-//                            Bukkit.broadcastMessage("nextLocation after add: " + nextLocation);
-//                            Bukkit.broadcastMessage("placeLocation = next: " + placeLocation);
-//                        }
-//                    }
-//                }
-//            }
-//            miningRegion = new CuboidRegion(corner1, corner2)
-//                    .expand(1, 0, 1, 0, 1, 0);
-//            cornerBlocks.add(corner1);
-//            cornerBlocks.add(corner2);
-//            if (mineBlocks.isEmpty()) {
-//                mineBlocks.add(new ItemStack(Material.STONE));
-//            }
-//            Sign s = (Sign) world.getBlockAt(npcLocation).getState();
-//            s.setLine(0, "I'm an NPC");
-//            s.setLine(1, "I should be fixed.");
-//            s.update();
-//            Location miningRegionStart = miningRegion.getStart();
-//            Location miningRegionEnd = miningRegion.getEnd();
-//            // Bukkit.broadcastMessage("corner blocks: " + cornerBlocks);
-//            startBlock = miningRegionStart.getBlock();
-//            endBlock = miningRegionEnd.getBlock();
-//            Bukkit.getLogger().info("Creating the event...");
-//            privateMine = new PrivateMine(
-//                    p,
-//                    file,
-//                    placeLocation,
-//                    spawnLocation,
-//                    npcLocation,
-//                    corner1,
-//                    corner2);
-//            Bukkit.getLogger().info("Calling the event...");
-//            Bukkit.getPluginManager().callEvent(privateMine);
-//            Bukkit.getLogger().info("Event Details:");
-//            Bukkit.getLogger().info(privateMine.getEventName());
-//            Bukkit.broadcastMessage("event details: " + privateMine);
-//            mineConfig.set(CORNER_1_STRING, corner1);
-//            mineConfig.set(CORNER_2_STRING, corner2);
-//            mineConfig.set(SPAWN_LOCATION_STRING, spawnLocation);
-//            mineConfig.set(NPC_LOCATION_STRING, npcLocation);
-//            mineConfig.set(PLACE_LOCATION_STRING, placeLocation);
-//            mineConfig.set(BLOCKS_STRING, mineBlocks);
-//            try {
-//                mineConfig.save(userFile);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            if (mineBlocks.toArray().length >= 2) {
-//                Task.syncRepeating(() -> fillManager.fillPlayerMine(p), 0L, 20L);
-//            } else {
-//                Task.syncRepeating(() -> fillManager.fillPlayerMine(p), 0L, 2 * 20 * 60L);
-//                fillManager.fillMine(corner1, corner2, mineBlocks.get(0));
-//            }
-//            Bukkit.broadcastMessage("cornerBlocks debug: ");
-//            Bukkit.broadcastMessage("size: " + cornerBlocks.size());
-//            cornerBlocks = new ArrayList<>();
-//            p.teleport(spawnLocation);
-//            p.sendMessage(ChatColor.GREEN + "You've been teleported to your mine!");
-//            npcLocation = null;
-//            corner1 = null;
-//            corner2 = null;
-//            placeLocation = null;
-//        }
     }
 
     /*
@@ -401,7 +237,7 @@ public class PrivateMinesCommand extends BaseCommand {
     @CommandPermission("privatemines.upgrade")
     @CommandCompletion("@players")
     public void upgrade(Player p) {
-        userFile = new File("plugins/PrivateMinesRewrite/mines/" + p.getUniqueId() + ".yml");
+        userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         Location location = mineConfig.getLocation("placeLocation");
 
@@ -418,7 +254,7 @@ public class PrivateMinesCommand extends BaseCommand {
     public void whitelist(Player player, OnlinePlayer target) {
         userFile = new File(MINE_DIRECTORY + target.player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        List<String> whitelistedPlayers = mineConfig.getStringList("whitelistedPlayers");
+        List<String> whitelistedPlayers = mineConfig.getStringList(WHITELISTED_PLAYERS_STRING);
 
         if (whitelistedPlayers.contains(target.player.getUniqueId().toString())) {
             player.sendMessage(ChatColor.RED + "Player was already whitelisted!");
@@ -427,7 +263,7 @@ public class PrivateMinesCommand extends BaseCommand {
             player.sendMessage("Whitelisting " + target.player.getName());
             whitelistedPlayers.add(target.player.getUniqueId().toString());
         }
-        mineConfig.set("whitelistedPlayers", whitelistedPlayers);
+        mineConfig.set(WHITELISTED_PLAYERS_STRING, whitelistedPlayers);
         try {
             mineConfig.save(userFile);
         } catch (IOException e) {
@@ -442,7 +278,7 @@ public class PrivateMinesCommand extends BaseCommand {
     public void unwhitelist(Player player, OnlinePlayer target) {
         userFile = new File(MINE_DIRECTORY + target.player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        List<String> whitelistedPlayers = mineConfig.getStringList("whitelistedPlayers");
+        List<String> whitelistedPlayers = mineConfig.getStringList(WHITELISTED_PLAYERS_STRING);
 
         if (!whitelistedPlayers.contains(target.player.getUniqueId().toString())) {
             player.sendMessage(ChatColor.RED + "Player wasn't whitelisted!");
@@ -450,7 +286,7 @@ public class PrivateMinesCommand extends BaseCommand {
             player.sendMessage("Removing " + target.player.getName() + " from your whitelist!");
             whitelistedPlayers.remove(target.player.getUniqueId().toString());
         }
-        mineConfig.set("whitelistedPlayers", whitelistedPlayers);
+        mineConfig.set(WHITELISTED_PLAYERS_STRING, whitelistedPlayers);
         try {
             mineConfig.save(userFile);
         } catch (IOException e) {
@@ -465,7 +301,7 @@ public class PrivateMinesCommand extends BaseCommand {
     public void ban(Player player, OnlinePlayer target) {
         userFile = new File(MINE_DIRECTORY + target.player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        List<String> bannedPlayers = mineConfig.getStringList("bannedPlayers");
+        List<String> bannedPlayers = mineConfig.getStringList(BANNED_PLAYERS_STRING);
 
         if (bannedPlayers.contains(target.player.getUniqueId().toString())) {
             player.sendMessage(ChatColor.RED + "Player was already banned!");
@@ -474,7 +310,7 @@ public class PrivateMinesCommand extends BaseCommand {
             player.sendMessage(ChatColor.GREEN + "Banning player " + target.player.getName());
             bannedPlayers.add(target.player.getUniqueId().toString());
         }
-        mineConfig.set("bannedPlayers", bannedPlayers);
+        mineConfig.set(BANNED_PLAYERS_STRING, bannedPlayers);
         try {
             mineConfig.save(userFile);
         } catch (IOException e) {
@@ -490,7 +326,7 @@ public class PrivateMinesCommand extends BaseCommand {
     public void unban(Player player, OnlinePlayer target) {
         userFile = new File(MINE_DIRECTORY + target.player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        List<String> bannedPlayers = mineConfig.getStringList("bannedPlayers");
+        List<String> bannedPlayers = mineConfig.getStringList(BANNED_PLAYERS_STRING);
 
         if (!bannedPlayers.contains(target.player.getUniqueId().toString())) {
             player.sendMessage(ChatColor.RED + "Player wasn't banned!");
@@ -498,7 +334,7 @@ public class PrivateMinesCommand extends BaseCommand {
             player.sendMessage(ChatColor.GREEN + "Unbanning player " + target.player.getName());
             bannedPlayers.remove(target.player.getUniqueId().toString());
         }
-        mineConfig.set("bannedPlayers", bannedPlayers);
+        mineConfig.set(BANNED_PLAYERS_STRING, bannedPlayers);
         try {
             mineConfig.save(userFile);
         } catch (IOException e) {
@@ -514,7 +350,7 @@ public class PrivateMinesCommand extends BaseCommand {
     public void priority(Player player, OnlinePlayer target) {
         userFile = new File(MINE_DIRECTORY + target.player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        List<String> priorityPlayers = mineConfig.getStringList("priorityPlayers");
+        List<String> priorityPlayers = mineConfig.getStringList(PRIORITY_PLAYERS_STRING);
 
         if (!priorityPlayers.contains(target.player.getUniqueId().toString())) {
             player.sendMessage(ChatColor.GREEN + "Adding " + target.player.getName() + " to the priority list!");
@@ -523,7 +359,7 @@ public class PrivateMinesCommand extends BaseCommand {
             player.sendMessage(ChatColor.RED + "Removing " + target.player.getName() + " from the priority list!");
             priorityPlayers.remove(target.player.getUniqueId().toString());
         }
-        mineConfig.set("priorityPlayers", priorityPlayers);
+        mineConfig.set(PRIORITY_PLAYERS_STRING, priorityPlayers);
         try {
             mineConfig.save(userFile);
         } catch (IOException e) {
@@ -538,7 +374,7 @@ public class PrivateMinesCommand extends BaseCommand {
     public void coowner(Player player, OnlinePlayer target) {
         userFile = new File(MINE_DIRECTORY + target.player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        mineConfig.set("coowner", target.player.getUniqueId());
+        mineConfig.set(COOWNER_STRING, target.player.getUniqueId());
         try {
             mineConfig.save(userFile);
         } catch (IOException e) {
