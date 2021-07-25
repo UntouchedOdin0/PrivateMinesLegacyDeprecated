@@ -33,6 +33,9 @@ public class MineStorage {
 
     File userFile;
     File[] mineFiles = new File("plugins/PrivateMinesRewrite/mines").listFiles();
+    File structureFolder = new File("plugins/PrivateMinesRewrite/schematics/");
+    File[] structuresList;
+
     Map<File, MineType> mines = new HashMap<>();
 
     public boolean hasMine(Player player) {
@@ -42,5 +45,14 @@ public class MineStorage {
 
     public File[] getMineFiles() {
         return mineFiles;
+    }
+
+    public void loadMines() {
+        structuresList = structureFolder.listFiles();
+        int n = 0;
+        for (File file : structuresList) {
+            n++;
+            MineType type = new MineType("mine-" + n);
+        }
     }
 }
