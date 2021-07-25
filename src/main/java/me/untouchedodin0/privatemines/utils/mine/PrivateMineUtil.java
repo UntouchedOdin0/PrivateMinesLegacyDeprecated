@@ -33,6 +33,7 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class PrivateMineUtil extends Event implements Cancellable {
 
     private final Player player;
