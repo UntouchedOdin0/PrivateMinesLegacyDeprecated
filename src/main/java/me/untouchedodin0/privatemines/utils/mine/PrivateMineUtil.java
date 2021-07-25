@@ -27,6 +27,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.List;
@@ -37,11 +38,11 @@ public class PrivateMineUtil extends Event implements Cancellable {
     private final Player player;
     private final File mineFile;
     private boolean cancelled;
-    private List<ItemStack> mineBlocks;
-    private List<UUID> whitelistedPlayers;
-    private List<UUID> bannedPlayers;
-    private List<UUID> priorityPlayers;
-    private UUID coowner;
+    private final List<ItemStack> mineBlocks;
+    private final List<UUID> whitelistedPlayers;
+    private final List<UUID> bannedPlayers;
+    private final List<UUID> priorityPlayers;
+    private final UUID coowner;
 
     public static final HandlerList handlers = new HandlerList();
 
@@ -97,6 +98,7 @@ public class PrivateMineUtil extends Event implements Cancellable {
         this.coowner = coowner;
     }
 
+    @NotNull
     public HandlerList getHandlers() {
         return handlers;
     }
