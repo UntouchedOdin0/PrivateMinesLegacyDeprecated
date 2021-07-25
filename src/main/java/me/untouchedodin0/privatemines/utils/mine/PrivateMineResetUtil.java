@@ -49,35 +49,16 @@ public class PrivateMineResetUtil {
 
     public void startResetTask(UUID uuid, int minutesDelay) {
         this.playerId = uuid;
+        userFile = new File("plugins/PrivateMinesRewrite/mines/" + playerId + ".yml");
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        teleportLocation = mineConfig.getLocation("spawnLocation");
 
-        Task.syncRepeating(new Runnable() {
-
-            /**
-             * When an object implementing interface <code>Runnable</code> is used
-             * to create a thread, starting the thread causes the object's
-             * <code>run</code> method to be called in that separately executing
-             * thread.
-             * <p>
-             * The general contract of the method <code>run</code> is that it may
-             * take any action whatsoever.
-             *
-             * @see Thread#run()
-             */
-
-            @Override
-            public void run() {
-                player = Bukkit.getPlayer(playerId);
-                if (player != null) {
-                    player.sendMessage(ChatColor.GREEN + "Resetting your private mine!");
-                }
-                userFile = new File("plugins/PrivateMinesRewrite/mines/" + playerId + ".yml");
-                mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        Task.syncRepeating(() -> {
+            player = Bukkit.getPlayer(playerId);
+            if (player != null) {
+                player.sendMessage(ChatColor.GREEN + "Resetting your private mine!");
                 mineFillManager.fillPlayerMine(playerId);
-                teleportLocation = mineConfig.getLocation("spawnLocation");
                 if (teleportLocation != null) {
-                    if (player == null) {
-                        return;
-                    }
                     player.teleport(teleportLocation);
                     player.sendMessage(ChatColor.GREEN + "You've been teleported to your mine!");
                 }
