@@ -79,7 +79,6 @@ public class MineFactory {
     Location spawnLocation;
     Location npcLocation;
     Location nextLocation;
-    Location placeLocation;
     Block startBlock;
     Block endBlock;
     MineWorldManager mineWorldManager;
