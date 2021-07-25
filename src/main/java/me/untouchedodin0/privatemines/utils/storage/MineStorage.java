@@ -33,7 +33,7 @@ public class MineStorage {
 
     File userFile;
     File[] mineFiles = new File("plugins/PrivateMinesRewrite/mines").listFiles();
-    public Map<File, MineType> mines = new HashMap<>();
+    Map<File, MineType> mines = new HashMap<>();
 
     public boolean hasMine(Player player) {
         userFile = new File("plugins/PrivateMinesRewrite/mines/" + player.getUniqueId() + ".yml");
