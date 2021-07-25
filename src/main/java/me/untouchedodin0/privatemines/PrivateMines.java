@@ -34,6 +34,7 @@ import me.untouchedodin0.privatemines.utils.mine.MineUpgradeUtil;
 import me.untouchedodin0.privatemines.utils.mine.PrivateMineResetUtil;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import me.untouchedodin0.privatemines.utils.mine.paste.PasteBuilder;
+import me.untouchedodin0.privatemines.utils.storage.MineHandler;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
@@ -59,28 +60,19 @@ import java.util.UUID;
 public class PrivateMines extends JavaPlugin {
 
     public static final String MINES_FOLDER_NAME = "mines";
+    private final int pluginId = 11413; // Metrics ID.
     int minesCount;
     int resetDelay;
-    private final int pluginId = 11413; // Metrics ID.
-
-
     File[] structuresList;
     File structureFolder = new File("plugins/PrivateMinesRewrite/schematics/");
     File schematicsFile = new File("plugins/PrivateMinesRewrite/schematics/schematics.yml");
-    File structure;
     MultiBlockStructure multiBlockStructure;
 
     List<MineType> mineTypes = new ArrayList<>();
 
     private PrivateMines privateMine;
-    private PrivateMineResetUtil privateMineResetUtil;
-    private MineFillManager fillManager;
     private MineWorldManager mineManager;
-    private MineStorage mineStorage = new MineStorage();
-    private MineFactory mineFactory;
     private MineUpgradeUtil mineUpgradeUtil;
-    private PasteBuilder pasteBuilder;
-    private MineLoopUtil mineLoopUtil;
     private YamlConfiguration schematicsYml;
 
     public static String fileNameWithOutExt(String fileName) {
@@ -98,15 +90,14 @@ public class PrivateMines extends JavaPlugin {
         Bukkit.getLogger().info("Setting up the Private Mines World...");
         mineManager = new MineWorldManager();
         Bukkit.getLogger().info("Private Mines World has been setup!");
-        fillManager = new MineFillManager(this);
+        MineFillManager fillManager = new MineFillManager(this);
 
         Bukkit.getLogger().info("Setting up the Private Mines Storage and Factory...");
-        mineStorage = new MineStorage();
-        privateMineResetUtil = new PrivateMineResetUtil(this);
-        pasteBuilder = new PasteBuilder();
-        mineLoopUtil = new MineLoopUtil();
-
-        mineFactory = new MineFactory(
+        MineStorage mineStorage = new MineStorage();
+        PrivateMineResetUtil privateMineResetUtil = new PrivateMineResetUtil(this);
+        PasteBuilder pasteBuilder = new PasteBuilder();
+        MineLoopUtil mineLoopUtil = new MineLoopUtil();
+        MineFactory mineFactory = new MineFactory(
                 this,
                 mineStorage,
                 fillManager,
@@ -117,30 +108,39 @@ public class PrivateMines extends JavaPlugin {
 
         mineUpgradeUtil = new MineUpgradeUtil();
 
-        Bukkit.getLogger().info("Private Mines storage and factory has been setup!");
-
         BukkitCommandManager manager = new PaperCommandManager(this);
 
         if (!minesFolder.exists()) {
             Bukkit.getLogger().info("Creating mines directory...");
-            minesFolder.mkdir();
+            boolean createdMinesDirectorySuccessfully = minesFolder.mkdir();
+            if (createdMinesDirectorySuccessfully) {
+                Bukkit.getLogger().info("The mines directory was successfully created!");
+            }
         }
 
         if (!structureFolder.exists()) {
-            structureFolder.mkdir();
+            boolean createdStructureFolderSuccessfully = structureFolder.mkdir();
+            if (createdStructureFolderSuccessfully) {
+                Bukkit.getLogger().info("The structures directory was successfully created!");
+            }
         }
 
         privateMine = this;
-        Bukkit.getLogger().info("Loading structures...");
         structuresList = structureFolder.listFiles();
 
         for (File file : structuresList) {
-            Bukkit.getLogger().info("Loading structure " + file.getName());
+            String name = file.getName().replace(".dat", "");
+            MineType mineType = new MineType(name);
             multiBlockStructure = util.loadStructure(file.getName(), file);
-            util.saveToStructureMap(file.getName(), multiBlockStructure);
+            util.saveToStructureMap(name, multiBlockStructure);
+            mineType.setFile(file);
+            mineType.setMultiBlockStructure(multiBlockStructure);
+            mineTypes.add(mineType);
         }
 
-        Bukkit.getLogger().info("Structure Map Size: " + util.getStructureMap().size());
+        for (MineType mineType : mineTypes) {
+            MineHandler.createMineType(mineType);
+        }
 
         Bukkit.getLogger().info("Loading mines...");
         minesCount = minesFolder.list().length;
