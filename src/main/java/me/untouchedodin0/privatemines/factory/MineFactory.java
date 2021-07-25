@@ -40,7 +40,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import redempt.redlib.commandmanager.Messages;
 import redempt.redlib.multiblock.MultiBlockStructure;
-import redempt.redlib.multiblock.Structure;
 import redempt.redlib.region.CuboidRegion;
 
 import java.io.File;
@@ -102,8 +101,6 @@ public class MineFactory {
     MineLoopUtil mineLoopUtil;
     Util util;
     PasteBuilder pasteBuilder;
-    Structure currentStructure;
-    Structure upgradeStructure;
     int mineSize = 0;
 
     Material cornerMaterial = Material.POWERED_RAIL;
