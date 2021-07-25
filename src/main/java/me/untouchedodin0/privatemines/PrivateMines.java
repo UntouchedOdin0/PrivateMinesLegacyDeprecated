@@ -152,8 +152,8 @@ public class PrivateMines extends JavaPlugin {
                 fillManager,
                 this,
                 mineStorage,
-                mineFactory,
-                mineManager));
+                mineFactory));
+
         Bukkit.getLogger().info("Command registered!");
 
         Bukkit.getLogger().info("Setting up the private mine util...");
@@ -171,23 +171,6 @@ public class PrivateMines extends JavaPlugin {
 
         Metrics metrics = new Metrics(this, pluginId);
         Bukkit.getLogger().info("Loaded metrics!");
-
-        /*
-
-        TODO Fix this from trying to load in the structure system.
-        schematicsFile = new File(getDataFolder(), "schematics/schematics.yml");
-
-        saveResource("schematics/schematics.yml", false);
-        schematicsYml = YamlConfiguration.loadConfiguration(schematicsFile);
-         */
-
-//        try {
-//            schematicsYml.save(schematicsFile);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        schematicsYml = YamlConfiguration.loadConfiguration(schematicsFile);
-//        mineStorage.loadMineTypes(schematicsYml);
     }
 
     @Override
