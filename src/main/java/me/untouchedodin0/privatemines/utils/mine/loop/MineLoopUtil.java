@@ -74,6 +74,7 @@ public class MineLoopUtil {
         this.spawnLocation = findSpawnPointLocation(startLocation, endLocation, spawnPointMaterial);
     }
 
+    @SuppressWarnings("unused")
     public List<Location> getCornerLocations() {
         return cornerLocations;
     }
