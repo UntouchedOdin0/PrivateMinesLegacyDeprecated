@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.privateminesrewrite'
-version '1.0-SNAPSHOT'
+version '2.1.0-SNAPSHOT' // Change this for the jar version
 
 repositories {
     mavenCentral()
