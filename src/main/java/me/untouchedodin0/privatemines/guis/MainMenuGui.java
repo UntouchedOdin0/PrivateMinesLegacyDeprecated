@@ -78,7 +78,6 @@ public class MainMenuGui {
         corner2flat = new Location(corner2.getWorld(), corner2.getX(), corner1.getY(), corner2.getZ());
 
         size = mineConfig.getInt("mineSize");
-//        size = corner2.distance(corner1);
         whitelistedPlayersGui = new WhitelistedPlayersGui();
         bannedPlayersGui = new BannedPlayersGui();
         priorityPlayersGui = new PriorityPlayersGui();
