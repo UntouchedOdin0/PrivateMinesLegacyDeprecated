@@ -77,7 +77,6 @@ public class Util {
                     " inputStream was null!");
         }
         multiBlockStructure = MultiBlockStructure.create(inputStream, structureName);
-        Bukkit.getLogger().info("loadStructureMultiBlockStructure: " + multiBlockStructure.getName());
         return multiBlockStructure;
     }
 
