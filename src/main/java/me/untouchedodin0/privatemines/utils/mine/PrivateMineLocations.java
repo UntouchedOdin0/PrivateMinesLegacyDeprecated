@@ -29,6 +29,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("unused")
 public class PrivateMineLocations extends Event implements Cancellable {
 
     private final Player player;
@@ -37,6 +38,7 @@ public class PrivateMineLocations extends Event implements Cancellable {
     private final Location npcLocation;
     private final Location corner1;
     private final Location corner2;
+    private boolean isCancelled;
 
     public PrivateMineLocations(
             Player player,
@@ -60,6 +62,7 @@ public class PrivateMineLocations extends Event implements Cancellable {
     public Location getMineLocation() {
         return mineLocation;
     }
+
 
     public Location getSpawnLocation() {
         return spawnLocation;
@@ -86,7 +89,7 @@ public class PrivateMineLocations extends Event implements Cancellable {
 
     @Override
     public boolean isCancelled() {
-        return false;
+        return isCancelled;
     }
 
     /**
@@ -98,7 +101,7 @@ public class PrivateMineLocations extends Event implements Cancellable {
 
     @Override
     public void setCancelled(boolean cancel) {
-
+        this.isCancelled = cancel;
     }
 
     @NotNull
