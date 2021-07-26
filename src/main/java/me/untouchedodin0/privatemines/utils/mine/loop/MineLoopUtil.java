@@ -26,6 +26,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import redempt.redlib.multiblock.MultiBlockStructure;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +37,35 @@ public class MineLoopUtil {
     List<Location> cornerLocations = new ArrayList<>();
     Location spawnLocation;
     Location npcLocation;
+    int[][] cornerLocations1;
 
-    public List<Location> findCornerLocations(Location startLocation, Location endLocation, Material cornerMaterial) {
+    public int[][] findCornerLocations(MultiBlockStructure structure, Material cornerMaterial) {
+
+        int[] dimensions = structure.getDimensions();
+        int dimX = dimensions[0];
+        int dimY = dimensions[1];
+        int dimZ = dimensions[2];
+
+        int[][] locations = new int[2][];
+        int corners = 0;
+
+        for (int x = 0; x < dimX; x++) {
+            for (int y = 0; y < dimY; y++) {
+                for (int z = 0; z < dimZ; z++) {
+                    if (structure.getType(x, y, z) != cornerMaterial) {
+                        continue;
+                    }
+                    locations[corners] = new int[] {x, y, z};
+                    corners++;
+                    if (corners >= 2) break;
+                }
+            }
+        }
+        return locations;
+    }
+
+    public List<Location> findCornerLocations(Location startLocation, Location endLocation, Material
+            cornerMaterial) {
         List<Location> cornerLocation = new ArrayList<>();
         world = startLocation.getWorld();
         for (int x = startLocation.getBlockX(); x <= endLocation.getBlockX(); x++) {
@@ -54,7 +82,8 @@ public class MineLoopUtil {
         return cornerLocation;
     }
 
-    public Location findSpawnPointLocation(Location startLocation, Location endLocation, Material spawnPointMaterial) {
+    public Location findSpawnPointLocation(Location startLocation, Location endLocation, Material
+            spawnPointMaterial) {
         Location spawnLoc = null;
         for (int x = startLocation.getBlockX(); x <= endLocation.getBlockX(); x++) {
             for (int y = startLocation.getBlockY(); y <= endLocation.getBlockY(); y++) {
