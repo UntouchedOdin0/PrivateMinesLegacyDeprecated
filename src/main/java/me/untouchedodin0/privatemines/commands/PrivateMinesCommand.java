@@ -200,6 +200,7 @@ public class PrivateMinesCommand extends BaseCommand {
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         corner1 = mineConfig.getLocation("corner1");
         corner2 = mineConfig.getLocation("corner2");
+
         mineBlocks = (List<ItemStack>) mineConfig.getList(BLOCKS_STRING);
 
         if (corner1 != null && corner2 != null && mineBlocks != null) {
