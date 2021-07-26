@@ -89,6 +89,8 @@ public class Util {
         return multiBlockStructure;
     }
 
+
+
     public void saveToStructureMap(String structureName, MultiBlockStructure multiBlockStructure) {
         structureMap.putIfAbsent(structureName, multiBlockStructure);
     }
