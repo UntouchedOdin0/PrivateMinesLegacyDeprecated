@@ -54,8 +54,11 @@ public class PrivateMineResetUtil {
         teleportLocation = mineConfig.getLocation("spawnLocation");
 
         Task.syncRepeating(() -> {
-            player = Bukkit.getPlayer(playerId);
-            if (player != null) {
+            if (Bukkit.getPlayer(uuid) == null) {
+                Bukkit.getLogger().info("Couldn't start task due to the player not being online yet, trying again in 60s!");
+                Task.syncDelayed((() ->
+                        startResetTask(uuid, minutesDelay)), 60 * 20L);
+            } else {
                 player.sendMessage(ChatColor.GREEN + "Resetting your private mine!");
                 mineFillManager.fillPlayerMine(playerId);
                 if (teleportLocation != null) {
