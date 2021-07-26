@@ -103,9 +103,9 @@ public class MineFactory {
     PasteBuilder pasteBuilder;
     int mineSize = 0;
 
-    Material cornerMaterial = Material.POWERED_RAIL;
-    Material npcMaterial = Material.WHITE_WOOL;
-    Material spawnMaterial = Material.CHEST;
+    Material cornerMaterial = XMaterial.POWERED_RAIL.parseMaterial();
+    Material npcMaterial = XMaterial.WHITE_WOOL.parseMaterial();
+    Material spawnMaterial = XMaterial.CHEST.parseMaterial();
 
     public MineFactory(PrivateMines privateMines,
                        MineStorage storage,
