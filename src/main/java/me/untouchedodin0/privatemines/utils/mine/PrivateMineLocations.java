@@ -39,6 +39,7 @@ public class PrivateMineLocations extends Event implements Cancellable {
     private final Location corner1;
     private final Location corner2;
     private boolean isCancelled;
+    private static final HandlerList handlers = new HandlerList();
 
     public PrivateMineLocations(
             Player player,
@@ -107,6 +108,6 @@ public class PrivateMineLocations extends Event implements Cancellable {
     @NotNull
     @Override
     public HandlerList getHandlers() {
-        return null;
+        return handlers;
     }
 }
