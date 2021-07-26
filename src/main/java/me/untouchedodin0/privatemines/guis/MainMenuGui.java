@@ -22,6 +22,7 @@
 
 package me.untouchedodin0.privatemines.guis;
 
+import com.cryptomorin.xseries.XMaterial;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
@@ -30,7 +31,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -59,6 +59,36 @@ public class MainMenuGui {
     PriorityPlayersGui priorityPlayersGui;
     Player coowner;
 
+    ItemStack bedStack;
+    ItemMeta bedStackItemMeta;
+
+    ItemStack statusClosed;
+    ItemMeta statusClosedMeta;
+
+    ItemStack statusOpen;
+    ItemMeta statusOpenMeta;
+
+    ItemStack setTax;
+    ItemMeta setTaxMeta;
+
+    ItemStack mineSize;
+    ItemMeta mineSizeMeta;
+
+    ItemStack resetMine;
+    ItemMeta resetMineMeta;
+
+    ItemStack whitelistedMembers;
+    ItemMeta whitelistedMembersMeta;
+
+    ItemStack bannedMembers;
+    ItemMeta bannedMembersMeta;
+
+    ItemStack priorityMembers;
+    ItemMeta priorityMembersMeta;
+
+    ItemStack coownerstack;
+    ItemMeta coownerMeta;
+
     public MainMenuGui(MineFillManager mineFillManager) {
         this.mineFillManager = mineFillManager;
     }
@@ -82,13 +112,97 @@ public class MainMenuGui {
         bannedPlayersGui = new BannedPlayersGui();
         priorityPlayersGui = new PriorityPlayersGui();
 
-        ItemStack bedStack = new ItemStack(Material.RED_BED);
-        ItemMeta bedStackItemMeta = bedStack.getItemMeta();
-        if (bedStackItemMeta != null) {
-            bedStackItemMeta.setDisplayName(ChatColor.GREEN + "Go to your mine");
+        if (XMaterial.RED_BED.parseMaterial() != null) {
+            bedStack = new ItemStack(XMaterial.RED_BED.parseMaterial());
+            bedStackItemMeta = bedStack.getItemMeta();
+            if (bedStackItemMeta != null) {
+                bedStackItemMeta.setDisplayName(ChatColor.GREEN + "Go to your mine");
+            }
+            bedStack.setItemMeta(bedStackItemMeta);
         }
-        bedStack.setItemMeta(bedStackItemMeta);
 
+        if (XMaterial.RED_WOOL.parseMaterial() != null) {
+            statusClosed = new ItemStack(XMaterial.RED_WOOL.parseMaterial());
+            statusClosedMeta = statusClosed.getItemMeta();
+            if (statusClosedMeta != null) {
+                statusClosedMeta.setDisplayName("" + ChatColor.GRAY + "Mine Status: " + ChatColor.RED + "Closed");
+            }
+            statusClosed.setItemMeta(statusClosedMeta);
+        }
+
+        if (XMaterial.LIME_WOOL.parseMaterial() != null) {
+            statusOpen = new ItemStack(XMaterial.LIME_WOOL.parseMaterial());
+            statusOpenMeta = statusOpen.getItemMeta();
+            if (statusOpenMeta != null) {
+                statusOpenMeta.setDisplayName("" + ChatColor.GRAY + "Mine Status: " + ChatColor.GREEN + "Open");
+            }
+            statusOpen.setItemMeta(statusOpenMeta);
+        }
+
+        if (XMaterial.OAK_SIGN.parseMaterial() != null) {
+            setTax = new ItemStack(XMaterial.OAK_SIGN.parseMaterial());
+            setTaxMeta = setTax.getItemMeta();
+            if (setTaxMeta != null) {
+                setTaxMeta.setDisplayName(ChatColor.GREEN + "Set Tax");
+            }
+            setTax.setItemMeta(setTaxMeta);
+        }
+
+        if (XMaterial.LAVA_BUCKET.parseMaterial() != null) {
+            mineSize = new ItemStack(XMaterial.LAVA_BUCKET.parseMaterial());
+            mineSizeMeta = mineSize.getItemMeta();
+            if (mineSizeMeta != null) {
+                mineSizeMeta.setDisplayName(ChatColor.GREEN + "Mine Size " + ChatColor.YELLOW + size + "x" + size);
+            }
+            mineSize.setItemMeta(mineSizeMeta);
+        }
+
+        if (XMaterial.MINECART.parseMaterial() != null) {
+            resetMine = new ItemStack(XMaterial.MINECART.parseMaterial());
+            resetMineMeta = resetMine.getItemMeta();
+            if (resetMineMeta != null) {
+                resetMineMeta.setDisplayName(ChatColor.GREEN + "Reset Mine");
+            }
+            resetMine.setItemMeta(resetMineMeta);
+        }
+
+        if (XMaterial.WATER_BUCKET.parseMaterial() != null) {
+            whitelistedMembers = new ItemStack(XMaterial.WATER_BUCKET.parseMaterial());
+            whitelistedMembersMeta = whitelistedMembers.getItemMeta();
+            if (whitelistedMembersMeta != null) {
+                whitelistedMembersMeta.setDisplayName(ChatColor.GREEN + "Whitelisted Members");
+            }
+            whitelistedMembers.setItemMeta(whitelistedMembersMeta);
+        }
+
+        if (XMaterial.LAVA_BUCKET.parseMaterial() != null) {
+            bannedMembers = new ItemStack(XMaterial.LAVA_BUCKET.parseMaterial());
+            bannedMembersMeta = bannedMembers.getItemMeta();
+            if (bannedMembersMeta != null) {
+                bannedMembersMeta.setDisplayName(ChatColor.GREEN + "Banned Members");
+            }
+            bannedMembers.setItemMeta(bedStackItemMeta);
+        }
+
+        if (XMaterial.EMERALD.parseMaterial() != null) {
+            priorityMembers = new ItemStack(XMaterial.EMERALD.parseMaterial());
+            priorityMembersMeta = priorityMembers.getItemMeta();
+            if (priorityMembersMeta != null) {
+                priorityMembersMeta.setDisplayName(ChatColor.GREEN + "Priority Members");
+            }
+            priorityMembers.setItemMeta(priorityMembersMeta);
+        }
+
+        if (XMaterial.DRAGON_EGG.parseMaterial() != null) {
+            coownerstack = new ItemStack(XMaterial.DRAGON_EGG.parseMaterial());
+            coownerMeta = coownerstack.getItemMeta();
+            if (coownerMeta != null) {
+                coownerMeta.setDisplayName(ChatColor.LIGHT_PURPLE + "Co-Owner");
+            }
+            coownerstack.setItemMeta(coownerMeta);
+        }
+
+        /*
         ItemStack statusClosed = new ItemStack(Material.RED_WOOL);
         ItemMeta statusClosedItemMeta = statusClosed.getItemMeta();
         if (statusClosedItemMeta != null) {
@@ -103,7 +217,10 @@ public class MainMenuGui {
         }
         statusOpen.setItemMeta(statusOpenItemMeta);
 
-        ItemStack setTax = new ItemStack(Material.OAK_SIGN);
+        ItemStack setTax = null;
+        if (XMaterial.OAK_SIGN.parseMaterial() != null) {
+            setTax = new ItemStack(XMaterial.OAK_SIGN.parseMaterial());
+        }
         ItemMeta setTaxItemMeta = setTax.getItemMeta();
         if (setTaxItemMeta != null) {
             setTaxItemMeta.setDisplayName(ChatColor.GREEN + "Set Tax");
@@ -153,6 +270,7 @@ public class MainMenuGui {
             coownerItemMeta.setDisplayName(ChatColor.LIGHT_PURPLE + "Co-Owner");
         }
         coowner.setItemMeta(coownerItemMeta);
+         */
 
         gui = Gui.gui().title(Component.text("Private Mine")).rows(1).create();
 
@@ -238,7 +356,7 @@ public class MainMenuGui {
             priorityPlayersGui.openPriorityPlayersMenu(player);
         });
 
-        GuiItem coOwnerItem = ItemBuilder.from(coowner).asGuiItem(event -> {
+        GuiItem coOwnerItem = ItemBuilder.from(coownerstack).asGuiItem(event -> {
             player.closeInventory();
             event.setCancelled(true);
             ChatPrompt.prompt(player, ChatColor.RED + "Please specify a player name",
