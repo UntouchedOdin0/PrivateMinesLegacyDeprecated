@@ -42,6 +42,7 @@ public class PrivateMineResetUtil {
     YamlConfiguration mineConfig;
     Player player;
     Location teleportLocation;
+    Task task;
 
     public PrivateMineResetUtil(PrivateMines privateMines) {
         mineFillManager = new MineFillManager(privateMines);
@@ -49,23 +50,22 @@ public class PrivateMineResetUtil {
 
     public void startResetTask(UUID uuid, int minutesDelay) {
         this.playerId = uuid;
+        this.player = Bukkit.getPlayer(playerId);
         userFile = new File("plugins/PrivateMinesRewrite/mines/" + playerId + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         teleportLocation = mineConfig.getLocation("spawnLocation");
 
-        Task.syncRepeating(() -> {
-            if (Bukkit.getPlayer(uuid) == null) {
-                Bukkit.getLogger().info("Couldn't start task due to the player not being online yet, trying again in 60s!");
-                Task.syncDelayed((() ->
-                        startResetTask(uuid, minutesDelay)), 60 * 20L);
-            } else {
+        task = Task.syncRepeating(() -> {
+                if (this.player == null) {
+                    Bukkit.getLogger().info("Target player wasn't online, trying again later!");
+                    return;
+                }
                 player.sendMessage(ChatColor.GREEN + "Resetting your private mine!");
                 mineFillManager.fillPlayerMine(playerId);
                 if (teleportLocation != null) {
                     player.teleport(teleportLocation);
                     player.sendMessage(ChatColor.GREEN + "You've been teleported to your mine!");
                 }
-            }
         }, 0L, 20L * 60 * minutesDelay);
     }
 }
