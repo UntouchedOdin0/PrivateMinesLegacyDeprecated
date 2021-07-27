@@ -26,6 +26,7 @@ import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
 import me.untouchedodin0.privatemines.commands.PrivateMinesCommand;
 import me.untouchedodin0.privatemines.factory.MineFactory;
+import me.untouchedodin0.privatemines.structure.StructureManagers;
 import me.untouchedodin0.privatemines.utils.Metrics;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
@@ -72,6 +73,7 @@ public class PrivateMines extends JavaPlugin {
 
     private PrivateMines privateMine;
     private MineWorldManager mineManager;
+    private StructureManagers structureManagers;
     private MineUpgradeUtil mineUpgradeUtil;
     private YamlConfiguration schematicsYml;
 
@@ -107,6 +109,7 @@ public class PrivateMines extends JavaPlugin {
                 pasteBuilder);
 
         mineUpgradeUtil = new MineUpgradeUtil();
+        structureManagers = new StructureManagers();
 
         BukkitCommandManager manager = new PaperCommandManager(this);
 
@@ -140,6 +143,12 @@ public class PrivateMines extends JavaPlugin {
 
         for (MineType mineType : mineTypes) {
             MineHandler.createMineType(mineType);
+        }
+
+        List<MineType> types = MineHandler.getMineTypes();
+
+        for (MineType type : types) {
+            structureManagers.loadStructureData(type.getFile());
         }
 
         Bukkit.getLogger().info("Loading mines...");
