@@ -26,10 +26,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import redempt.redlib.multiblock.MultiBlockStructure;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,14 +36,12 @@ public class StructureManagers {
     MultiBlockStructure multiBlockStructure;
     List<MultiBlockStructure> multiBlockStructures = new ArrayList<>();
     int[][] corners = new int[2][];
+    int[] npcLocation = null; //new int[1];
+    int[] spawnLocation = null; //new int[1];
 
     public void loadStructureData(File file) {
         try {
             inputStream = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (inputStream != null) {
             Bukkit.getLogger().info("Loading Structure " + file.getName());
             multiBlockStructure =
                     MultiBlockStructure
@@ -55,20 +50,39 @@ public class StructureManagers {
                                     false,
                                     false);
 
-            int[] dim = multiBlockStructure.getDimensions();
-            int pos = 0;
+            int[] dimensions = multiBlockStructure.getDimensions();
+            int position = 0;
+//            int npctest = npcLocation[1];
 
-            for (int x = 0; x < dim[0]; x++) {
-                for (int y = 0; y < dim[1]; y++) {
-                    for (int z = 0; z < dim[2]; z++) {
-                        if (multiBlockStructure.getType(x, y, z) != Material.POWERED_RAIL) {
+            for (int x = 0; x < dimensions[0]; x++) {
+                for (int y = 0; y < dimensions[1]; y++) {
+                    for (int z = 0; z < dimensions[2]; z++) {
+                        if (multiBlockStructure.getType(x, y, z) == Material.POWERED_RAIL) {
+                            corners[position] = new int[]{x, y, z};
+                            position++;
+                        } else if (multiBlockStructure.getType(x, y, z) == Material.WHITE_WOOL) {
+                            npcLocation = new int[]{x, y, z};
                             continue;
+                        } else if (multiBlockStructure.getType(x, y, z) == Material.CHEST) {
+                            spawnLocation = new int[]{x, y, z};
+//                            spawnLocation[position] = new int[]{x, y, z};
                         }
-                        corners[pos] = new int[]{x, y, z};
                     }
                 }
             }
             multiBlockStructures.add(multiBlockStructure);
+            Bukkit.getLogger().info("===============");
+            Bukkit.getLogger().info("STRUCTURE MANAGERS DEBUG STUFF");
+            Bukkit.getLogger().info("MultiBlockStructure: " + multiBlockStructure.getName());
+            Bukkit.getLogger().info("inputStream: " + inputStream.toString());
+            Bukkit.getLogger().info("dim: " + dimensions[0] + " " + dimensions[1] + " " + dimensions[2]);
+            Bukkit.getLogger().info("corners[]: " + corners[0] + " " + corners[1]);
+            Bukkit.getLogger().info("position: " + position);
+            Bukkit.getLogger().info("npcLocation: " + npcLocation.toString());
+            Bukkit.getLogger().info("spawnLocation: " + spawnLocation.toString());
+            Bukkit.getLogger().info("===============");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
