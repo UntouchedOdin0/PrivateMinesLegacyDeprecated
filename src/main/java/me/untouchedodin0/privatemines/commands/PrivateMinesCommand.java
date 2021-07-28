@@ -30,6 +30,7 @@ import me.untouchedodin0.privatemines.factory.MineFactory;
 import me.untouchedodin0.privatemines.guis.MainMenuGui;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
+import me.untouchedodin0.privatemines.utils.mine.ExpandingMineUtil;
 import me.untouchedodin0.privatemines.utils.mine.MineUpgradeUtil;
 import me.untouchedodin0.privatemines.utils.queue.MineQueueSystem;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
@@ -80,6 +81,7 @@ public class PrivateMinesCommand extends BaseCommand {
     MineStorage mineStorage;
     MineFactory mineFactory;
     MineUpgradeUtil mineUpgradeUtil;
+    ExpandingMineUtil expandingMineUtil;
 
     File userFile;
     File locationsFile;
@@ -104,6 +106,7 @@ public class PrivateMinesCommand extends BaseCommand {
         this.mainMenuGui = new MainMenuGui(fillManager);
         this.mineWorldManager = new MineWorldManager();
         this.mineUpgradeUtil = new MineUpgradeUtil();
+        this.expandingMineUtil = new ExpandingMineUtil();
         this.mineQueueSystem = new MineQueueSystem();
     }
 
@@ -240,8 +243,8 @@ public class PrivateMinesCommand extends BaseCommand {
     public void upgrade(Player p) {
         userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        mineFactory.expandMine(p);
-
+//        mineFactory.expandMine(p);
+        expandingMineUtil.expandMine(p);
 //        Location location = mineConfig.getLocation("placeLocation");
 //
 //        File file = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
