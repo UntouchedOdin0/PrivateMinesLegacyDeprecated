@@ -35,8 +35,10 @@ public class MineLoopUtil {
 
     World world;
     List<Location> cornerLocations = new ArrayList<>();
+    List<Location> expandCornerLocations = new ArrayList<>();
     Location spawnLocation;
     Location npcLocation;
+
     int[][] cornerLocations1;
 
     public int[][] findCornerLocations(MultiBlockStructure structure, Material cornerMaterial) {
@@ -82,6 +84,24 @@ public class MineLoopUtil {
         return cornerLocation;
     }
 
+    public List<Location> findExpandCornerLocations(Location startLocation, Location endLocation, Material
+            expandCornerMaterial) {
+        List<Location> expandCorners = new ArrayList<>();
+        world = startLocation.getWorld();
+        for (int x = startLocation.getBlockX(); x <= endLocation.getBlockX(); x++) {
+            for (int y = startLocation.getBlockY(); y <= endLocation.getBlockY(); y++) {
+                for (int z = startLocation.getBlockZ(); z <= endLocation.getBlockZ(); z++) {
+                    Block block = world.getBlockAt(x, y, z);
+                    if (block.getType() == expandCornerMaterial) {
+                        expandCorners.add(block.getLocation());
+                        block.setType(Material.AIR);
+                    }
+                }
+            }
+        }
+        return expandCorners;
+    }
+
     public Location findSpawnPointLocation(Location startLocation, Location endLocation, Material
             spawnPointMaterial) {
         Location spawnLoc = null;
@@ -118,9 +138,11 @@ public class MineLoopUtil {
     public void setBlockLocations(Location startLocation,
                                   Location endLocation,
                                   Material cornerMaterial,
+                                  Material expandMaterial,
                                   Material npcMaterial,
                                   Material spawnPointMaterial) {
         this.cornerLocations = findCornerLocations(startLocation, endLocation, cornerMaterial);
+        this.expandCornerLocations = findExpandCornerLocations(startLocation, endLocation, expandMaterial);
         this.npcLocation = findNpcLocation(startLocation, endLocation, npcMaterial);
         this.spawnLocation = findSpawnPointLocation(startLocation, endLocation, spawnPointMaterial);
     }
