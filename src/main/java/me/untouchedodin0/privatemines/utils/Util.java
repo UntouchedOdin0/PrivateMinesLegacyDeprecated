@@ -24,6 +24,8 @@ package me.untouchedodin0.privatemines.utils;
 
 import dev.dbassett.skullcreator.SkullCreator;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import redempt.redlib.multiblock.MultiBlockStructure;
@@ -105,5 +107,9 @@ public class Util {
                 "3RleHR1cmUvNTIyODRlMTMyYmZkNjU5YmM2YWRhNDk3YzRmYTMwOTRjZDkzMjMxYTZiNTA1YTEyY2U3Y2Q1MTM1YmE4ZmY5MyJ9fX0=";
 
         return SkullCreator.itemFromBase64(base64);
+    }
+
+    public static void setBlockViaNMS(World world, int x, int y, int z, Material type, boolean applyPhysics) {
+
     }
 }
