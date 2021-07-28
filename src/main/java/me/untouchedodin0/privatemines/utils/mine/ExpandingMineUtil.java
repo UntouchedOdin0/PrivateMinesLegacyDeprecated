@@ -3,6 +3,7 @@ package me.untouchedodin0.privatemines.utils.mine;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import redempt.redlib.region.CuboidRegion;
@@ -25,20 +26,13 @@ public class ExpandingMineUtil {
     CuboidRegion expandRegion;
     CuboidRegion expandRegionBedrock;
 
-    /*
-    public void expandMine(CuboidRegion region, double expand) {
-        this.cuboidRegion = region;
-        this.amount = expand;
-
-        Bukkit.broadcastMessage("Before expanding start: " + cuboidRegion.getStart());
-        Bukkit.broadcastMessage("Before expanding end: " + cuboidRegion.getEnd());
-
-        cuboidRegion.expand(amount, 0, amount, 0, amount, 0);
-
-        Bukkit.broadcastMessage("After expanding start: " + cuboidRegion.getStart());
-        Bukkit.broadcastMessage("After expanding end: " + cuboidRegion.getEnd());
-    }
-     */
+    BlockFace[] faces = {
+            BlockFace.DOWN,
+            BlockFace.NORTH,
+            BlockFace.EAST,
+            BlockFace.SOUTH,
+            BlockFace.WEST
+    };
 
     public void expandMine(Player player) {
         userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
@@ -59,15 +53,18 @@ public class ExpandingMineUtil {
         expandRegion.move(0, 0, 0);
         expandRegionBedrock.move(0, 2, 0);
 
-        expandRegion.stream().forEach(block -> {
-            block.setType(Material.EMERALD_BLOCK);
-        });
-
-        expandRegionBedrock.stream().forEach(block -> {
-            if (block.isEmpty()) {
-                block.setType(Material.REDSTONE_BLOCK);
-            }
-        });
+        expandRegionBedrock.stream().forEach(north -> expandRegionBedrock.getFace(BlockFace.NORTH)
+                .stream()
+                .forEach(bedrock -> bedrock.setType(Material.EMERALD_BLOCK, false)));
+        expandRegionBedrock.stream().forEach(east -> expandRegionBedrock.getFace(BlockFace.EAST)
+                .stream()
+                .forEach(bedrock -> bedrock.setType(Material.BONE_BLOCK, false)));
+        expandRegionBedrock.stream().forEach(south -> expandRegionBedrock.getFace(BlockFace.SOUTH)
+                .stream()
+                .forEach(bedrock -> bedrock.setType(Material.DIAMOND_BLOCK, false)));
+        expandRegionBedrock.stream().forEach(west -> expandRegionBedrock.getFace(BlockFace.WEST)
+                .stream()
+                .forEach(bedrock -> bedrock.setType(Material.GOLD_BLOCK, false)));
 
         mineConfig.set(CORNER_1_STRING, expandRegion.getStart());
         mineConfig.set(CORNER_2_STRING, expandRegion.getEnd());
