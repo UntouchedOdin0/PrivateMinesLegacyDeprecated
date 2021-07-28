@@ -41,6 +41,7 @@ import org.bukkit.inventory.ItemStack;
 import redempt.redlib.commandmanager.Messages;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.region.CuboidRegion;
+import redempt.redlib.region.Region;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,6 +72,9 @@ public class MineFactory {
     World world;
     CuboidRegion cuboidRegion;
     CuboidRegion miningRegion;
+    CuboidRegion expandRegion;
+    CuboidRegion expandRegionBedrock;
+
     Location start;
     Location end;
     Location corner1;
@@ -106,6 +110,7 @@ public class MineFactory {
     Material cornerMaterial = XMaterial.POWERED_RAIL.parseMaterial();
     Material npcMaterial = XMaterial.WHITE_WOOL.parseMaterial();
     Material spawnMaterial = XMaterial.CHEST.parseMaterial();
+    Material expandMaterial = XMaterial.SPONGE.parseMaterial();
 
     public MineFactory(PrivateMines privateMines,
                        MineStorage storage,
@@ -145,7 +150,7 @@ public class MineFactory {
             end = cuboidRegion.getEnd().clone();
 
             multiBlockStructure.build(location);
-            mineLoopUtil.setBlockLocations(start, end, cornerMaterial, npcMaterial, spawnMaterial);
+            mineLoopUtil.setBlockLocations(start, end, cornerMaterial, expandMaterial, npcMaterial, spawnMaterial);
             corner1 = mineLoopUtil.getCorner1();
             corner2 = mineLoopUtil.getCorner2();
 
@@ -194,6 +199,41 @@ public class MineFactory {
         start = null;
         end = null;
         mineSize = 0;
+    }
+
+    public void expandMine(Player player) {
+        userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
+
+        if (!userFile.exists()) {
+            Bukkit.getLogger().info("Failed to upgrade " + player.getName() + "'s mine due to them not owning one");
+            return;
+        }
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        start = mineConfig.getLocation(CORNER_1_STRING);
+        end = mineConfig.getLocation(CORNER_2_STRING);
+        expandRegion = new CuboidRegion(start, end);
+        expandRegionBedrock = new CuboidRegion(start, end);
+
+        expandRegion.expand(1, 1, 0, 0, 1, 1);
+        expandRegionBedrock.expand(3, 2, 0, 2, 3, 2);
+
+        expandRegion.stream().forEach(block -> {
+            block.setType(Material.EMERALD_BLOCK);
+        });
+
+        expandRegionBedrock.stream().forEach(block-> {
+            if (block.isEmpty()) {
+                block.setType(Material.REDSTONE_BLOCK);
+            }
+        });
+
+        mineConfig.set(CORNER_1_STRING, expandRegion.getStart());
+        mineConfig.set(CORNER_2_STRING, expandRegion.getEnd());
+        try {
+            mineConfig.save(userFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 
