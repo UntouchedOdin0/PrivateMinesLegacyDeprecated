@@ -240,11 +240,13 @@ public class PrivateMinesCommand extends BaseCommand {
     public void upgrade(Player p) {
         userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        Location location = mineConfig.getLocation("placeLocation");
+        mineFactory.expandMine(p);
 
-        File file = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
-        p.sendMessage(ChatColor.GREEN + "Attempting to upgrade your mine. (no function here yet)");
-        mineUpgradeUtil.upgradeMine(p, file, location, util);
+//        Location location = mineConfig.getLocation("placeLocation");
+//
+//        File file = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
+//        p.sendMessage(ChatColor.GREEN + "Attempting to upgrade your mine. (no function here yet)");
+//        mineUpgradeUtil.upgradeMine(p, file, location, util);
     }
 
     @Subcommand("whitelist")
