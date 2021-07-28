@@ -131,14 +131,16 @@ public class PrivateMines extends JavaPlugin {
         privateMine = this;
         structuresList = structureFolder.listFiles();
 
-        for (File file : structuresList) {
-            String name = file.getName().replace(".dat", "");
-            MineType mineType = new MineType(name);
-            multiBlockStructure = util.loadStructure(file.getName(), file);
-            util.saveToStructureMap(name, multiBlockStructure);
-            mineType.setFile(file);
-            mineType.setMultiBlockStructure(multiBlockStructure);
-            mineTypes.add(mineType);
+        if (structuresList != null) {
+            for (File file : structuresList) {
+                String name = file.getName().replace(".dat", "");
+                MineType mineType = new MineType(name);
+                multiBlockStructure = util.loadStructure(file.getName(), file);
+                util.saveToStructureMap(name, multiBlockStructure);
+                mineType.setFile(file);
+                mineType.setMultiBlockStructure(multiBlockStructure);
+                mineTypes.add(mineType);
+            }
         }
 
         for (MineType mineType : mineTypes) {
