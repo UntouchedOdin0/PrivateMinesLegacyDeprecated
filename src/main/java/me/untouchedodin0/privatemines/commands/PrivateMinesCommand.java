@@ -167,6 +167,14 @@ public class PrivateMinesCommand extends BaseCommand {
         }
     }
 
+    @Subcommand("delete")
+    @Description("Deletes a mine")
+    @CommandPermission("privatemines.delete")
+    @CommandCompletion("@players")
+    public void delete(Player p) {
+        mineFactory.deleteMine(p);
+    }
+
     /*
         Lets a player reset their mine
      */
@@ -386,6 +394,8 @@ public class PrivateMinesCommand extends BaseCommand {
             e.printStackTrace();
         }
     }
+
+
 }
 
 
