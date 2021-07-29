@@ -24,6 +24,7 @@ package me.untouchedodin0.privatemines.factory;
 
 import com.cryptomorin.xseries.XMaterial;
 import me.untouchedodin0.privatemines.PrivateMines;
+import me.untouchedodin0.privatemines.structure.StructureLoader;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.mine.PrivateMineLocations;
@@ -40,8 +41,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import redempt.redlib.commandmanager.Messages;
 import redempt.redlib.multiblock.MultiBlockStructure;
+import redempt.redlib.multiblock.Structure;
 import redempt.redlib.region.CuboidRegion;
-import redempt.redlib.region.Region;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,6 +69,7 @@ public class MineFactory {
     PrivateMines privateMines;
     MineStorage mineStorage;
     MultiBlockStructure multiBlockStructure;
+    Structure old;
 
     World world;
     CuboidRegion cuboidRegion;
@@ -105,6 +107,7 @@ public class MineFactory {
     MineLoopUtil mineLoopUtil;
     Util util;
     PasteBuilder pasteBuilder;
+    StructureLoader structureLoader;
     int mineSize = 0;
 
     Material cornerMaterial = XMaterial.POWERED_RAIL.parseMaterial();
@@ -118,7 +121,7 @@ public class MineFactory {
                        PrivateMineResetUtil resetUtil,
                        MineLoopUtil mineLoopUtil,
                        Util util,
-                       PasteBuilder pasteBuilder) {
+                       StructureLoader structureLoader) {
         this.privateMines = privateMines;
         this.mineStorage = storage;
         this.mineWorldManager = privateMines.getMineWorldManagerManager();
@@ -126,7 +129,7 @@ public class MineFactory {
         this.resetUtil = resetUtil;
         this.mineLoopUtil = mineLoopUtil;
         this.util = util;
-        this.pasteBuilder = pasteBuilder;
+        this.structureLoader = structureLoader;
     }
 
     public void createMine(Player player, Location location) {
@@ -138,7 +141,7 @@ public class MineFactory {
         locationConfig = YamlConfiguration.loadConfiguration(locationsFile);
 
         playerID = player.getUniqueId().toString();
-        multiBlockStructure = util.getMultiBlockStructure();
+        multiBlockStructure = privateMines.getStructureLoader().getBlockStructure(); //util.getMultiBlockStructure();
 
         if (mineStorage.hasMine(player)) {
             Bukkit.getLogger().warning("Couldn't give mine, due to player already having a mine!");
@@ -199,6 +202,19 @@ public class MineFactory {
         start = null;
         end = null;
         mineSize = 0;
+    }
+
+    public void deleteMine(Player player) {
+        userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
+        locationsFile = new File(UTIL_DIRECTORY, "locations.yml");
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        locationConfig = YamlConfiguration.loadConfiguration(locationsFile);
+        old = multiBlockStructure.assumeAt(locationConfig.getLocation(""));
+        if (old != null) {
+            old.getRegion().forEachBlock(block -> {
+                block.setType(Material.AIR);
+            });
+        }
     }
 
     public void expandMine(Player player) {
