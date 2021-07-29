@@ -251,13 +251,26 @@ public class PrivateMinesCommand extends BaseCommand {
     public void upgrade(Player p) {
         userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-//        mineFactory.expandMine(p);
         expandingMineUtil.expandMine(p);
-//        Location location = mineConfig.getLocation("placeLocation");
-//
-//        File file = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
-//        p.sendMessage(ChatColor.GREEN + "Attempting to upgrade your mine. (no function here yet)");
-//        mineUpgradeUtil.upgradeMine(p, file, location, util);
+    }
+
+    @Subcommand("upgrade")
+    @Description("Force upgrades a player mine")
+    @CommandPermission("privatemines.upgrade")
+    @CommandCompletion("@players")
+    public void upgrade(Player p, OnlinePlayer target) {
+        if (target == null) {
+            p.sendMessage(ChatColor.RED + "The target was offline!");
+        } else {
+            userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
+            mineConfig = YamlConfiguration.loadConfiguration(userFile);
+
+            if (!userFile.exists()) {
+                p.sendMessage(ChatColor.RED + target.getPlayer().getName() + " doesn't own a private mine!");
+            } else {
+                expandingMineUtil.expandMine(p);
+            }
+        }
     }
 
     @Subcommand("whitelist")
