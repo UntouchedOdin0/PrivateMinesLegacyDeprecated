@@ -4,6 +4,8 @@ import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import redempt.redlib.multiblock.MultiBlockStructure;
+import redempt.redlib.multiblock.Structure;
+import redempt.redlib.region.CuboidRegion;
 
 public class StructureLoader {
 
@@ -15,27 +17,21 @@ public class StructureLoader {
     private Location spawnLocation;
     private Location npcLocation;
     MineLoopUtil mineLoopUtil;
-    MultiBlockStructure multiBlockStructure;
+    CuboidRegion cuboidRegion;
+    MultiBlockStructure blockStructure;
+    Structure structures;
 
     public StructureLoader(MineLoopUtil mineLoopUtil) {
         this.mineLoopUtil = mineLoopUtil;
     }
 
-    public void loadStructure(MultiBlockStructure multiBlockStructure, Material spawnMaterial, Material npcMaterial, Material cornerMaterial) {
-        setDimensions(multiBlockStructure.getDimensions());
-
-        setSpawnLocation(mineLoopUtil.findSpawnPointLocation(getStart(), getEnd(), spawnMaterial));
-        setNpcLocation(mineLoopUtil.findNpcLocation(getStart(), getEnd(), npcMaterial));
-        multiBlockStructure.getDimensions();
-        setCornerLocations(mineLoopUtil.findCornerLocations(multiBlockStructure, cornerMaterial));
-    }
-
-    public int[] getDimensions() {
-        return dimensions;
-    }
-
-    public void setDimensions(int[] dimensions) {
-        this.dimensions = dimensions;
+    public void loadStructure(MultiBlockStructure multiBlockStructure) {
+        this.blockStructure = multiBlockStructure;
+        this.dimensions = blockStructure.getDimensions();
+//        this.cuboidRegion = blockStructure.getRegion(getStart());
+//        setSpawnLocation(mineLoopUtil.findSpawnPointLocation(cuboidRegion.getStart(), cuboidRegion.getEnd(), spawnMaterial));
+//        setNpcLocation(mineLoopUtil.findNpcLocation(cuboidRegion.getStart(), cuboidRegion.getEnd(), npcMaterial));
+//        setCornerLocations(mineLoopUtil.findCornerLocations(blockStructure, cornerMaterial));
     }
 
     public Location getStart() {
@@ -70,11 +66,19 @@ public class StructureLoader {
         this.npcLocation = npcLocation;
     }
 
+    public void setCornerLocations(int[][] cornerLocations) {
+        this.cornerLocations = cornerLocations;
+    }
+
     public int[][] getCornerLocations() {
         return cornerLocations;
     }
 
-    public void setCornerLocations(int[][] cornerLocations) {
-        this.cornerLocations = cornerLocations;
+    public int[] getDimensions() {
+        return dimensions;
+    }
+
+    public MultiBlockStructure getBlockStructure() {
+        return blockStructure;
     }
 }
