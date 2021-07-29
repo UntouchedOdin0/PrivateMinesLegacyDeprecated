@@ -22,6 +22,7 @@
 
 package me.untouchedodin0.privatemines.utils.mine.loop;
 
+import me.untouchedodin0.privatemines.structure.StructureLoader;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -38,6 +39,7 @@ public class MineLoopUtil {
     List<Location> expandCornerLocations = new ArrayList<>();
     Location spawnLocation;
     Location npcLocation;
+    StructureLoader structureLoader = new StructureLoader(this);
 
     int[][] cornerLocations1;
 
@@ -166,5 +168,13 @@ public class MineLoopUtil {
 
     public Location getNpcLocation() {
         return npcLocation;
+    }
+
+    public void setupLocations() {
+        structureLoader.setStart(getCorner1());
+        structureLoader.setEnd(getCorner2());
+        structureLoader.setSpawnLocation(getSpawnLocation());
+        structureLoader.setNpcLocation(getNpcLocation());
+        structureLoader.setCornerLocations(cornerLocations1);
     }
 }
