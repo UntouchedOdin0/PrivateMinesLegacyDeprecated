@@ -24,8 +24,10 @@ package me.untouchedodin0.privatemines;
 
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
+import com.cryptomorin.xseries.XMaterial;
 import me.untouchedodin0.privatemines.commands.PrivateMinesCommand;
 import me.untouchedodin0.privatemines.factory.MineFactory;
+import me.untouchedodin0.privatemines.structure.StructureLoader;
 import me.untouchedodin0.privatemines.structure.StructureManagers;
 import me.untouchedodin0.privatemines.utils.Metrics;
 import me.untouchedodin0.privatemines.utils.Util;
@@ -39,6 +41,7 @@ import me.untouchedodin0.privatemines.utils.storage.MineHandler;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import redempt.redlib.commandmanager.Messages;
@@ -70,12 +73,20 @@ public class PrivateMines extends JavaPlugin {
     MultiBlockStructure multiBlockStructure;
 
     List<MineType> mineTypes = new ArrayList<>();
+    List<MultiBlockStructure> multiBlockStructures = new ArrayList<>();
 
     private PrivateMines privateMine;
     private MineWorldManager mineManager;
     private StructureManagers structureManagers;
+    private StructureLoader structureLoader;
     private MineUpgradeUtil mineUpgradeUtil;
     private YamlConfiguration schematicsYml;
+
+    private Material cornerMaterial = XMaterial.POWERED_RAIL.parseMaterial();
+    private Material npcMaterial = XMaterial.WHITE_WOOL.parseMaterial();
+    private Material spawnMaterial = XMaterial.CHEST.parseMaterial();
+    private Material expandMaterial = XMaterial.SPONGE.parseMaterial();
+
 
     public static String fileNameWithOutExt(String fileName) {
         return Optional.of(fileName.lastIndexOf(".")).filter(i -> i >= 0)
@@ -99,6 +110,7 @@ public class PrivateMines extends JavaPlugin {
         PrivateMineResetUtil privateMineResetUtil = new PrivateMineResetUtil(this);
         PasteBuilder pasteBuilder = new PasteBuilder();
         MineLoopUtil mineLoopUtil = new MineLoopUtil();
+        structureLoader = new StructureLoader(mineLoopUtil);
         MineFactory mineFactory = new MineFactory(
                 this,
                 mineStorage,
@@ -106,7 +118,7 @@ public class PrivateMines extends JavaPlugin {
                 privateMineResetUtil,
                 mineLoopUtil,
                 util,
-                pasteBuilder);
+                structureLoader);
 
         mineUpgradeUtil = new MineUpgradeUtil();
         structureManagers = new StructureManagers();
@@ -140,6 +152,7 @@ public class PrivateMines extends JavaPlugin {
                 mineType.setFile(file);
                 mineType.setMultiBlockStructure(multiBlockStructure);
                 mineTypes.add(mineType);
+                multiBlockStructures.add(multiBlockStructure);
             }
         }
 
@@ -152,6 +165,11 @@ public class PrivateMines extends JavaPlugin {
         for (MineType type : types) {
             structureManagers.loadStructureData(type.getFile());
         }
+
+        for (MultiBlockStructure structure : multiBlockStructures) {
+            structureLoader.loadStructure(structure);
+        }
+
 
         Bukkit.getLogger().info("Loading mines...");
         minesCount = minesFolder.list().length;
@@ -199,5 +217,9 @@ public class PrivateMines extends JavaPlugin {
 
     public MineWorldManager getMineWorldManagerManager() {
         return mineManager;
+    }
+
+    public StructureLoader getStructureLoader() {
+        return structureLoader;
     }
 }
