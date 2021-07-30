@@ -30,6 +30,7 @@ import java.util.Random;
 
 public class EmptyWorldGenerator extends ChunkGenerator {
 
+    //test
     @Override
     @NotNull
     public ChunkData generateChunkData(@NotNull World world,
