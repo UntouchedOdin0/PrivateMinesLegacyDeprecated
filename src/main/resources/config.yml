@@ -1,0 +1,2 @@
+resetDelay: 5 # This is the reset delay in minutes.
+structureFile: "structure" # This is the structure file name without the .dat on the end!
