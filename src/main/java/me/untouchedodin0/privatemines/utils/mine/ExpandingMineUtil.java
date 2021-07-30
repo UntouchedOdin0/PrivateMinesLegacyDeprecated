@@ -11,6 +11,7 @@ import redempt.redlib.region.CuboidRegion;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.stream.Stream;
 
 public class ExpandingMineUtil {
 
@@ -26,6 +27,7 @@ public class ExpandingMineUtil {
 
     CuboidRegion expandRegion;
     CuboidRegion expandRegionBedrock;
+    CuboidRegion cuboidRegion;
 
     BlockFace[] faces = {
             BlockFace.DOWN,
@@ -77,17 +79,20 @@ public class ExpandingMineUtil {
         end = mineConfig.getLocation(CORNER_2_STRING);
 
         expandRegion = new CuboidRegion(start, end);
-        expandRegionBedrock = new CuboidRegion(start, end);
+        expandRegion.expand(5, 5, 0, 5, 5, 5);
 
-        expandRegion.expand(BlockFace.NORTH, 1);
-        expandRegion.expand(BlockFace.EAST, 1);
-        expandRegion.expand(BlockFace.SOUTH, 1);
-        expandRegion.expand(BlockFace.WEST, 1);
+//        expandRegionBedrock = new CuboidRegion(start, end);
 
-        expandRegionBedrock.expand(BlockFace.NORTH, 2);
-        expandRegionBedrock.expand(BlockFace.EAST, 2);
-        expandRegionBedrock.expand(BlockFace.SOUTH, 2);
-        expandRegionBedrock.expand(BlockFace.WEST, 2);
+
+//        expandRegion.expand(BlockFace.NORTH, 1);
+//        expandRegion.expand(BlockFace.EAST, 1);
+//        expandRegion.expand(BlockFace.SOUTH, 1);
+//        expandRegion.expand(BlockFace.WEST, 1);
+//
+//        expandRegionBedrock.expand(BlockFace.NORTH, 2);
+//        expandRegionBedrock.expand(BlockFace.EAST, 2);
+//        expandRegionBedrock.expand(BlockFace.SOUTH, 2);
+//        expandRegionBedrock.expand(BlockFace.WEST, 2);
 
         expandRegionBedrock.stream().forEach(block -> {
             if (block.isEmpty()) {
@@ -120,27 +125,46 @@ public class ExpandingMineUtil {
         end = mineConfig.getLocation(CORNER_2_STRING);
 
         expandRegion = new CuboidRegion(start, end);
-        expandRegionBedrock = new CuboidRegion(start, end);
-
-        expandRegion.expand(BlockFace.NORTH, amount);
-        expandRegion.expand(BlockFace.EAST, amount);
-        expandRegion.expand(BlockFace.SOUTH, amount);
-        expandRegion.expand(BlockFace.WEST, amount);
-
-        expandRegionBedrock.expand(BlockFace.NORTH, 2);
-        expandRegionBedrock.expand(BlockFace.EAST, 2);
-        expandRegionBedrock.expand(BlockFace.SOUTH, 2);
-        expandRegionBedrock.expand(BlockFace.WEST, 2);
-
-        expandRegionBedrock.stream().forEach(block -> {
-            if (block.isEmpty()) {
-                block.setType(Material.BEDROCK);
-            }
+        expandRegion.expand(amount, amount, 0, 0, amount, amount);
+        expandRegion.forEachBlock(block -> block.setType(Material.STONE));
+        Stream.of(
+                BlockFace.NORTH,
+                BlockFace.EAST,
+                BlockFace.SOUTH,
+                BlockFace.WEST)
+                .forEach(blockFace -> expandRegion.getFace(blockFace).forEachBlock(block -> {
+                    block.setType(Material.BEDROCK);
+                }));
+        expandRegion.getFace(BlockFace.UP).forEachBlock(block -> {
+            block.setType(Material.AIR);
         });
 
-        expandRegion.stream().forEach(block -> {
-            block.setType(Material.EMERALD_BLOCK);
+        expandRegion.getFace(BlockFace.DOWN).forEachBlock(block -> {
+           block.setType(Material.BEDROCK);
         });
+
+//        expandRegion = new CuboidRegion(start, end);
+//        expandRegionBedrock = new CuboidRegion(start, end);
+//
+//        expandRegion.expand(BlockFace.NORTH, amount);
+//        expandRegion.expand(BlockFace.EAST, amount);
+//        expandRegion.expand(BlockFace.SOUTH, amount);
+//        expandRegion.expand(BlockFace.WEST, amount);
+//
+//        expandRegionBedrock.expand(BlockFace.NORTH, 2);
+//        expandRegionBedrock.expand(BlockFace.EAST, 2);
+//        expandRegionBedrock.expand(BlockFace.SOUTH, 2);
+//        expandRegionBedrock.expand(BlockFace.WEST, 2);
+//
+//        expandRegionBedrock.stream().forEach(block -> {
+//            if (block.isEmpty()) {
+//                block.setType(Material.BEDROCK);
+//            }
+//        });
+//
+//        expandRegion.stream().forEach(block -> {
+//            block.setType(Material.EMERALD_BLOCK);
+//        });
 
         mineConfig.set(CORNER_1_STRING, expandRegion.getStart());
         mineConfig.set(CORNER_2_STRING, expandRegion.getEnd());
