@@ -3,3 +3,6 @@
 /build/
 /build/classes/java/main/
 /.idea/
+/.idea/
+/gradle/
+/.gradle/
