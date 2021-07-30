@@ -22,10 +22,12 @@
 
 package me.untouchedodin0.privatemines.utils.mine;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import redempt.redlib.multiblock.MultiBlockStructure;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 public class MineType {
@@ -34,6 +36,8 @@ public class MineType {
     private File file;
     private final String type;
     private Map<Material, Double> materials;
+    private List<Location> cornerLocations;
+    private Location spawnLocation;
 
     public MineType(String mineType) {
         this.type = mineType;
@@ -65,5 +69,21 @@ public class MineType {
 
     public void setMaterials(Map<Material, Double> materials) {
         this.materials = materials;
+    }
+
+    public List<Location> getCornerLocations() {
+        return cornerLocations;
+    }
+
+    public void setCornerLocations(List<Location> cornerLocations) {
+        this.cornerLocations = cornerLocations;
+    }
+
+    public Location getSpawnLocation() {
+        return spawnLocation;
+    }
+
+    public void setSpawnLocation(Location spawnLocation) {
+        this.spawnLocation = spawnLocation;
     }
 }
