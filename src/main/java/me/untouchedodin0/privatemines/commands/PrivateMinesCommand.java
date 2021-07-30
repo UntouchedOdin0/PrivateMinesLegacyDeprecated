@@ -251,7 +251,7 @@ public class PrivateMinesCommand extends BaseCommand {
     public void upgrade(Player p) {
         userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        expandingMineUtil.expandMine(p);
+        expandingMineUtil.expandMine(p, 1);
     }
 
     @Subcommand("upgrade")
@@ -268,7 +268,7 @@ public class PrivateMinesCommand extends BaseCommand {
             if (!userFile.exists()) {
                 p.sendMessage(ChatColor.RED + target.getPlayer().getName() + " doesn't own a private mine!");
             } else {
-                expandingMineUtil.expandMine(p);
+                expandingMineUtil.expandMine(p, 1);
             }
         }
     }
