@@ -22,11 +22,14 @@
 
 package me.untouchedodin0.privatemines.structure;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import redempt.redlib.multiblock.MultiBlockStructure;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +39,8 @@ public class StructureManagers {
     MultiBlockStructure multiBlockStructure;
     List<MultiBlockStructure> multiBlockStructures = new ArrayList<>();
     int[][] corners = new int[2][];
-    int[] npcLocation = null; //new int[1];
-    int[] spawnLocation = null; //new int[1];
+    int[] npcLocation = new int[1];
+    int[] spawnLocation = new int[1];
 
     public void loadStructureData(File file) {
         try {
@@ -52,18 +55,17 @@ public class StructureManagers {
 
             int[] dimensions = multiBlockStructure.getDimensions();
             int position = 0;
-//            int npctest = npcLocation[1];
 
             for (int x = 0; x < dimensions[0]; x++) {
                 for (int y = 0; y < dimensions[1]; y++) {
                     for (int z = 0; z < dimensions[2]; z++) {
-                        if (multiBlockStructure.getType(x, y, z) == Material.POWERED_RAIL) {
+                        if (multiBlockStructure.getType(x, y, z) == XMaterial.POWERED_RAIL.parseMaterial()) {
                             corners[position] = new int[]{x, y, z};
                             position++;
-                        } else if (multiBlockStructure.getType(x, y, z) == Material.WHITE_WOOL) {
+                        } else if (multiBlockStructure.getType(x, y, z) == XMaterial.WHITE_WOOL.parseMaterial()) {
                             npcLocation = new int[]{x, y, z};
                             continue;
-                        } else if (multiBlockStructure.getType(x, y, z) == Material.CHEST) {
+                        } else if (multiBlockStructure.getType(x, y, z) == XMaterial.CHEST.parseMaterial()) {
                             spawnLocation = new int[]{x, y, z};
 //                            spawnLocation[position] = new int[]{x, y, z};
                         }
@@ -71,6 +73,7 @@ public class StructureManagers {
                 }
             }
             multiBlockStructures.add(multiBlockStructure);
+            /*
             Bukkit.getLogger().info("===============");
             Bukkit.getLogger().info("STRUCTURE MANAGERS DEBUG STUFF");
             Bukkit.getLogger().info("MultiBlockStructure: " + multiBlockStructure.getName());
@@ -78,9 +81,10 @@ public class StructureManagers {
             Bukkit.getLogger().info("dim: " + dimensions[0] + " " + dimensions[1] + " " + dimensions[2]);
             Bukkit.getLogger().info("corners[]: " + corners[0] + " " + corners[1]);
             Bukkit.getLogger().info("position: " + position);
-            Bukkit.getLogger().info("npcLocation: " + npcLocation.toString());
+            Bukkit.getLogger().info("npcLocation: " + npcLocation);
             Bukkit.getLogger().info("spawnLocation: " + spawnLocation.toString());
             Bukkit.getLogger().info("===============");
+             */
         } catch (IOException e) {
             e.printStackTrace();
         }
