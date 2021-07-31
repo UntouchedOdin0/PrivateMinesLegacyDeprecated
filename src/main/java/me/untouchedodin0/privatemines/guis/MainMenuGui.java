@@ -101,11 +101,17 @@ public class MainMenuGui {
 
         userFile = new File("plugins/PrivateMinesRewrite/mines/" + player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        this.teleportLocation = mineConfig.getLocation("spawnLocation");
-        corner1 = mineConfig.getLocation("Corner1");
-        corner2 = mineConfig.getLocation("Corner2");
-        corner1flat = new Location(corner1.getWorld(), corner1.getX(), corner1.getY(), corner1.getZ());
-        corner2flat = new Location(corner2.getWorld(), corner2.getX(), corner1.getY(), corner2.getZ());
+        this.teleportLocation = mineConfig.getSerializable("spawnLocation", Location.class);
+//        start = mineConfig.getSerializable(CORNER_2_STRING, Location.class);
+
+//        this.teleportLocation = mineConfig.getLocation("spawnLocation");
+        corner1 = mineConfig.getSerializable("Corner1", Location.class);
+        corner2 = mineConfig.getSerializable("Corner2", Location.class);
+
+//        corner1 = mineConfig.getLocation("Corner1");
+//        corner2 = mineConfig.getLocation("Corner2");
+//        corner1flat = new Location(corner1.getWorld(), corner1.getX(), corner1.getY(), corner1.getZ());
+//        corner2flat = new Location(corner2.getWorld(), corner2.getX(), corner1.getY(), corner2.getZ());
 
         size = mineConfig.getInt("mineSize");
         whitelistedPlayersGui = new WhitelistedPlayersGui();
