@@ -44,7 +44,7 @@ public class ExpandingMineUtil {
         cuboidRegion = cuboidRegion.clone().expand(amount, amount, 0, amount, amount, amount);
         for (BlockFace face : faces) {
             cuboidRegion.getFace(face).forEachBlock(block -> {
-                block.setType(Material.ORANGE_WOOL, false);
+                block.setType(Material.WOOL, false);
             });
         }
     }
@@ -75,8 +75,11 @@ public class ExpandingMineUtil {
             return;
         }
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        start = mineConfig.getLocation(CORNER_1_STRING);
-        end = mineConfig.getLocation(CORNER_2_STRING);
+
+        start = mineConfig.getSerializable(CORNER_1_STRING, Location.class);
+        start = mineConfig.getSerializable(CORNER_2_STRING, Location.class);
+//        start = mineConfig.getLocation(CORNER_1_STRING);
+//        end = mineConfig.getLocation(CORNER_2_STRING);
 
         expandRegion = new CuboidRegion(start, end);
         expandRegion.expand(5, 5, 0, 5, 5, 5);
@@ -121,8 +124,10 @@ public class ExpandingMineUtil {
             return;
         }
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        start = mineConfig.getLocation(CORNER_1_STRING);
-        end = mineConfig.getLocation(CORNER_2_STRING);
+//        start = mineConfig.getLocation(CORNER_1_STRING);
+//        end = mineConfig.getLocation(CORNER_2_STRING);
+        start = mineConfig.getSerializable(CORNER_1_STRING, Location.class);
+        start = mineConfig.getSerializable(CORNER_2_STRING, Location.class);
 
         expandRegion = new CuboidRegion(start, end);
         expandRegion.expand(amount, amount, 0, 0, amount, amount);
