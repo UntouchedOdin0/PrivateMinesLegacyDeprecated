@@ -53,7 +53,8 @@ public class PrivateMineResetUtil {
         this.player = Bukkit.getPlayer(playerId);
         userFile = new File("plugins/PrivateMinesRewrite/mines/" + playerId + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        teleportLocation = mineConfig.getLocation("spawnLocation");
+//        teleportLocation = mineConfig.getLocation("spawnLocation");
+        teleportLocation = mineConfig.getSerializable("spawnLocation", Location.class);
 
         task = Task.syncRepeating(() -> {
                 if (this.player == null) {
