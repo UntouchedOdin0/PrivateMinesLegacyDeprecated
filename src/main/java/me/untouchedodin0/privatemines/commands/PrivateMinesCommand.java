@@ -116,7 +116,9 @@ public class PrivateMinesCommand extends BaseCommand {
         if (p.hasPermission("privatemines.owner")) {
             userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
             mineConfig = YamlConfiguration.loadConfiguration(userFile);
-            this.teleportLocation = mineConfig.getLocation(SPAWN_LOCATION_STRING);
+            this.teleportLocation = mineConfig.getSerializable(SPAWN_LOCATION_STRING, Location.class);
+
+//            this.teleportLocation = mineConfig.getLocation(SPAWN_LOCATION_STRING);
 
             /*
                 Add gui menu with following items
@@ -186,8 +188,11 @@ public class PrivateMinesCommand extends BaseCommand {
         if (p != null) {
             userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
             mineConfig = YamlConfiguration.loadConfiguration(userFile);
-            corner1 = mineConfig.getLocation("Corner1");
-            corner2 = mineConfig.getLocation("Corner2");
+            corner1 = mineConfig.getSerializable("Corner1", Location.class);
+            corner2 = mineConfig.getSerializable("Corner2", Location.class);
+
+//            corner1 = mineConfig.getLocation("Corner1");
+//            corner2 = mineConfig.getLocation("Corner2");
             mineBlocks = (List<ItemStack>) mineConfig.getList(BLOCKS_STRING);
 
             if (corner1 != null && corner2 != null && mineBlocks != null) {
@@ -209,8 +214,10 @@ public class PrivateMinesCommand extends BaseCommand {
     public void reset(Player p, OnlinePlayer target) {
         userFile = new File(MINE_DIRECTORY + target.player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        corner1 = mineConfig.getLocation("corner1");
-        corner2 = mineConfig.getLocation("corner2");
+//        corner1 = mineConfig.getLocation("corner1");
+//        corner2 = mineConfig.getLocation("corner2");
+        corner1 = mineConfig.getSerializable("Corner1", Location.class);
+        corner2 = mineConfig.getSerializable("Corner2", Location.class);
 
         mineBlocks = (List<ItemStack>) mineConfig.getList(BLOCKS_STRING);
 
