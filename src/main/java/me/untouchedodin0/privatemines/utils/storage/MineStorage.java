@@ -32,6 +32,7 @@ import java.util.Map;
 public class MineStorage {
 
     File userFile;
+    File mineFolder = new File("plugins/PrivateMinesRewrite/mines");
     File[] mineFiles = new File("plugins/PrivateMinesRewrite/mines").listFiles();
     File structureFolder = new File("plugins/PrivateMinesRewrite/schematics/");
     File[] structuresList;
@@ -45,6 +46,10 @@ public class MineStorage {
 
     public File[] getMineFiles() {
         return mineFiles;
+    }
+
+    public File getMineFolder() {
+        return mineFolder;
     }
 
     public void loadMines() {
