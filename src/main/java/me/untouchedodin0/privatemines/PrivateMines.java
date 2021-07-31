@@ -171,7 +171,12 @@ public class PrivateMines extends JavaPlugin {
 
 
         Bukkit.getLogger().info("Loading mines...");
-        minesCount = minesFolder.list().length;
+        if (!minesFolder.exists()) {
+            minesFolder.mkdir();
+        } else {
+            minesCount = minesFolder.list().length;
+        }
+
         Bukkit.getLogger().info(String.format("Found a total of %d mines!", minesCount));
 
         Bukkit.getLogger().info("Registering the command...");
@@ -189,10 +194,16 @@ public class PrivateMines extends JavaPlugin {
         resetDelay = getConfig().getInt("resetDelay");
 
         Bukkit.getLogger().info("Starting the private mine reset task...");
+
+        if (!mineStorage.getMineFolder().exists()) {
+            mineStorage.getMineFolder().mkdir();
+        }
+
         for (File file : mineStorage.getMineFiles()) {
             UUID uuid = UUID.fromString(fileNameWithOutExt(file.getName()));
             privateMineResetUtil.startResetTask(uuid, resetDelay);
         }
+
         Bukkit.getLogger().info("Loading messages...");
         Messages.load(this);
         Bukkit.getLogger().info("Loaded messages!");
