@@ -72,8 +72,11 @@ public class MineFillManager {
     public void fillPlayerMine(Player player) {
         userFile = new File("plugins/PrivateMinesRewrite/mines/" + player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        corner1 = mineConfig.getLocation("Corner1");
-        corner2 = mineConfig.getLocation("Corner2");
+        corner1 = mineConfig.getSerializable("Corner1", Location.class);
+        corner2 = mineConfig.getSerializable("Corner2", Location.class);
+
+//        corner1 = mineConfig.getLocation("Corner1");
+//        corner2 = mineConfig.getLocation("Corner2");
         mineBlocks = (List<ItemStack>) mineConfig.getList("blocks");
         if (corner1 != null && corner2 != null && mineBlocks != null) {
             Bukkit.getScheduler().runTaskLater(privateMines, ()
@@ -85,8 +88,10 @@ public class MineFillManager {
     public void fillPlayerMine(UUID uuid) {
         userFile = new File("plugins/PrivateMinesRewrite/mines/" + uuid + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        corner1 = mineConfig.getLocation("Corner1");
-        corner2 = mineConfig.getLocation("Corner2");
+//        corner1 = mineConfig.getLocation("Corner1");
+//        corner2 = mineConfig.getLocation("Corner2");
+        corner1 = mineConfig.getSerializable("Corner1", Location.class);
+        corner2 = mineConfig.getSerializable("Corner2", Location.class);
         mineBlocks = (List<ItemStack>) mineConfig.getList("blocks");
         if (corner1 != null && corner2 != null && mineBlocks != null) {
             Bukkit.getScheduler().runTaskLater(privateMines, ()
