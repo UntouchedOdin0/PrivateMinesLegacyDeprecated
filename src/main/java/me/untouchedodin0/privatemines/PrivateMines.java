@@ -199,9 +199,13 @@ public class PrivateMines extends JavaPlugin {
             mineStorage.getMineFolder().mkdir();
         }
 
-        for (File file : mineStorage.getMineFiles()) {
-            UUID uuid = UUID.fromString(fileNameWithOutExt(file.getName()));
-            privateMineResetUtil.startResetTask(uuid, resetDelay);
+        if (mineStorage.getMineFiles() == null) {
+            Bukkit.getLogger().info("No mine files to load!");
+        } else {
+            for (File file : mineStorage.getMineFiles()) {
+                UUID uuid = UUID.fromString(fileNameWithOutExt(file.getName()));
+                privateMineResetUtil.startResetTask(uuid, resetDelay);
+            }
         }
 
         Bukkit.getLogger().info("Loading messages...");
