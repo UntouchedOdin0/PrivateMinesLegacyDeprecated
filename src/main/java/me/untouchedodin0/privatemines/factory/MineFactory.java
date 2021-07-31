@@ -209,7 +209,7 @@ public class MineFactory {
         locationsFile = new File(UTIL_DIRECTORY, "locations.yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         locationConfig = YamlConfiguration.loadConfiguration(locationsFile);
-        old = multiBlockStructure.assumeAt(locationConfig.getLocation(""));
+//        old = multiBlockStructure.assumeAt(locationConfig.getLocation(""));
         if (old != null) {
             old.getRegion().forEachBlock(block -> {
                 block.setType(Material.AIR);
@@ -225,8 +225,10 @@ public class MineFactory {
             return;
         }
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        start = mineConfig.getLocation(CORNER_1_STRING);
-        end = mineConfig.getLocation(CORNER_2_STRING);
+        start = mineConfig.getSerializable(CORNER_1_STRING, Location.class);
+        start = mineConfig.getSerializable(CORNER_2_STRING, Location.class);
+//        start = mineConfig.getLocation(CORNER_1_STRING);
+//        end = mineConfig.getLocation(CORNER_2_STRING);
         expandRegion = new CuboidRegion(start, end);
         expandRegionBedrock = new CuboidRegion(start, end);
 
