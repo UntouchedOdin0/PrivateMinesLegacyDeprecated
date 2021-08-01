@@ -102,16 +102,6 @@ public class MainMenuGui {
         userFile = new File("plugins/PrivateMinesRewrite/mines/" + player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         this.teleportLocation = mineConfig.getSerializable("spawnLocation", Location.class);
-//        start = mineConfig.getSerializable(CORNER_2_STRING, Location.class);
-
-//        this.teleportLocation = mineConfig.getLocation("spawnLocation");
-        corner1 = mineConfig.getSerializable("Corner1", Location.class);
-        corner2 = mineConfig.getSerializable("Corner2", Location.class);
-
-//        corner1 = mineConfig.getLocation("Corner1");
-//        corner2 = mineConfig.getLocation("Corner2");
-//        corner1flat = new Location(corner1.getWorld(), corner1.getX(), corner1.getY(), corner1.getZ());
-//        corner2flat = new Location(corner2.getWorld(), corner2.getX(), corner1.getY(), corner2.getZ());
 
         size = mineConfig.getInt("mineSize");
         whitelistedPlayersGui = new WhitelistedPlayersGui();
@@ -207,76 +197,6 @@ public class MainMenuGui {
             }
             coownerstack.setItemMeta(coownerMeta);
         }
-
-        /*
-        ItemStack statusClosed = new ItemStack(Material.RED_WOOL);
-        ItemMeta statusClosedItemMeta = statusClosed.getItemMeta();
-        if (statusClosedItemMeta != null) {
-            statusClosedItemMeta.setDisplayName("" + ChatColor.GRAY + "Mine Status: " + ChatColor.RED + "Closed");
-        }
-        statusClosed.setItemMeta(statusClosedItemMeta);
-
-        ItemStack statusOpen = new ItemStack(Material.GREEN_WOOL);
-        ItemMeta statusOpenItemMeta = statusOpen.getItemMeta();
-        if (statusOpenItemMeta != null) {
-            statusOpenItemMeta.setDisplayName("" + ChatColor.GRAY + "Mine Status: " + ChatColor.GREEN + "Open");
-        }
-        statusOpen.setItemMeta(statusOpenItemMeta);
-
-        ItemStack setTax = null;
-        if (XMaterial.OAK_SIGN.parseMaterial() != null) {
-            setTax = new ItemStack(XMaterial.OAK_SIGN.parseMaterial());
-        }
-        ItemMeta setTaxItemMeta = setTax.getItemMeta();
-        if (setTaxItemMeta != null) {
-            setTaxItemMeta.setDisplayName(ChatColor.GREEN + "Set Tax");
-        }
-        setTax.setItemMeta(setTaxItemMeta);
-
-        ItemStack mineSize = new ItemStack(Material.LAVA_BUCKET);
-        ItemMeta mineSizeItemMeta = mineSize.getItemMeta();
-        if (mineSizeItemMeta != null) {
-            mineSizeItemMeta.setDisplayName(ChatColor.GREEN + "Mine Size " + ChatColor.YELLOW + size + "x" + size);
-        }
-        mineSize.setItemMeta(mineSizeItemMeta);
-
-        ItemStack resetMine = new ItemStack(Material.MINECART);
-        ItemMeta resetMineItemMeta = resetMine.getItemMeta();
-        if (resetMineItemMeta != null) {
-            resetMineItemMeta.setDisplayName(ChatColor.GREEN + "Reset Mine");
-        }
-        resetMine.setItemMeta(resetMineItemMeta);
-
-        ItemStack whitelistedMembers = new ItemStack(Material.WATER_BUCKET);
-        ItemMeta whitelistedMembersItemMeta = whitelistedMembers.getItemMeta();
-        if (whitelistedMembersItemMeta != null) {
-            whitelistedMembersItemMeta.setDisplayName(ChatColor.GREEN + "Whitelisted Members");
-        }
-        whitelistedMembers.setItemMeta(whitelistedMembersItemMeta);
-
-        ItemStack bannedMembers = new ItemStack(Material.LAVA_BUCKET);
-        ItemMeta bannedMembersItemMeta = bannedMembers.getItemMeta();
-        if (bannedMembersItemMeta != null) {
-            bannedMembersItemMeta.setDisplayName(ChatColor.GREEN + "Banned Members");
-        }
-
-        bannedMembers.setItemMeta(bannedMembersItemMeta);
-
-        ItemStack priorityMembers = new ItemStack(Material.EMERALD);
-        ItemMeta priorityMembersItemMeta = priorityMembers.getItemMeta();
-        if (priorityMembersItemMeta != null) {
-            priorityMembersItemMeta.setDisplayName(ChatColor.GREEN + "Priority Members");
-        }
-
-        priorityMembers.setItemMeta(priorityMembersItemMeta);
-
-        ItemStack coowner = new ItemStack(Material.DRAGON_EGG);
-        ItemMeta coownerItemMeta = coowner.getItemMeta();
-        if (coownerItemMeta != null) {
-            coownerItemMeta.setDisplayName(ChatColor.LIGHT_PURPLE + "Co-Owner");
-        }
-        coowner.setItemMeta(coownerItemMeta);
-         */
 
         gui = Gui.gui().title(Component.text("Private Mine")).rows(1).create();
 
