@@ -101,12 +101,14 @@ public class MineFactory {
     List<UUID> priorityPlayers = new ArrayList<>();
     UUID coowner = null;
 
+    String fileName;
+    File mineFile;
+
     PrivateMineUtil privateMineUtil;
     PrivateMineLocations privateMineLocations;
     PrivateMineResetUtil resetUtil;
     MineLoopUtil mineLoopUtil;
     Util util;
-    PasteBuilder pasteBuilder;
     StructureLoader structureLoader;
     int mineSize = 0;
 
@@ -134,15 +136,15 @@ public class MineFactory {
 
     public void createMine(Player player, Location location) {
 
-        String fileName = privateMines.getConfig().getString("structureFile");
-        File file = new File("plugins/PrivateMinesRewrite/schematics/" + fileName + ".dat");
+        fileName = privateMines.getConfig().getString("structureFile");
+        mineFile = new File("plugins/PrivateMinesRewrite/schematics/" + fileName + ".dat");
         userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
         locationsFile = new File(UTIL_DIRECTORY, "locations.yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         locationConfig = YamlConfiguration.loadConfiguration(locationsFile);
 
         playerID = player.getUniqueId().toString();
-        multiBlockStructure = privateMines.getStructureLoader().getBlockStructure(); //util.getMultiBlockStructure();
+        multiBlockStructure = privateMines.getStructureLoader().getBlockStructure();
 
         if (mineStorage.hasMine(player)) {
             Bukkit.getLogger().warning("Couldn't give mine, due to player already having a mine!");
@@ -176,7 +178,7 @@ public class MineFactory {
         Location miningRegionEnd = miningRegion.getEnd();
         startBlock = miningRegionStart.getBlock();
         endBlock = miningRegionEnd.getBlock();
-        privateMineUtil = new PrivateMineUtil(player, file, mineBlocks, whitelistedPlayers, bannedPlayers, priorityPlayers, coowner);
+        privateMineUtil = new PrivateMineUtil(player, mineFile, mineBlocks, whitelistedPlayers, bannedPlayers, priorityPlayers, coowner);
         privateMineLocations = new PrivateMineLocations(player, nextLocation, spawnLocation, npcLocation, corner1, corner2);
 
         mineConfig.set(CORNER_1_STRING, mineLoopUtil.getCorner1());
@@ -214,7 +216,8 @@ public class MineFactory {
         locationsFile = new File(UTIL_DIRECTORY, "locations.yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         locationConfig = YamlConfiguration.loadConfiguration(locationsFile);
-//        old = multiBlockStructure.assumeAt(locationConfig.getLocation(""));
+
+        old = multiBlockStructure.assumeAt(mineConfig.getSerializable(SPAWN_LOCATION_STRING, Location.class));
         if (old != null) {
             old.getRegion().forEachBlock(block -> {
                 block.setType(Material.AIR);
