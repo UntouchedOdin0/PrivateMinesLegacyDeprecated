@@ -134,7 +134,8 @@ public class MineFactory {
 
     public void createMine(Player player, Location location) {
 
-        File file = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
+        String fileName = privateMines.getConfig().getString("structureFile");
+        File file = new File("plugins/PrivateMinesRewrite/schematics/" + fileName + ".dat");
         userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
         locationsFile = new File(UTIL_DIRECTORY, "locations.yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
@@ -147,6 +148,10 @@ public class MineFactory {
             Bukkit.getLogger().warning("Couldn't give mine, due to player already having a mine!");
             player.sendMessage(ChatColor.RED + "Er, you do know you already have a mine. Right?");
         } else {
+            if (multiBlockStructure == null) {
+                Bukkit.getLogger().info("multiblockstructure in the factory was null at line 144.");
+            }
+
             world = location.getWorld();
             cuboidRegion = multiBlockStructure.getRegion(location);
             start = cuboidRegion.getStart().clone();
