@@ -148,10 +148,11 @@ public class MineFactory {
 
         if (mineStorage.hasMine(player)) {
             Bukkit.getLogger().warning("Couldn't give mine, due to player already having a mine!");
-            player.sendMessage(ChatColor.RED + "Er, you do know you already have a mine. Right?");
         } else {
             if (multiBlockStructure == null) {
-                Bukkit.getLogger().info("multiblockstructure in the factory was null at line 144.");
+                Bukkit.getLogger().info("The structure was null, likely meaning it couldn't find the file or" +
+                        "there was a problem loading the structure! Feel free to make a ticket in the discord to" +
+                        "get help.");
             }
 
             world = location.getWorld();
