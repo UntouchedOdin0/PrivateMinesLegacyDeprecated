@@ -116,7 +116,8 @@ public class PrivateMinesCommand extends BaseCommand {
         if (p.hasPermission("privatemines.owner")) {
             userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
             mineConfig = YamlConfiguration.loadConfiguration(userFile);
-            this.teleportLocation = mineConfig.getSerializable(SPAWN_LOCATION_STRING, Location.class);
+//            this.teleportLocation = LocationUtils.fromString(SPAWN_LOCATION_STRING);
+//            this.teleportLocation = mineConfig.getSerializable(SPAWN_LOCATION_STRING, Location.class);
 
 //            this.teleportLocation = mineConfig.getLocation(SPAWN_LOCATION_STRING);
 
