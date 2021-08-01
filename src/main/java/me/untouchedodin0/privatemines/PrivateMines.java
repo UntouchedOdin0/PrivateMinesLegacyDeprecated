@@ -98,6 +98,9 @@ public class PrivateMines extends JavaPlugin {
         File minesFolder = new File(getDataFolder(), MINES_FOLDER_NAME);
 
         Util util = new Util();
+        saveDefaultConfig();
+        saveResource("messages.txt", false);
+        saveResource("schematics", false);
 
         Bukkit.getLogger().info("Setting up the Private Mines World...");
         mineManager = new MineWorldManager();
