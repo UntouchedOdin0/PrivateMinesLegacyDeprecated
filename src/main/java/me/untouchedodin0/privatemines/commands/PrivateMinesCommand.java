@@ -38,6 +38,7 @@ import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -132,7 +133,7 @@ public class PrivateMinesCommand extends BaseCommand {
     }
 
     @Subcommand("give")
-    @Description("Gives a privatemines to a player (only pastes at the moment)")
+    @Description("Gives a privatemine to a player")
     @CommandPermission("privatemines.give")
     @CommandCompletion("@players")
     public void give(Player p) {
@@ -157,7 +158,7 @@ public class PrivateMinesCommand extends BaseCommand {
     }
 
     @Subcommand("give")
-    @Description("Gives a privatemines to a player (only pastes at the moment)")
+    @Description("Gives a privatemine to a player")
     @CommandPermission("privatemines.give")
     @CommandCompletion("@players")
     public void give(Player p, OnlinePlayer target) {
@@ -170,12 +171,40 @@ public class PrivateMinesCommand extends BaseCommand {
         }
     }
 
+    @Subcommand("give")
+    @Description("Gives a privatemine to a player")
+    @CommandPermission("privatemines.give")
+    @CommandCompletion("@players")
+    public void give(CommandSender commandSender, OnlinePlayer target) {
+        if (mineStorage.hasMine(target.player)) {
+            target.player.sendMessage(ChatColor.RED + "An error occurred while giving you a mine" +
+                    " please inform a operator!");
+            Bukkit.getLogger().warning(target.player.getName() + " already has a mine, not able to give another one!");
+        } else {
+            mineFactory.createMine(target.player, mineWorldManager.nextFreeLocation());
+            commandSender.sendMessage(ChatColor.GREEN + "Given " + target.player.getName() + " a private mine!");
+        }
+    }
+
     @Subcommand("delete")
     @Description("Deletes a mine")
     @CommandPermission("privatemines.delete")
     @CommandCompletion("@players")
     public void delete(Player p) {
         mineFactory.deleteMine(p);
+    }
+
+    @Subcommand("delete")
+    @Description("Deletes a mine")
+    @CommandPermission("privatemines.delete")
+    @CommandCompletion("@players")
+    public void delete(CommandSender commandSender, OnlinePlayer target) {
+        if (mineStorage.hasMine(target.player)) {
+            Bukkit.getLogger().warning(target.player.getName() + " doesn't have a mine, can't delete it!");
+        } else {
+            mineFactory.deleteMine(target.player);
+            commandSender.sendMessage(ChatColor.GREEN + "Deleted " + target.player.getName() + "'s PrivateMine");
+        }
     }
 
     /*
