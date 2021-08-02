@@ -28,6 +28,9 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
+import org.codemc.worldguardwrapper.WorldGuardWrapper;
+import org.codemc.worldguardwrapper.flag.WrappedState;
+import org.codemc.worldguardwrapper.region.IWrappedRegion;
 import redempt.redlib.multiblock.MultiBlockStructure;
 
 import java.io.File;
@@ -36,6 +39,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class Util {
 
@@ -111,5 +116,20 @@ public class Util {
 
     public static void setBlockViaNMS(World world, int x, int y, int z, Material type, boolean applyPhysics) {
 
+    }
+
+    public void setMainFlags(IWrappedRegion region) {
+        final WorldGuardWrapper w = WorldGuardWrapper.getInstance();
+        Stream.of(
+                w.getFlag("mob-spawning", WrappedState.class)
+        ).filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(flag -> region.setFlag(flag, WrappedState.DENY));
+        Stream.of(
+                w.getFlag("block-place", WrappedState.class),
+                w.getFlag("block-break", WrappedState.class)
+        ).filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(flag -> region.setFlag(flag, WrappedState.ALLOW));
     }
 }

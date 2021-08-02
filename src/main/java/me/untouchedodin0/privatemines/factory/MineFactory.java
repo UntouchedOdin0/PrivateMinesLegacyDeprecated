@@ -41,6 +41,8 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.codemc.worldguardwrapper.WorldGuardWrapper;
+import org.codemc.worldguardwrapper.region.IWrappedRegion;
 import redempt.redlib.commandmanager.Messages;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
@@ -50,6 +52,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class MineFactory {
@@ -93,6 +96,7 @@ public class MineFactory {
     File userFile;
     File locationsFile;
     String playerID;
+    String mineRegionString;
     YamlConfiguration mineConfig;
     YamlConfiguration locationConfig;
 
@@ -118,6 +122,9 @@ public class MineFactory {
     Material npcMaterial = XMaterial.WHITE_WOOL.parseMaterial();
     Material spawnMaterial = XMaterial.CHEST.parseMaterial();
     Material expandMaterial = XMaterial.SPONGE.parseMaterial();
+
+    WorldGuardWrapper wgWrapper;
+    IWrappedRegion iWrappedRegion;
 
     public MineFactory(PrivateMines privateMines,
                        MineStorage storage,
@@ -146,6 +153,7 @@ public class MineFactory {
         locationConfig = YamlConfiguration.loadConfiguration(locationsFile);
 
         playerID = player.getUniqueId().toString();
+        mineRegionString = "mine-" + playerID;
         multiBlockStructure = privateMines.getStructureLoader().getBlockStructure();
 
         if (mineStorage.hasMine(player)) {
@@ -183,7 +191,7 @@ public class MineFactory {
         endBlock = miningRegionEnd.getBlock();
         privateMineUtil = new PrivateMineUtil(player, mineFile, mineBlocks, whitelistedPlayers, bannedPlayers, priorityPlayers, coowner);
         privateMineLocations = new PrivateMineLocations(player, nextLocation, spawnLocation, npcLocation, corner1, corner2);
-
+        wgWrapper = WorldGuardWrapper.getInstance();
         mineConfig.set(CORNER_1_STRING, mineLoopUtil.getCorner1());
         mineConfig.set(CORNER_2_STRING, mineLoopUtil.getCorner2());
         mineConfig.set(SPAWN_LOCATION_STRING, mineLoopUtil.getSpawnLocation());
@@ -200,6 +208,13 @@ public class MineFactory {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        iWrappedRegion = WorldGuardWrapper.getInstance().addCuboidRegion(
+                "mine-" + player.getUniqueId().toString(),
+                mineLoopUtil.getCorner1(),
+                mineLoopUtil.getCorner2())
+                .orElseThrow(() -> new RuntimeException("Could not create Main WorldGuard region"));
+        util.setMainFlags(iWrappedRegion);
 
         resetUtil.startResetTask(player.getUniqueId(), privateMines.getConfig().getInt("resetDelay"));
         cornerBlocks = new ArrayList<>();
