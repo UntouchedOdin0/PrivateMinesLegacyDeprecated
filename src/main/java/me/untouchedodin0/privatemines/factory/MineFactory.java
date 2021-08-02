@@ -31,10 +31,12 @@ import me.untouchedodin0.privatemines.utils.mine.PrivateMineLocations;
 import me.untouchedodin0.privatemines.utils.mine.PrivateMineResetUtil;
 import me.untouchedodin0.privatemines.utils.mine.PrivateMineUtil;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
-import me.untouchedodin0.privatemines.utils.mine.paste.PasteBuilder;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -248,7 +250,7 @@ public class MineFactory {
             block.setType(Material.EMERALD_BLOCK);
         });
 
-        expandRegionBedrock.stream().forEach(block-> {
+        expandRegionBedrock.stream().forEach(block -> {
             if (block.isEmpty()) {
                 block.setType(Material.REDSTONE_BLOCK);
             }
