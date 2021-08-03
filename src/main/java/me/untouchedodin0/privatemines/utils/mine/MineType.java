@@ -28,14 +28,13 @@ import redempt.redlib.multiblock.MultiBlockStructure;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 public class MineType {
 
-    private MultiBlockStructure multiBlockStructure;
+    private MultiBlockStructure structure;
     private File file;
-    private final String type;
-    private Map<Material, Double> materials;
+    private String type;
+    private Material material;
     private List<Location> cornerLocations;
     private Location spawnLocation;
 
@@ -43,6 +42,61 @@ public class MineType {
         this.type = mineType;
     }
 
+    public MineType setStructure(MultiBlockStructure multiBlockStructure) {
+        structure = multiBlockStructure;
+        return this;
+    }
+
+    public MineType setFile(File mineFile) {
+        file = mineFile;
+        return this;
+    }
+
+    public MineType setType(String mineType) {
+        type = mineType;
+        return this;
+    }
+
+    public MineType setMaterial(Material mineMaterial) {
+        material = mineMaterial;
+        return this;
+    }
+
+    public MineType setCornerLocations(List<Location> locations) {
+        cornerLocations = locations;
+        return this;
+    }
+
+    public MineType setSpawnLocation(Location spawnLocation1) {
+        spawnLocation = spawnLocation1;
+        return this;
+    }
+
+    public MultiBlockStructure getStructure() {
+        return structure;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public String getMineType() {
+        return type;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
+
+    public List<Location> getCornerLocations() {
+        return cornerLocations;
+    }
+
+    public Location getSpawnLocation() {
+        return spawnLocation;
+    }
+
+    /*
     public MultiBlockStructure getMultiBlockStructure() {
         return multiBlockStructure;
     }
@@ -86,4 +140,5 @@ public class MineType {
     public void setSpawnLocation(Location spawnLocation) {
         this.spawnLocation = spawnLocation;
     }
+     */
 }
