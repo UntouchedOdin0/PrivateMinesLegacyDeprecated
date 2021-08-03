@@ -186,8 +186,9 @@ public class PrivateMines extends JavaPlugin {
 
         for (MineType type : mineTypes) {
             Mine mine = new Mine(type);
+
             Bukkit.getLogger().info("Type: " + type.getMineType().toString());
-            Bukkit.getLogger().info("Structure: " + type.getStructure().toString());
+            Bukkit.getLogger().info("Structure: " + type.getStructureName());
             Bukkit.getLogger().info("Spawn Location: " + type.getSpawnLocation().toString());
             Bukkit.getLogger().info("Corner Locations: " + type.getCornerLocations().toString());
             Bukkit.getLogger().info("NPC Location: " + type.getNpcLocation().toString());
