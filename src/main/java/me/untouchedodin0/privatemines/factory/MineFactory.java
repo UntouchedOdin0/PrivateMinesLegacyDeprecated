@@ -28,8 +28,8 @@ import me.untouchedodin0.privatemines.structure.StructureLoader;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.mine.PrivateMineLocations;
-import me.untouchedodin0.privatemines.utils.mine.PrivateMineResetUtil;
-import me.untouchedodin0.privatemines.utils.mine.PrivateMineUtil;
+import me.untouchedodin0.privatemines.utils.mine.util.PrivateMineResetUtil;
+import me.untouchedodin0.privatemines.utils.mine.util.PrivateMineUtil;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
@@ -156,7 +156,7 @@ public class MineFactory {
 
         playerID = player.getUniqueId().toString();
         mineRegionString = "mine-" + playerID;
-        multiBlockStructure = privateMines.getStructureLoader().getBlockStructure();
+//        multiBlockStructure = privateMines.getStructureLoader().getBlockStructure();
 
         if (mineStorage.hasMine(player)) {
             Bukkit.getLogger().warning("Couldn't give mine, due to player already having a mine!");
@@ -197,7 +197,7 @@ public class MineFactory {
         mineConfig.set(CORNER_1_STRING, mineLoopUtil.getCorner1());
         mineConfig.set(CORNER_2_STRING, mineLoopUtil.getCorner2());
         mineConfig.set(SPAWN_LOCATION_STRING, mineLoopUtil.getSpawnLocation());
-        mineConfig.set(NPC_LOCATION_STRING, mineLoopUtil.getNpcLocation());
+//        mineConfig.set(NPC_LOCATION_STRING, mineLoopUtil.getNpcLocation());
         mineConfig.set(PLACE_LOCATION_STRING, privateMineLocations.getMineLocation());
         mineConfig.set(BLOCKS_STRING, privateMineUtil.getMineBlocks());
         mineConfig.set(MINE_SIZE, mineSize);
