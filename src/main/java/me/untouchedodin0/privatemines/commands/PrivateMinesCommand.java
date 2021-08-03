@@ -266,8 +266,12 @@ public class PrivateMinesCommand extends BaseCommand {
     @Description("Let's players either check or set their mine tax.")
     @CommandPermission("privatemines.tax")
     public void tax(Player p, @Optional @Conditions("limits:min=0,max=100") Double taxPercentage) {
+        userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        int tax = mineConfig.getInt("tax");
+
         if (taxPercentage == null) {
-            p.sendMessage(ChatColor.YELLOW + "Your mine tax is {tax}!");
+            p.sendMessage(ChatColor.YELLOW + "Your mine tax is {tax}!".replace("{tax}", String.valueOf(tax)));
         } else {
             if (taxPercentage < 1 || taxPercentage > 100) {
                 p.sendMessage(ChatColor.RED + "Invalid tax percentage! (1 -> 100)");
@@ -279,6 +283,34 @@ public class PrivateMinesCommand extends BaseCommand {
 
     public Location getTeleportLocation() {
         return teleportLocation;
+    }
+
+    @Subcommand("open")
+    @Description("Opens your mine")
+    @CommandPermission("privatemines.open")
+    public void open(Player p) {
+        userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        mineConfig.set("status", true);
+        try {
+            mineConfig.save(userFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Subcommand("close")
+    @Description("Closes your mine")
+    @CommandPermission("privatemines.close")
+    public void close(Player p) {
+        userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        mineConfig.set("status", false);
+        try {
+            mineConfig.save(userFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Subcommand("upgrade")
@@ -369,6 +401,9 @@ public class PrivateMinesCommand extends BaseCommand {
         if (bannedPlayers.contains(target.player.getUniqueId().toString())) {
             player.sendMessage(ChatColor.RED + "Player was already banned!");
             return;
+        } else if (target.getPlayer().getName().equals(player.getName())) {
+            player.sendMessage(ChatColor.RED + "You can't ban yourself!");
+            return;
         } else {
             player.sendMessage(ChatColor.GREEN + "Banning player " + target.player.getName());
             bannedPlayers.add(target.player.getUniqueId().toString());
@@ -444,8 +479,6 @@ public class PrivateMinesCommand extends BaseCommand {
             e.printStackTrace();
         }
     }
-
-
 }
 
 
