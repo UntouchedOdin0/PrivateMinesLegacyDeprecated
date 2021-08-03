@@ -56,6 +56,7 @@ public class MineType {
         return this;
     }
 
+    //TODO Setup this cuboid region
     public MineType setCuboidRegion(CuboidRegion cube) {
         cuboidRegion = cube;
         return this;
