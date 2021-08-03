@@ -42,11 +42,13 @@ public class MineType {
 
     private MineLoopUtil mineLoopUtil;
     Mine mine;
+    String structureName;
 
     public MineType(String mineType, MultiBlockStructure multiBlockStructure, PrivateMines privateMines) {
         this.structure = multiBlockStructure;
         this.mineLoopUtil = new MineLoopUtil();
         this.privateMines = privateMines;
+        this.structureName = structure.getName();
     }
 
     public MineType setType(MineType mineType) {
@@ -92,6 +94,10 @@ public class MineType {
 
     public int[] getNpcLocation() {
         return npcLocation;
+    }
+
+    public String getStructureName() {
+        return structureName;
     }
 
     public Mine build(Location location, UUID owner) {
