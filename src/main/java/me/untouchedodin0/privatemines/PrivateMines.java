@@ -32,15 +32,15 @@ import me.untouchedodin0.privatemines.structure.StructureManagers;
 import me.untouchedodin0.privatemines.utils.Metrics;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
+import me.untouchedodin0.privatemines.utils.mine.Mine;
 import me.untouchedodin0.privatemines.utils.mine.MineType;
-import me.untouchedodin0.privatemines.utils.mine.MineUpgradeUtil;
-import me.untouchedodin0.privatemines.utils.mine.PrivateMineResetUtil;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
-import me.untouchedodin0.privatemines.utils.mine.paste.PasteBuilder;
-import me.untouchedodin0.privatemines.utils.storage.MineHandler;
+import me.untouchedodin0.privatemines.utils.mine.util.MineUpgradeUtil;
+import me.untouchedodin0.privatemines.utils.mine.util.PrivateMineResetUtil;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -64,7 +64,6 @@ import java.util.UUID;
 public class PrivateMines extends JavaPlugin {
 
     public static final String MINES_FOLDER_NAME = "mines";
-    private final int pluginId = 11413; // Metrics ID.
 
     int minesCount;
     int resetDelay;
@@ -74,6 +73,8 @@ public class PrivateMines extends JavaPlugin {
     MultiBlockStructure multiBlockStructure;
 
     List<MineType> mineTypes = new ArrayList<>();
+    List<Mine> mines = new ArrayList<>();
+
     List<MultiBlockStructure> multiBlockStructures = new ArrayList<>();
 
     private PrivateMines privateMine;
@@ -82,11 +83,17 @@ public class PrivateMines extends JavaPlugin {
     private StructureLoader structureLoader;
     private MineUpgradeUtil mineUpgradeUtil;
     private YamlConfiguration schematicsYml;
+    Location start;
+    Location end;
 
-    private Material cornerMaterial = XMaterial.POWERED_RAIL.parseMaterial();
-    private Material npcMaterial = XMaterial.WHITE_WOOL.parseMaterial();
-    private Material spawnMaterial = XMaterial.CHEST.parseMaterial();
-    private Material expandMaterial = XMaterial.SPONGE.parseMaterial();
+    private int[][] cornerLocations;
+    private int[] spawnLocation;
+    private int[] npcLocation;
+
+    private final Material cornerMaterial = XMaterial.POWERED_RAIL.parseMaterial();
+    private final Material npcMaterial = XMaterial.WHITE_WOOL.parseMaterial();
+    private final Material spawnMaterial = XMaterial.CHEST.parseMaterial();
+    private final Material expandMaterial = XMaterial.SPONGE.parseMaterial();
 
     public static String fileNameWithOutExt(String fileName) {
         return Optional.of(fileName.lastIndexOf(".")).filter(i -> i >= 0)
@@ -148,30 +155,48 @@ public class PrivateMines extends JavaPlugin {
         if (structuresList != null) {
             for (File file : structuresList) {
                 String name = file.getName().replace(".dat", "");
-                MineType mineType = new MineType(name);
                 multiBlockStructure = util.loadStructure(file.getName(), file);
+                MineType mineType = new MineType(name, multiBlockStructure, this);
                 util.saveToStructureMap(name, multiBlockStructure);
-                mineType.setFile(file);
-                mineType.setStructure(multiBlockStructure);
-                mineTypes.add(mineType);
                 multiBlockStructures.add(multiBlockStructure);
             }
         }
 
-        for (MineType mineType : mineTypes) {
-            MineHandler.createMineType(mineType);
-        }
+//        for (MineType mineType : mineTypes) {
+//            MineHandler.createMineType(mineType);
+//        }
 
-        List<MineType> types = MineHandler.getMineTypes();
+//        List<MineType> types = MineHandler.getMineTypes();
 
-        for (MineType type : types) {
-            structureManagers.loadStructureData(type.getFile());
-        }
-
+        int test = 0;
         for (MultiBlockStructure structure : multiBlockStructures) {
             structureLoader.loadStructure(structure);
+            test++;
+            MineType mineType = new MineType(String.valueOf(test), structure, this);
+            cornerLocations = mineLoopUtil.findCornerLocations(structure, cornerMaterial);
+            spawnLocation = mineLoopUtil.findSpawnPointLocation(structure, spawnMaterial);
+            npcLocation = mineLoopUtil.findNpcLocation(structure, npcMaterial);
+
+            mineType.setCornerLocations(cornerLocations);
+            mineType.setSpawnLocation(spawnLocation);
+            mineType.setNpcLocation(npcLocation);
+
+            mineTypes.add(mineType);
         }
 
+        for (MineType type : mineTypes) {
+            Mine mine = new Mine(type);
+            Bukkit.getLogger().info("Type: " + type.getMineType().toString());
+            Bukkit.getLogger().info("Structure: " + type.getStructure().toString());
+            Bukkit.getLogger().info("Spawn Location: " + type.getSpawnLocation().toString());
+            Bukkit.getLogger().info("Corner Locations: " + type.getCornerLocations().toString());
+            Bukkit.getLogger().info("NPC Location: " + type.getNpcLocation().toString());
+            mines.add(mine);
+        }
+
+        for (Mine mine : mines) {
+            Bukkit.getLogger().info("MINE: " + mine);
+        }
 
         Bukkit.getLogger().info("Loading mines...");
         if (!minesFolder.exists()) {
@@ -219,6 +244,8 @@ public class PrivateMines extends JavaPlugin {
         Messages.load(this);
         Bukkit.getLogger().info("Loaded messages!");
 
+        // Metrics ID.
+        int pluginId = 11413;
         Metrics metrics = new Metrics(this, pluginId);
         Bukkit.getLogger().info("Loaded metrics!");
     }
@@ -242,5 +269,9 @@ public class PrivateMines extends JavaPlugin {
 
     public StructureLoader getStructureLoader() {
         return structureLoader;
+    }
+
+    public List<MineType> getMineTypes() {
+        return mineTypes;
     }
 }
