@@ -1,4 +1,4 @@
-package me.untouchedodin0.privatemines.utils.mine;
+package me.untouchedodin0.privatemines.utils.mine.util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
