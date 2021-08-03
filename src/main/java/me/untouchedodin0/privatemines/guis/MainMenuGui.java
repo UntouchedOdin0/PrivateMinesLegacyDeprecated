@@ -46,10 +46,6 @@ public class MainMenuGui {
     File userFile;
     YamlConfiguration mineConfig;
     Location teleportLocation;
-    Location corner1;
-    Location corner2;
-    Location corner1flat;
-    Location corner2flat;
     MineFillManager mineFillManager;
     boolean isClosed = false;
     int size;
