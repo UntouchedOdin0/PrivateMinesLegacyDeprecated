@@ -52,7 +52,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public class MineFactory {
@@ -70,6 +69,8 @@ public class MineFactory {
     private static final String PRIORITY_PLAYERS = "priorityPlayers";
     private static final String CO_OWNER = "coowner";
     private static final String MINE_SIZE = "mineSize";
+    private static final String TAX = "tax";
+    private static final String OPEN = "status";
 
     PrivateMines privateMines;
     MineStorage mineStorage;
@@ -117,6 +118,7 @@ public class MineFactory {
     Util util;
     StructureLoader structureLoader;
     int mineSize = 0;
+    int tax = 5;
 
     Material cornerMaterial = XMaterial.POWERED_RAIL.parseMaterial();
     Material npcMaterial = XMaterial.WHITE_WOOL.parseMaterial();
@@ -199,6 +201,8 @@ public class MineFactory {
         mineConfig.set(PLACE_LOCATION_STRING, privateMineLocations.getMineLocation());
         mineConfig.set(BLOCKS_STRING, privateMineUtil.getMineBlocks());
         mineConfig.set(MINE_SIZE, mineSize);
+        mineConfig.set(TAX, tax);
+        mineConfig.set(OPEN, false);
         mineConfig.set(WHITELISTED_PLAYERS, privateMineUtil.getWhitelistedPlayers());
         mineConfig.set(BANNED_PLAYERS, privateMineUtil.getBannedPlayers());
         mineConfig.set(PRIORITY_PLAYERS, privateMineUtil.getPriorityPlayers());
