@@ -22,53 +22,55 @@
 
 package me.untouchedodin0.privatemines.utils.mine;
 
+import me.untouchedodin0.privatemines.PrivateMines;
+import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import redempt.redlib.multiblock.MultiBlockStructure;
+import redempt.redlib.region.CuboidRegion;
 
-import java.io.File;
-import java.util.List;
+import java.util.UUID;
 
 public class MineType {
 
-    private MultiBlockStructure structure;
-    private File file;
-    private String type;
-    private Material material;
-    private List<Location> cornerLocations;
-    private Location spawnLocation;
+    private final MultiBlockStructure structure;
+    private MineType type;
+    private CuboidRegion cuboidRegion;
+    private int[][] cornerLocations;
+    private int[] spawnLocation;
+    private int[] npcLocation;
+    private PrivateMines privateMines;
 
-    public MineType(String mineType) {
-        this.type = mineType;
+    private MineLoopUtil mineLoopUtil;
+    Mine mine;
+
+    public MineType(String mineType, MultiBlockStructure multiBlockStructure, PrivateMines privateMines) {
+        this.structure = multiBlockStructure;
+        this.mineLoopUtil = new MineLoopUtil();
+        this.privateMines = privateMines;
     }
 
-    public MineType setStructure(MultiBlockStructure multiBlockStructure) {
-        structure = multiBlockStructure;
-        return this;
-    }
-
-    public MineType setFile(File mineFile) {
-        file = mineFile;
-        return this;
-    }
-
-    public MineType setType(String mineType) {
+    public MineType setType(MineType mineType) {
         type = mineType;
         return this;
     }
 
-    public MineType setMaterial(Material mineMaterial) {
-        material = mineMaterial;
+    public MineType setCuboidRegion(CuboidRegion cube) {
+        cuboidRegion = cube;
         return this;
     }
 
-    public MineType setCornerLocations(List<Location> locations) {
+    public MineType setCornerLocations(int[][] locations) {
         cornerLocations = locations;
         return this;
     }
 
-    public MineType setSpawnLocation(Location spawnLocation1) {
-        spawnLocation = spawnLocation1;
+    public MineType setSpawnLocation(int[] spawnLoc) {
+        spawnLocation = spawnLoc;
+        return this;
+    }
+
+    public MineType setNpcLocation(int[] npcLoc) {
+        npcLocation = npcLoc;
         return this;
     }
 
@@ -76,25 +78,29 @@ public class MineType {
         return structure;
     }
 
-    public File getFile() {
-        return file;
-    }
-
-    public String getMineType() {
+    public MineType getMineType() {
         return type;
     }
 
-    public Material getMaterial() {
-        return material;
-    }
-
-    public List<Location> getCornerLocations() {
+    public int[][] getCornerLocations() {
         return cornerLocations;
     }
 
-    public Location getSpawnLocation() {
+    public int[] getSpawnLocation() {
         return spawnLocation;
     }
+
+    public int[] getNpcLocation() {
+        return npcLocation;
+    }
+
+    public Mine build(Location location, UUID owner) {
+        mine = new Mine(type);
+        mine.setMineLocation(location);
+        mine.setMineOwner(owner);
+        return mine;
+    }
+}
 
     /*
     public MultiBlockStructure getMultiBlockStructure() {
@@ -141,4 +147,5 @@ public class MineType {
         this.spawnLocation = spawnLocation;
     }
      */
-}
+
+
