@@ -22,7 +22,6 @@
 
 package me.untouchedodin0.privatemines.utils.mine.loop;
 
-import me.untouchedodin0.privatemines.structure.StructureLoader;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -38,10 +37,9 @@ public class MineLoopUtil {
     List<Location> cornerLocations = new ArrayList<>();
     List<Location> expandCornerLocations = new ArrayList<>();
     Location spawnLocation;
-    Location npcLocation;
-    StructureLoader structureLoader = new StructureLoader(this);
+//    Location npcLocation;
 
-    int[][] cornerLocations1;
+//    StructureLoader structureLoader = new StructureLoader(this);
 
     public int[][] findCornerLocations(MultiBlockStructure structure, Material cornerMaterial) {
 
@@ -66,6 +64,50 @@ public class MineLoopUtil {
             }
         }
         return locations;
+    }
+
+    public int[] findSpawnPointLocation(MultiBlockStructure structure, Material spawnMaterial) {
+
+        int[] dimensions = structure.getDimensions();
+        int dimX = dimensions[0];
+        int dimY = dimensions[1];
+        int dimZ = dimensions[2];
+
+        int[] spawnPoint = new int[1];
+
+        for (int x = 0; x < dimX; x++) {
+            for (int y = 0; y < dimY; y++) {
+                for (int z = 0; z < dimZ; z++) {
+                    if (structure.getType(x, y, z) != spawnMaterial) {
+                        continue;
+                    }
+                    spawnPoint = new int []{x, y, z};
+                }
+            }
+        }
+        return spawnPoint;
+    }
+
+    public int[] findNpcLocation(MultiBlockStructure structure, Material npcMaterial) {
+
+        int[] dimensions = structure.getDimensions();
+        int dimX = dimensions[0];
+        int dimY = dimensions[1];
+        int dimZ = dimensions[2];
+
+        int[] npcLocation = new int[1];
+
+        for (int x = 0; x < dimX; x++) {
+            for (int y = 0; y < dimY; y++) {
+                for (int z = 0; z < dimZ; z++) {
+                    if (structure.getType(x, y, z) != npcMaterial) {
+                        continue;
+                    }
+                    npcLocation = new int []{x, y, z};
+                }
+            }
+        }
+        return npcLocation;
     }
 
     public List<Location> findCornerLocations(Location startLocation, Location endLocation, Material
@@ -145,7 +187,7 @@ public class MineLoopUtil {
                                   Material spawnPointMaterial) {
         this.cornerLocations = findCornerLocations(startLocation, endLocation, cornerMaterial);
         this.expandCornerLocations = findExpandCornerLocations(startLocation, endLocation, expandMaterial);
-        this.npcLocation = findNpcLocation(startLocation, endLocation, npcMaterial);
+//        this.npcLocation = findNpcLocation(startLocation, endLocation, npcMaterial);
         this.spawnLocation = findSpawnPointLocation(startLocation, endLocation, spawnPointMaterial);
     }
 
@@ -166,15 +208,7 @@ public class MineLoopUtil {
         return spawnLocation;
     }
 
-    public Location getNpcLocation() {
-        return npcLocation;
-    }
-
-    public void setupLocations() {
-        structureLoader.setStart(getCorner1());
-        structureLoader.setEnd(getCorner2());
-        structureLoader.setSpawnLocation(getSpawnLocation());
-        structureLoader.setNpcLocation(getNpcLocation());
-        structureLoader.setCornerLocations(cornerLocations1);
-    }
+//    public Location getNpcLocation() {
+//        return npcLocation;
+//    }
 }
