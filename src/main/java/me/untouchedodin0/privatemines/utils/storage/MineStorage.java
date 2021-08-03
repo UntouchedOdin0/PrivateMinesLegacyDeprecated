@@ -57,7 +57,7 @@ public class MineStorage {
         int n = 0;
         for (File file : structuresList) {
             n++;
-            MineType type = new MineType("mine-" + n);
+//            MineType type = new MineType("mine-" + n);
         }
     }
 }
