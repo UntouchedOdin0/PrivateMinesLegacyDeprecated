@@ -65,6 +65,7 @@ public class PrivateMines extends JavaPlugin {
 
     public static final String MINES_FOLDER_NAME = "mines";
     private final int pluginId = 11413; // Metrics ID.
+
     int minesCount;
     int resetDelay;
     File[] structuresList;
@@ -110,7 +111,6 @@ public class PrivateMines extends JavaPlugin {
         Bukkit.getLogger().info("Setting up the Private Mines Storage and Factory...");
         MineStorage mineStorage = new MineStorage();
         PrivateMineResetUtil privateMineResetUtil = new PrivateMineResetUtil(this);
-        PasteBuilder pasteBuilder = new PasteBuilder();
         MineLoopUtil mineLoopUtil = new MineLoopUtil();
         structureLoader = new StructureLoader(mineLoopUtil);
         MineFactory mineFactory = new MineFactory(
@@ -152,7 +152,7 @@ public class PrivateMines extends JavaPlugin {
                 multiBlockStructure = util.loadStructure(file.getName(), file);
                 util.saveToStructureMap(name, multiBlockStructure);
                 mineType.setFile(file);
-                mineType.setMultiBlockStructure(multiBlockStructure);
+                mineType.setStructure(multiBlockStructure);
                 mineTypes.add(mineType);
                 multiBlockStructures.add(multiBlockStructure);
             }
