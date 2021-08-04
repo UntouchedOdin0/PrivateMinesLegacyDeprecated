@@ -27,6 +27,7 @@ import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.structure.StructureLoader;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
+import me.untouchedodin0.privatemines.utils.mine.MineType;
 import me.untouchedodin0.privatemines.utils.mine.PrivateMineLocations;
 import me.untouchedodin0.privatemines.utils.mine.util.PrivateMineResetUtil;
 import me.untouchedodin0.privatemines.utils.mine.util.PrivateMineUtil;
@@ -52,6 +53,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class MineFactory {
@@ -106,6 +108,9 @@ public class MineFactory {
     List<UUID> whitelistedPlayers = new ArrayList<>();
     List<UUID> bannedPlayers = new ArrayList<>();
     List<UUID> priorityPlayers = new ArrayList<>();
+//    List<MineType> mineTypes = new ArrayList<>();
+    Map<String , MineType> mineTypes;
+
     UUID coowner = null;
 
     String fileName;
@@ -128,6 +133,8 @@ public class MineFactory {
     WorldGuardWrapper wgWrapper;
     IWrappedRegion iWrappedRegion;
 
+    MineType mineType;
+
     public MineFactory(PrivateMines privateMines,
                        MineStorage storage,
                        MineFillManager fillManager,
@@ -143,6 +150,7 @@ public class MineFactory {
         this.mineLoopUtil = mineLoopUtil;
         this.util = util;
         this.structureLoader = structureLoader;
+        this.mineTypes = privateMines.getMineTypeMap();
     }
 
     public void createMine(Player player, Location location) {
@@ -156,6 +164,15 @@ public class MineFactory {
 
         playerID = player.getUniqueId().toString();
         mineRegionString = "mine-" + playerID;
+        mineType = mineTypes.get(0);
+
+        mineType.build(nextLocation, player.getUniqueId());
+        Bukkit.getLogger().info("type: " + mineType.getMineType());
+        Bukkit.getLogger().info("structure: " + mineType.getStructure());
+        Bukkit.getLogger().info("structure name: " + mineType.getStructureName());
+        Bukkit.getLogger().info("corner locations: " + mineType.getCornerLocations());
+        Bukkit.getLogger().info("spawn Location: " + mineType.getSpawnLocation());
+
 //        multiBlockStructure = privateMines.getStructureLoader().getBlockStructure();
 
         if (mineStorage.hasMine(player)) {
@@ -284,5 +301,4 @@ public class MineFactory {
         }
     }
 }
-
 
