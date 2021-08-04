@@ -24,6 +24,7 @@ package me.untouchedodin0.privatemines.utils.filling;
 
 import com.cryptomorin.xseries.XMaterial;
 import me.untouchedodin0.privatemines.PrivateMines;
+import org.apache.commons.lang.math.IntRange;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -48,6 +49,10 @@ public class MineFillManager {
     Location corner2;
     List<ItemStack> mineBlocks = new ArrayList<>();
     PrivateMines privateMines;
+    String spawnLocation = "spawnLocation";
+    String corner1String = "Corner1";
+    String corner2String = "Corner2";
+    String minesPath = "plugins/PrivateMinesRewrite/mines/";
 
     public MineFillManager(PrivateMines privateMines) {
         this.privateMines = privateMines;
@@ -70,32 +75,55 @@ public class MineFillManager {
 
     @SuppressWarnings("unchecked")
     public void fillPlayerMine(Player player) {
-        userFile = new File("plugins/PrivateMinesRewrite/mines/" + player.getUniqueId() + ".yml");
+        userFile = new File(minesPath + player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        corner1 = mineConfig.getSerializable("Corner1", Location.class);
-        corner2 = mineConfig.getSerializable("Corner2", Location.class);
+        corner1 = mineConfig.getSerializable(corner1String, Location.class);
+        corner2 = mineConfig.getSerializable(corner2String, Location.class);
 
 //        corner1 = mineConfig.getLocation("Corner1");
 //        corner2 = mineConfig.getLocation("Corner2");
         mineBlocks = (List<ItemStack>) mineConfig.getList("blocks");
         if (corner1 != null && corner2 != null && mineBlocks != null) {
             Bukkit.getScheduler().runTaskLater(privateMines, ()
-                    -> fillMineMultiple(corner1, corner2, mineBlocks), 20L);
+                    -> {
+                if (inMine(player)) {
+                    player.teleport(mineConfig.getSerializable(spawnLocation, Location.class));
+                }
+                fillMineMultiple(corner1, corner2, mineBlocks);
+            }, 20L);
         }
     }
 
     @SuppressWarnings("unchecked")
     public void fillPlayerMine(UUID uuid) {
-        userFile = new File("plugins/PrivateMinesRewrite/mines/" + uuid + ".yml");
+        userFile = new File(minesPath + uuid + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
 //        corner1 = mineConfig.getLocation("Corner1");
 //        corner2 = mineConfig.getLocation("Corner2");
-        corner1 = mineConfig.getSerializable("Corner1", Location.class);
-        corner2 = mineConfig.getSerializable("Corner2", Location.class);
+        corner1 = mineConfig.getSerializable(corner1String, Location.class);
+        corner2 = mineConfig.getSerializable(corner2String, Location.class);
         mineBlocks = (List<ItemStack>) mineConfig.getList("blocks");
         if (corner1 != null && corner2 != null && mineBlocks != null) {
             Bukkit.getScheduler().runTaskLater(privateMines, ()
-                    -> fillMineMultiple(corner1, corner2, mineBlocks), 20L);
+                    -> {
+                if (inMine(Bukkit.getPlayer(uuid))) {
+                    Bukkit.getPlayer(uuid).teleport(mineConfig.getSerializable(spawnLocation, Location.class));
+                }
+                fillMineMultiple(corner1, corner2, mineBlocks);
+            }, 20L);
         }
+    }
+
+    public boolean inMine(Player player) {
+        userFile = new File(minesPath + player.getUniqueId() + ".yml");
+        mineConfig = YamlConfiguration.loadConfiguration(userFile);
+        corner1 = mineConfig.getSerializable(corner1String, Location.class);
+        corner2 = mineConfig.getSerializable(corner2String, Location.class);
+        double playerX = player.getEyeLocation().getX();
+        double playerY = player.getEyeLocation().getY();
+        double playerZ = player.getEyeLocation().getZ();
+        return new IntRange(corner1.getX(), corner2.getX()).containsDouble(playerX)
+                && new IntRange(corner1.getY(), corner2.getY()).containsDouble(playerY)
+                && new IntRange(corner1.getZ(), corner2.getZ()).containsDouble(playerZ);
     }
 }
