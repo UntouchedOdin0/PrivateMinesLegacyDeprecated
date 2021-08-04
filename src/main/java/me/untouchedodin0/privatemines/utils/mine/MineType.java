@@ -32,6 +32,7 @@ import java.util.UUID;
 
 public class MineType {
 
+    private String mineType;
     private final MultiBlockStructure structure;
     private MineType type;
     private CuboidRegion cuboidRegion;
@@ -45,6 +46,7 @@ public class MineType {
     String structureName;
 
     public MineType(String mineType, MultiBlockStructure multiBlockStructure, PrivateMines privateMines) {
+        this.mineType = mineType;
         this.structure = multiBlockStructure;
         this.mineLoopUtil = new MineLoopUtil();
         this.privateMines = privateMines;
