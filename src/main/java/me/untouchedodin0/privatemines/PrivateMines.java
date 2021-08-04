@@ -46,12 +46,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import redempt.redlib.commandmanager.Messages;
 import redempt.redlib.multiblock.MultiBlockStructure;
+import redempt.redlib.region.CuboidRegion;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /*
     Thanks to Redempt for creating RedLib what helped me with a lot of the
@@ -76,6 +74,8 @@ public class PrivateMines extends JavaPlugin {
     List<Mine> mines = new ArrayList<>();
 
     List<MultiBlockStructure> multiBlockStructures = new ArrayList<>();
+
+    Map<String, MineType> mineTypeMap = new HashMap<>();
 
     private PrivateMines privateMine;
     private MineWorldManager mineManager;
@@ -157,10 +157,15 @@ public class PrivateMines extends JavaPlugin {
                 String name = file.getName().replace(".dat", "");
                 multiBlockStructure = util.loadStructure(file.getName(), file);
                 MineType mineType = new MineType(name, multiBlockStructure, this);
-                util.saveToStructureMap(name, multiBlockStructure);
-                multiBlockStructures.add(multiBlockStructure);
+                mineTypeMap.putIfAbsent(name, mineType);
+//                util.saveToStructureMap(name, multiBlockStructure);
+//                multiBlockStructures.add(multiBlockStructure);
             }
         }
+
+        mineTypeMap.forEach(((name, mineType) -> {
+            Bukkit.getLogger().info("FOREACH: Name: " + name + " Type: " + mineType);
+        }));
 
 //        for (MineType mineType : mineTypes) {
 //            MineHandler.createMineType(mineType);
@@ -186,12 +191,11 @@ public class PrivateMines extends JavaPlugin {
 
         for (MineType type : mineTypes) {
             Mine mine = new Mine(type);
-
-            Bukkit.getLogger().info("Type: " + type.getMineType().toString());
-            Bukkit.getLogger().info("Structure: " + type.getStructureName());
-            Bukkit.getLogger().info("Spawn Location: " + type.getSpawnLocation().toString());
-            Bukkit.getLogger().info("Corner Locations: " + type.getCornerLocations().toString());
-            Bukkit.getLogger().info("NPC Location: " + type.getNpcLocation().toString());
+            Bukkit.getLogger().info("Type: " + mine.getType());
+            Bukkit.getLogger().info("Structure: " + mine.getStructure());
+            Bukkit.getLogger().info("Spawn Location: " + mine.getSpawnLocation());
+            Bukkit.getLogger().info("Corner Locations: " + mine.getCornerLocations());
+            Bukkit.getLogger().info("NPC Location: " + mine.getNpcLocation());
             mines.add(mine);
         }
 
@@ -274,5 +278,9 @@ public class PrivateMines extends JavaPlugin {
 
     public List<MineType> getMineTypes() {
         return mineTypes;
+    }
+
+    public Map<String, MineType> getMineTypeMap() {
+        return mineTypeMap;
     }
 }
