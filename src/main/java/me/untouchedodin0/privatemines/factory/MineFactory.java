@@ -164,7 +164,7 @@ public class MineFactory {
 
         playerID = player.getUniqueId().toString();
         mineRegionString = "mine-" + playerID;
-        mineType = mineTypes.get(0);
+        mineType = mineTypes.get("");
 
         mineType.build(nextLocation, player.getUniqueId());
         Bukkit.getLogger().info("type: " + mineType.getMineType());
@@ -172,6 +172,7 @@ public class MineFactory {
         Bukkit.getLogger().info("structure name: " + mineType.getStructureName());
         Bukkit.getLogger().info("corner locations: " + mineType.getCornerLocations());
         Bukkit.getLogger().info("spawn Location: " + mineType.getSpawnLocation());
+        Bukkit.getLogger().info("npc Location: " + mineType.getNpcLocation());
 
 //        multiBlockStructure = privateMines.getStructureLoader().getBlockStructure();
 
