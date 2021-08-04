@@ -42,7 +42,47 @@ public class Mine {
         this.mineLocation = mineLocation;
     }
 
+    public Location getMineLocation() {
+        return mineLocation;
+    }
+
+    public void setSpawnLocation(int[] spawnLocation) {
+        this.spawnLocation = spawnLocation;
+    }
+
+    public int[] getSpawnLocation() {
+        return spawnLocation;
+    }
+
+    public void setNpcLocation(int[] npcLocation) {
+        this.npcLocation = npcLocation;
+    }
+
+    public int[] getNpcLocation() {
+        return npcLocation;
+    }
+
+    public void setCornerLocations(int[][] cornerLocations) {
+        this.cornerLocations = cornerLocations;
+    }
+
+    public int[][] getCornerLocations() {
+        return cornerLocations;
+    }
+
     public void setMineOwner(UUID mineOwner) {
         this.mineOwner = mineOwner;
+    }
+
+    public UUID getMineOwner() {
+        return mineOwner;
+    }
+
+    public MultiBlockStructure getStructure() {
+        return structure;
+    }
+
+    public MineType getType() {
+        return type;
     }
 }
