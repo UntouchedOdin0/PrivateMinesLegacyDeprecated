@@ -164,7 +164,7 @@ public class MineFactory {
 
         playerID = player.getUniqueId().toString();
         mineRegionString = "mine-" + playerID;
-        mineType = mineTypes.get("");
+        mineType = mineTypes.get("structure");
 
         mineType.build(nextLocation, player.getUniqueId());
         Bukkit.getLogger().info("type: " + mineType.getMineType());
