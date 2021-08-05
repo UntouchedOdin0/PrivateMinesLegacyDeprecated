@@ -158,20 +158,12 @@ public class PrivateMines extends JavaPlugin {
                 multiBlockStructure = util.loadStructure(file.getName(), file);
                 MineType mineType = new MineType(name, multiBlockStructure, this);
                 mineTypeMap.putIfAbsent(name, mineType);
-//                util.saveToStructureMap(name, multiBlockStructure);
-//                multiBlockStructures.add(multiBlockStructure);
             }
         }
 
         mineTypeMap.forEach(((name, mineType) -> {
             Bukkit.getLogger().info("FOREACH: Name: " + name + " Type: " + mineType);
         }));
-
-//        for (MineType mineType : mineTypes) {
-//            MineHandler.createMineType(mineType);
-//        }
-
-//        List<MineType> types = MineHandler.getMineTypes();
 
         int test = 0;
         for (MultiBlockStructure structure : multiBlockStructures) {
