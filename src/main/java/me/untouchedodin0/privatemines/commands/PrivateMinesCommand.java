@@ -30,6 +30,7 @@ import me.untouchedodin0.privatemines.factory.MineFactory;
 import me.untouchedodin0.privatemines.guis.MainMenuGui;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
+import me.untouchedodin0.privatemines.utils.mine.MineType;
 import me.untouchedodin0.privatemines.utils.mine.util.ExpandingMineUtil;
 import me.untouchedodin0.privatemines.utils.mine.util.MineUpgradeUtil;
 import me.untouchedodin0.privatemines.utils.queue.MineQueueSystem;
@@ -46,6 +47,7 @@ import org.bukkit.inventory.ItemStack;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 @CommandAlias("privatemines|privatemine|pm|pmine")
@@ -93,6 +95,7 @@ public class PrivateMinesCommand extends BaseCommand {
     MineWorldManager mineWorldManager;
     MineQueueSystem mineQueueSystem;
     int queueSlot;
+    Map<String, MineType> mineTypeMap;
 
     public PrivateMinesCommand(Util util,
                                MineFillManager fillManager,
@@ -478,6 +481,19 @@ public class PrivateMinesCommand extends BaseCommand {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Subcommand("dev/minetype/map")
+    @Description("Dev command test")
+    @CommandPermission("privatemine.minetype")
+    public void mineType(Player player) {
+        mineTypeMap = privateMines.getMineTypeMap();
+        player.sendMessage("Mine type map: " + mineTypeMap);
+
+        mineTypeMap.forEach((name, mineType) -> {
+            player.sendMessage("Name: " + name);
+            player.sendMessage("MineType: " + mineType);
+        });
     }
 }
 
