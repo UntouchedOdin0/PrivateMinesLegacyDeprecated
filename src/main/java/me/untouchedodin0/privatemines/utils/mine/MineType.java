@@ -54,30 +54,30 @@ public class MineType {
     }
 
     public MineType setType(MineType mineType) {
-        type = mineType;
+        this.type = mineType;
         return this;
     }
 
     //TODO Setup this cuboid region
     public MineType setCuboidRegion(CuboidRegion cube) {
-        cuboidRegion = cube;
+        this.cuboidRegion = cube;
         return this;
     }
 
     @SuppressWarnings("UnusedReturnValue")
     public MineType setCornerLocations(int[][] locations) {
-        cornerLocations = locations;
+        this.cornerLocations = locations;
         return this;
     }
 
     public MineType setSpawnLocation(int[] spawnLoc) {
-        spawnLocation = spawnLoc;
+        this.spawnLocation = spawnLoc;
         return this;
     }
 
     @SuppressWarnings("UnusedReturnValue")
     public MineType setNpcLocation(int[] npcLoc) {
-        npcLocation = npcLoc;
+        this.npcLocation = npcLoc;
         return this;
     }
 
