@@ -495,6 +495,28 @@ public class PrivateMinesCommand extends BaseCommand {
             player.sendMessage("MineType: " + mineType);
         });
     }
+
+    @Subcommand("dev/minetype/map/find")
+    @Description("Dev command test")
+    @CommandPermission("privatemine.minetype.type")
+    public void findMineType(Player player, String name) {
+        mineTypeMap = privateMines.getMineTypeMap();
+
+//        Map<String, MineType> mineTypeMap;
+
+        if (name == null) {
+            player.sendMessage("You didn't specify a type.");
+        } else {
+            for (Map.Entry<String, MineType> entry : mineTypeMap.entrySet()) {
+                if (entry.equals(name)) {
+                    player.sendMessage("Found an entry: " + entry);
+                } else {
+                    player.sendMessage("Sorry, I couldn't find a entry for " + name);
+                    return;
+                }
+            }
+        }
+    }
 }
 
 
