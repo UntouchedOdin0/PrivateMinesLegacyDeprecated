@@ -64,6 +64,7 @@ public class MineType {
         return this;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public MineType setCornerLocations(int[][] locations) {
         cornerLocations = locations;
         return this;
@@ -74,6 +75,7 @@ public class MineType {
         return this;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public MineType setNpcLocation(int[] npcLoc) {
         npcLocation = npcLoc;
         return this;
@@ -103,6 +105,7 @@ public class MineType {
         return structureName;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public Mine build(Location location, UUID owner) {
         mine = new Mine(type);
         mine.setMineLocation(location);
