@@ -189,6 +189,7 @@ public class PrivateMines extends JavaPlugin {
             Bukkit.getLogger().info("Corner Locations: " + mine.getCornerLocations());
             Bukkit.getLogger().info("NPC Location: " + mine.getNpcLocation());
             mines.add(mine);
+            mineTypeMap.putIfAbsent(type.getStructureName(), type);
         }
 
         for (Mine mine : mines) {
