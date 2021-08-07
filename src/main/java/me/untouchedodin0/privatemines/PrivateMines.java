@@ -158,6 +158,7 @@ public class PrivateMines extends JavaPlugin {
                 multiBlockStructure = util.loadStructure(file.getName(), file);
                 MineType mineType = new MineType(name, multiBlockStructure, this);
                 mineTypeMap.putIfAbsent(name, mineType);
+                multiBlockStructures.add(multiBlockStructure); // a fix?
             }
         }
 
@@ -170,15 +171,17 @@ public class PrivateMines extends JavaPlugin {
             structureLoader.loadStructure(structure);
             test++;
             MineType mineType = new MineType(String.valueOf(test), structure, this);
-            cornerLocations = mineLoopUtil.findCornerLocations(structure, cornerMaterial);
-            spawnLocation = mineLoopUtil.findSpawnPointLocation(structure, spawnMaterial);
-            npcLocation = mineLoopUtil.findNpcLocation(structure, npcMaterial);
 
-            mineType.setCornerLocations(cornerLocations);
-            mineType.setSpawnLocation(spawnLocation);
-            mineType.setNpcLocation(npcLocation);
+//            cornerLocations = mineLoopUtil.findCornerLocations(structure, cornerMaterial);
+//            spawnLocation = mineLoopUtil.findSpawnPointLocation(structure, spawnMaterial);
+//            npcLocation = mineLoopUtil.findNpcLocation(structure, npcMaterial);
+//
+//            mineType.setCornerLocations(cornerLocations);
+//            mineType.setSpawnLocation(spawnLocation);
+//            mineType.setNpcLocation(npcLocation);
 
             mineTypes.add(mineType);
+            Bukkit.getLogger().info("MINETYPE: " + mineType);
         }
 
         for (MineType type : mineTypes) {
