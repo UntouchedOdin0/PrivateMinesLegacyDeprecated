@@ -27,6 +27,7 @@ import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.structure.StructureLoader;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
+import me.untouchedodin0.privatemines.utils.mine.Mine;
 import me.untouchedodin0.privatemines.utils.mine.MineType;
 import me.untouchedodin0.privatemines.utils.mine.PrivateMineLocations;
 import me.untouchedodin0.privatemines.utils.mine.util.PrivateMineResetUtil;
@@ -133,6 +134,7 @@ public class MineFactory {
     WorldGuardWrapper wgWrapper;
     IWrappedRegion iWrappedRegion;
 
+    Mine mine;
     MineType mineType;
 
     public MineFactory(PrivateMines privateMines,
@@ -156,7 +158,7 @@ public class MineFactory {
     public void createMine(Player player, Location location) {
 
         fileName = privateMines.getConfig().getString("structureFile");
-        mineFile = new File("plugins/PrivateMinesRewrite/schematics/" + fileName + ".dat");
+        mineFile = new File("plugins/PrivateMinesRewrite/structures/" + fileName + ".dat");
         userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
         locationsFile = new File(UTIL_DIRECTORY, "locations.yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
@@ -164,13 +166,16 @@ public class MineFactory {
 
         playerID = player.getUniqueId().toString();
         mineRegionString = "mine-" + playerID;
-        mineType = mineTypes.get("structure");
+        this.mineType = mineTypes.get("structure");
 
-        mineType.build(nextLocation, player.getUniqueId());
+        mine = mineType.build(nextLocation, player.getUniqueId());
 
-        Bukkit.getLogger().info("type: " + mineType.getMineType());
-        Bukkit.getLogger().info("structure: " + mineType.getStructure());
-        Bukkit.getLogger().info("structure name: " + mineType.getStructureName());
+        Bukkit.broadcastMessage("" + nextLocation);
+        player.teleport(mine.getMineLocation());
+
+//        Bukkit.getLogger().info("type: " + mineType.getMineType());
+//        Bukkit.getLogger().info("structure: " + mineType.getStructure());
+//        Bukkit.getLogger().info("structure name: " + mineType.getStructureName());
 //        Bukkit.getLogger().info("corner locations: " + mineType.getCornerLocations());
 //        Bukkit.getLogger().info("spawn Location: " + mineType.getSpawnLocation());
 //        Bukkit.getLogger().info("npc Location: " + mineType.getNpcLocation());
