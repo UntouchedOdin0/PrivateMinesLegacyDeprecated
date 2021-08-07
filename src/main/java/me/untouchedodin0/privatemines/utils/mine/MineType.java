@@ -27,27 +27,30 @@ import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import redempt.redlib.multiblock.MultiBlockStructure;
+import redempt.redlib.multiblock.Structure;
 
 import java.util.UUID;
 
 public class MineType {
 
     private final String mineTypeName;
-    private final MultiBlockStructure structure;
+    private final MultiBlockStructure multiBlockStructure;
     private final PrivateMines privateMines;
-
     private final MineLoopUtil mineLoopUtil;
+
+    private Structure structure;
+
     Mine mine;
 
-    public MineType(String typeString, MultiBlockStructure multiBlockStructure, PrivateMines privateMines) {
+    public MineType(String typeString, MultiBlockStructure multiStructure, PrivateMines privateMines) {
         this.mineTypeName = typeString;
-        this.structure = multiBlockStructure;
+        this.multiBlockStructure = multiStructure;
         this.mineLoopUtil = new MineLoopUtil();
         this.privateMines = privateMines;
     }
 
-    public MultiBlockStructure getStructure() {
-        return this.structure;
+    public MultiBlockStructure getMultiBlockStructure() {
+        return this.multiBlockStructure;
     }
 
     public MineType getMineType() {
@@ -55,7 +58,7 @@ public class MineType {
     }
 
     public String getStructureName() {
-        return structure.getName();
+        return multiBlockStructure.getName();
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -63,7 +66,7 @@ public class MineType {
         mine = new Mine(this);
         mine.setMineLocation(location);
         mine.setMineOwner(owner);
-        structure.build(mine.getMineLocation());
+        structure = multiBlockStructure.build(mine.getMineLocation());
         Bukkit.getPlayer(owner).teleport(location);
         return mine;
     }
@@ -80,6 +83,10 @@ public class MineType {
     @SuppressWarnings("unused")
     public MineLoopUtil getMineLoopUtil() {
         return mineLoopUtil;
+    }
+
+    public Structure getStructure() {
+        return structure;
     }
 }
 
