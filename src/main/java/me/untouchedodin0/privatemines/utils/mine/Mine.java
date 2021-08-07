@@ -4,7 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import redempt.redlib.multiblock.MultiBlockStructure;
+import redempt.redlib.multiblock.Structure;
 
 import java.util.UUID;
 
@@ -14,7 +14,7 @@ public class Mine {
     UUID mineOwner;
     MineType type;
 
-    MultiBlockStructure structure;
+    Structure structure;
     MineLoopUtil mineLoopUtil;
 
     private final Material cornerMaterial = XMaterial.POWERED_RAIL.parseMaterial();
@@ -29,11 +29,13 @@ public class Mine {
     public Mine(MineType mineType) {
         this.mineLoopUtil = new MineLoopUtil();
         this.type = mineType;
-        this.structure = mineType.getStructure();
+        this.structure = type.getStructure();
 
+        /*
         this.cornerLocations = mineLoopUtil.findCornerLocations(structure, cornerMaterial);
         this.spawnLocation = mineLoopUtil.findSpawnPointLocation(structure, spawnMaterial);
         this.npcLocation = mineLoopUtil.findNpcLocation(structure, npcMaterial);
+         */
     }
 
     public void setMineLocation(Location mineLocation) {
@@ -76,7 +78,7 @@ public class Mine {
         return mineOwner;
     }
 
-    public MultiBlockStructure getStructure() {
+    public Structure getStructure() {
         return structure;
     }
 
