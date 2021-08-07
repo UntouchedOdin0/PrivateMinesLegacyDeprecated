@@ -24,7 +24,6 @@ package me.untouchedodin0.privatemines;
 
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
-import com.cryptomorin.xseries.XMaterial;
 import me.untouchedodin0.privatemines.commands.PrivateMinesCommand;
 import me.untouchedodin0.privatemines.factory.MineFactory;
 import me.untouchedodin0.privatemines.structure.StructureLoader;
@@ -40,13 +39,10 @@ import me.untouchedodin0.privatemines.utils.mine.util.PrivateMineResetUtil;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import redempt.redlib.commandmanager.Messages;
 import redempt.redlib.multiblock.MultiBlockStructure;
-import redempt.redlib.region.CuboidRegion;
 
 import java.io.File;
 import java.util.*;
@@ -66,8 +62,7 @@ public class PrivateMines extends JavaPlugin {
     int minesCount;
     int resetDelay;
     File[] structuresList;
-    File structureFolder = new File("plugins/PrivateMinesRewrite/schematics/");
-    File schematicsFile = new File("plugins/PrivateMinesRewrite/schematics/schematics.yml");
+    File structureFolder = new File("plugins/PrivateMinesRewrite/structures/");
     MultiBlockStructure multiBlockStructure;
 
     List<MineType> mineTypes = new ArrayList<>();
@@ -83,17 +78,6 @@ public class PrivateMines extends JavaPlugin {
     private StructureLoader structureLoader;
     private MineUpgradeUtil mineUpgradeUtil;
     private YamlConfiguration schematicsYml;
-    Location start;
-    Location end;
-
-    private int[][] cornerLocations;
-    private int[] spawnLocation;
-    private int[] npcLocation;
-
-    private final Material cornerMaterial = XMaterial.POWERED_RAIL.parseMaterial();
-    private final Material npcMaterial = XMaterial.WHITE_WOOL.parseMaterial();
-    private final Material spawnMaterial = XMaterial.CHEST.parseMaterial();
-    private final Material expandMaterial = XMaterial.SPONGE.parseMaterial();
 
     public static String fileNameWithOutExt(String fileName) {
         return Optional.of(fileName.lastIndexOf(".")).filter(i -> i >= 0)
@@ -108,7 +92,7 @@ public class PrivateMines extends JavaPlugin {
         Util util = new Util();
         saveDefaultConfig();
         saveResource("messages.txt", false);
-        saveResource("schematics", false);
+        saveResource("structures", false);
 
         Bukkit.getLogger().info("Setting up the Private Mines World...");
         mineManager = new MineWorldManager();
