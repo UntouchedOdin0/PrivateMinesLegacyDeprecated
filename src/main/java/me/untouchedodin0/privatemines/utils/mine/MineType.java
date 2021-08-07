@@ -24,140 +24,64 @@ package me.untouchedodin0.privatemines.utils.mine;
 
 import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import redempt.redlib.multiblock.MultiBlockStructure;
-import redempt.redlib.region.CuboidRegion;
 
 import java.util.UUID;
 
 public class MineType {
 
-    private String mineType;
+    private final String mineTypeName;
     private final MultiBlockStructure structure;
-    private MineType type;
-    private CuboidRegion cuboidRegion;
-    private int[][] cornerLocations;
-    private int[] spawnLocation;
-    private int[] npcLocation;
-    private PrivateMines privateMines;
+    private final PrivateMines privateMines;
 
-    private MineLoopUtil mineLoopUtil;
+    private final MineLoopUtil mineLoopUtil;
     Mine mine;
-    String structureName;
 
-    public MineType(String mineType, MultiBlockStructure multiBlockStructure, PrivateMines privateMines) {
-        this.mineType = mineType;
+    public MineType(String typeString, MultiBlockStructure multiBlockStructure, PrivateMines privateMines) {
+        this.mineTypeName = typeString;
         this.structure = multiBlockStructure;
         this.mineLoopUtil = new MineLoopUtil();
         this.privateMines = privateMines;
-        this.structureName = structure.getName();
-    }
-
-    public MineType setType(MineType mineType) {
-        this.type = mineType;
-        return this;
-    }
-
-    //TODO Setup this cuboid region
-    public MineType setCuboidRegion(CuboidRegion cube) {
-        this.cuboidRegion = cube;
-        return this;
-    }
-
-    @SuppressWarnings("UnusedReturnValue")
-    public MineType setCornerLocations(int[][] locations) {
-        this.cornerLocations = locations;
-        return this;
-    }
-
-    public MineType setSpawnLocation(int[] spawnLoc) {
-        this.spawnLocation = spawnLoc;
-        return this;
-    }
-
-    @SuppressWarnings("UnusedReturnValue")
-    public MineType setNpcLocation(int[] npcLoc) {
-        this.npcLocation = npcLoc;
-        return this;
     }
 
     public MultiBlockStructure getStructure() {
-        return structure;
+        return this.structure;
     }
 
     public MineType getMineType() {
-        return type;
-    }
-
-    public int[][] getCornerLocations() {
-        return cornerLocations;
-    }
-
-    public int[] getSpawnLocation() {
-        return spawnLocation;
-    }
-
-    public int[] getNpcLocation() {
-        return npcLocation;
+        return this;
     }
 
     public String getStructureName() {
-        return structureName;
+        return structure.getName();
     }
 
     @SuppressWarnings("UnusedReturnValue")
     public Mine build(Location location, UUID owner) {
-        mine = new Mine(type);
+        mine = new Mine(this);
         mine.setMineLocation(location);
         mine.setMineOwner(owner);
+        structure.build(mine.getMineLocation());
+        Bukkit.getPlayer(owner).teleport(location);
         return mine;
+    }
+
+    @SuppressWarnings("unused")
+    public String getMineTypeName() {
+        return mineTypeName;
+    }
+
+    public PrivateMines getPrivateMines() {
+        return privateMines;
+    }
+
+    @SuppressWarnings("unused")
+    public MineLoopUtil getMineLoopUtil() {
+        return mineLoopUtil;
     }
 }
 
-    /*
-    public MultiBlockStructure getMultiBlockStructure() {
-        return multiBlockStructure;
-    }
-
-    public void setMultiBlockStructure(MultiBlockStructure multiBlockStructure) {
-        this.multiBlockStructure = multiBlockStructure;
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public String getMineType() {
-        return type;
-    }
-
-    public Map<Material, Double> getMaterials() {
-        return materials;
-    }
-
-    public void setMaterials(Map<Material, Double> materials) {
-        this.materials = materials;
-    }
-
-    public List<Location> getCornerLocations() {
-        return cornerLocations;
-    }
-
-    public void setCornerLocations(List<Location> cornerLocations) {
-        this.cornerLocations = cornerLocations;
-    }
-
-    public Location getSpawnLocation() {
-        return spawnLocation;
-    }
-
-    public void setSpawnLocation(Location spawnLocation) {
-        this.spawnLocation = spawnLocation;
-    }
-     */
 
 
