@@ -28,14 +28,12 @@ public class Mine {
 
     public Mine(MineType mineType) {
         this.mineLoopUtil = new MineLoopUtil();
-//        this.type = mineType;
+        this.type = mineType;
         this.structure = mineType.getStructure();
 
         this.cornerLocations = mineLoopUtil.findCornerLocations(structure, cornerMaterial);
         this.spawnLocation = mineLoopUtil.findSpawnPointLocation(structure, spawnMaterial);
         this.npcLocation = mineLoopUtil.findNpcLocation(structure, npcMaterial);
-
-        type.setType(mineType);
     }
 
     public void setMineLocation(Location mineLocation) {
