@@ -5,7 +5,7 @@ import java.util.List;
 
 public class MineTypeLoader {
 
-    public void loadMineTypes(MineType mineType) {
+    public void loadMineType(MineType mineType) {
         List<MineType> mineTypes = new ArrayList<>();
         mineTypes.add(mineType);
     }
