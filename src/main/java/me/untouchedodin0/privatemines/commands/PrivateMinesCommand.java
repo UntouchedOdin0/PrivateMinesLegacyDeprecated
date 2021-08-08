@@ -156,7 +156,7 @@ public class PrivateMinesCommand extends BaseCommand {
         if (mineStorage.hasMine(p)) {
             p.sendMessage(ChatColor.RED + "You already have a mine!");
         } else {
-            mineFactory.createMine(p, mineWorldManager.nextFreeLocation());
+            mineFactory.createMine(p);
         }
     }
 
@@ -170,7 +170,7 @@ public class PrivateMinesCommand extends BaseCommand {
                     " please inform a operator!");
             Bukkit.getLogger().warning(target.player.getName() + " already has a mine, not able to give another one!");
         } else {
-            mineFactory.createMine(target.player, mineWorldManager.nextFreeLocation());
+            mineFactory.createMine(target.player);
         }
     }
 
@@ -184,7 +184,7 @@ public class PrivateMinesCommand extends BaseCommand {
                     " please inform a operator!");
             Bukkit.getLogger().warning(target.player.getName() + " already has a mine, not able to give another one!");
         } else {
-            mineFactory.createMine(target.player, mineWorldManager.nextFreeLocation());
+            mineFactory.createMine(target.player);
             commandSender.sendMessage(ChatColor.GREEN + "Given " + target.player.getName() + " a private mine!");
         }
     }
