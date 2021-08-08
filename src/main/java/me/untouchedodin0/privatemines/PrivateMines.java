@@ -169,18 +169,14 @@ public class PrivateMines extends JavaPlugin {
         }
 
         for (MineType type : mineTypes) {
-            Mine mine = new Mine(type);
-            Bukkit.getLogger().info("Type: " + mine.getType());
-            Bukkit.getLogger().info("Structure: " + mine.getStructure());
-            Bukkit.getLogger().info("Spawn Location: " + mine.getSpawnLocation());
-            Bukkit.getLogger().info("Corner Locations: " + mine.getCornerLocations());
-            Bukkit.getLogger().info("NPC Location: " + mine.getNpcLocation());
-            mines.add(mine);
+//            Mine mine = new Mine(type);
+            Bukkit.getLogger().info("Type: " + type);
+            Bukkit.getLogger().info("Structure: " + type.getStructure());
+//            Bukkit.getLogger().info("Spawn Location: " + mine.getSpawnLocation());
+//            Bukkit.getLogger().info("Corner Locations: " + mine.getCornerLocations());
+//            Bukkit.getLogger().info("NPC Location: " + mine.getNpcLocation());
+//            mines.add(mine);
             mineTypeMap.putIfAbsent(type.getStructureName(), type);
-        }
-
-        for (Mine mine : mines) {
-            Bukkit.getLogger().info("MINE: " + mine);
         }
 
         Bukkit.getLogger().info("Loading mines...");
