@@ -11,6 +11,7 @@ import java.util.UUID;
 public class Mine {
 
     Location mineLocation;
+    Location spawnLoc;
     UUID mineOwner;
     MineType type;
 
