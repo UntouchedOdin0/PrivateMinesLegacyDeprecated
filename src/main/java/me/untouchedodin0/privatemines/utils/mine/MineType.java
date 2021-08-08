@@ -63,11 +63,14 @@ public class MineType {
 
     @SuppressWarnings("UnusedReturnValue")
     public Mine build(Location location, UUID owner) {
+        long startTime = System.currentTimeMillis();
         mine = new Mine(this);
         mine.setMineLocation(location);
         mine.setMineOwner(owner);
         structure = multiBlockStructure.build(mine.getMineLocation());
         Bukkit.getPlayer(owner).teleport(location);
+        long endTime = System.currentTimeMillis();
+        Bukkit.getLogger().info("That took " + (endTime - startTime) + " milliseconds to create the mine");
         return mine;
     }
 
