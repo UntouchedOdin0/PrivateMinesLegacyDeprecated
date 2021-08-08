@@ -155,7 +155,7 @@ public class MineFactory {
         this.mineTypes = privateMines.getMineTypeMap();
     }
 
-    public void createMine(Player player, Location location) {
+    public void createMine(Player player) {
 
         fileName = privateMines.getConfig().getString("structureFile");
         mineFile = new File("plugins/PrivateMinesRewrite/structures/" + fileName + ".dat");
@@ -169,14 +169,6 @@ public class MineFactory {
         mineType = mineTypes.get("structure");
         nextLocation = mineWorldManager.nextFreeLocation();
 
-        if (nextLocation == null) {
-            Bukkit.broadcastMessage("Ok, I've found the issue and it was that nextLocation was null, " + nextLocation);
-        }
-        mine = mineType.build(nextLocation, player.getUniqueId());
-
-        Bukkit.broadcastMessage("" + nextLocation);
-        player.teleport(mine.getMineLocation());
-
 //        Bukkit.getLogger().info("type: " + mineType.getMineType());
 //        Bukkit.getLogger().info("structure: " + mineType.getStructure());
 //        Bukkit.getLogger().info("structure name: " + mineType.getStructureName());
@@ -189,9 +181,18 @@ public class MineFactory {
         if (mineStorage.hasMine(player)) {
             Bukkit.getLogger().warning("Couldn't give mine, due to player already having a mine!");
         } else {
+            if (nextLocation == null) {
+                Bukkit.broadcastMessage("Ok, I've found the issue and it was that nextLocation was null, " + nextLocation);
+            }
+            mine = mineType.build(nextLocation, player.getUniqueId());
+
+            Bukkit.broadcastMessage("" + nextLocation);
+            player.teleport(mine.getMineLocation());
+
+            /*
             if (multiBlockStructure == null) {
-                Bukkit.getLogger().info("The structure was null, likely meaning it couldn't find the file or" +
-                        "there was a problem loading the structure! Feel free to make a ticket in the discord to" +
+                Bukkit.getLogger().info("The structure was null, likely meaning it couldn't find the file or " +
+                        "there was a problem loading the structure! Feel free to make a ticket in the discord to " +
                         "get help.");
             }
 
@@ -259,6 +260,8 @@ public class MineFactory {
         start = null;
         end = null;
         mineSize = 0;
+             */
+        }
     }
 
     public void deleteMine(Player player) {
