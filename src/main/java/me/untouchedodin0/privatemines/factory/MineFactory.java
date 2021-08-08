@@ -166,8 +166,12 @@ public class MineFactory {
 
         playerID = player.getUniqueId().toString();
         mineRegionString = "mine-" + playerID;
-        this.mineType = mineTypes.get("structure");
+        mineType = mineTypes.get("structure");
+        nextLocation = mineWorldManager.nextFreeLocation();
 
+        if (nextLocation == null) {
+            Bukkit.broadcastMessage("Ok, I've found the issue and it was that nextLocation was null, " + nextLocation);
+        }
         mine = mineType.build(nextLocation, player.getUniqueId());
 
         Bukkit.broadcastMessage("" + nextLocation);

@@ -43,7 +43,7 @@ public class Mine {
     }
 
     public Location getMineLocation() {
-        return mineLocation;
+        return this.mineLocation;
     }
 
     public void setSpawnLocation(int[] spawnLocation) {
