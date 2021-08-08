@@ -185,7 +185,7 @@ public class MineFactory {
                 Bukkit.broadcastMessage("Ok, I've found the issue and it was that nextLocation was null, " + nextLocation);
             }
             mine = mineType.build(nextLocation, player.getUniqueId());
-
+            
             Bukkit.broadcastMessage("" + nextLocation);
             player.teleport(mine.getMineLocation());
 
