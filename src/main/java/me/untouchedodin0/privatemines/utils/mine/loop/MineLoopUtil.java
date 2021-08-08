@@ -27,6 +27,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import redempt.redlib.multiblock.MultiBlockStructure;
+import redempt.redlib.multiblock.Structure;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,6 @@ public class MineLoopUtil {
     Location spawnLocation;
 //    Location npcLocation;
 
-//    StructureLoader structureLoader = new StructureLoader(this);
 
     public int[][] findCornerLocations(MultiBlockStructure structure, Material cornerMaterial) {
 
@@ -88,6 +88,28 @@ public class MineLoopUtil {
         return spawnPoint;
     }
 
+    public int[] findSpawnPointLocation(Structure structure, Material spawnMaterial) {
+
+        int[] dimensions = structure.getRegion().getBlockDimensions();
+        int dimX = dimensions[0];
+        int dimY = dimensions[1];
+        int dimZ = dimensions[2];
+
+        int[] spawnPoint = new int[1];
+
+        for (int x = 0; x < dimX; x++) {
+            for (int y = 0; y < dimY; y++) {
+                for (int z = 0; z < dimZ; z++) {
+                    if (structure.getRelative(x, y, z).getStructureType() != spawnMaterial) {
+                        continue;
+                    }
+                    spawnPoint = new int []{x, y, z};
+                }
+            }
+        }
+        return spawnPoint;
+    }
+
     public int[] findNpcLocation(MultiBlockStructure structure, Material npcMaterial) {
 
         int[] dimensions = structure.getDimensions();
@@ -101,6 +123,28 @@ public class MineLoopUtil {
             for (int y = 0; y < dimY; y++) {
                 for (int z = 0; z < dimZ; z++) {
                     if (structure.getType(x, y, z) != npcMaterial) {
+                        continue;
+                    }
+                    npcLocation = new int []{x, y, z};
+                }
+            }
+        }
+        return npcLocation;
+    }
+
+    public int[] findNpcLocation(Structure structure, Material npcMaterial) {
+
+        int[] dimensions = structure.getRegion().getBlockDimensions();
+        int dimX = dimensions[0];
+        int dimY = dimensions[1];
+        int dimZ = dimensions[2];
+
+        int[] npcLocation = new int[1];
+
+        for (int x = 0; x < dimX; x++) {
+            for (int y = 0; y < dimY; y++) {
+                for (int z = 0; z < dimZ; z++) {
+                    if (structure.getRelative(x, y, z).getStructureType() != npcMaterial) {
                         continue;
                     }
                     npcLocation = new int []{x, y, z};
