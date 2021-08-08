@@ -75,7 +75,7 @@ public class MineCreationQueue extends BukkitRunnable {
         if (mineQueueSystem.getNextMine() != null) {
             Bukkit.broadcastMessage(nextMine.toString());
             nextLocation = mineWorldManager.nextFreeLocation();
-            mineFactory.createMine(Bukkit.getPlayer(mineQueueSystem.getNextMine()), nextLocation);
+            mineFactory.createMine(Bukkit.getPlayer(mineQueueSystem.getNextMine()));
         }
     }
 }
