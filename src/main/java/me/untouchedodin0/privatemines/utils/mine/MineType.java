@@ -26,6 +26,7 @@ import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
 
@@ -39,6 +40,9 @@ public class MineType {
     private final MineLoopUtil mineLoopUtil;
 
     private Structure structure;
+    private int[][] cornerLocations;
+    private int[] spawnLocation;
+    private int[] npcLocation;
 
     Mine mine;
 
@@ -67,8 +71,17 @@ public class MineType {
         mine = new Mine(this);
         mine.setMineLocation(location);
         mine.setMineOwner(owner);
-        structure = multiBlockStructure.build(mine.getMineLocation());
+        this.structure = multiBlockStructure.build(mine.getMineLocation());
+        this.cornerLocations = mineLoopUtil.findCornerLocations(multiBlockStructure, Material.POWERED_RAIL);
+
+        spawnLocation = mineLoopUtil.findSpawnPointLocation(structure, Material.CHEST);
+        npcLocation = mineLoopUtil.findNpcLocation(structure, Material.WOOL);
+
         Bukkit.getPlayer(owner).teleport(location);
+        Bukkit.broadcastMessage("cornerLocations: " + cornerLocations);
+        Bukkit.broadcastMessage("spawnLocation: " + spawnLocation);
+        Bukkit.broadcastMessage("npcLocation: " + npcLocation);
+
         long endTime = System.currentTimeMillis();
         Bukkit.getLogger().info("That took " + (endTime - startTime) + " milliseconds to create the mine");
         return mine;
@@ -89,7 +102,7 @@ public class MineType {
     }
 
     public Structure getStructure() {
-        return structure;
+        return this.structure;
     }
 }
 
