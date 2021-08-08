@@ -71,17 +71,19 @@ public class MineType {
         mine = new Mine(this);
         mine.setMineLocation(location);
         mine.setMineOwner(owner);
+
         this.structure = multiBlockStructure.build(mine.getMineLocation());
         this.cornerLocations = mineLoopUtil.findCornerLocations(multiBlockStructure, Material.POWERED_RAIL);
 
-        spawnLocation = mineLoopUtil.findSpawnPointLocation(structure, Material.CHEST);
-        npcLocation = mineLoopUtil.findNpcLocation(structure, Material.WOOL);
+        this.spawnLocation = mineLoopUtil.findSpawnPointLocation(structure, Material.CHEST);
+        this.npcLocation = mineLoopUtil.findNpcLocation(structure, Material.WOOL);
 
-        Bukkit.getPlayer(owner).teleport(location);
         Bukkit.broadcastMessage("cornerLocations: " + cornerLocations);
         Bukkit.broadcastMessage("spawnLocation: " + spawnLocation);
         Bukkit.broadcastMessage("npcLocation: " + npcLocation);
+        mine.setSpawnLocation(spawnLocation);
 
+        Bukkit.getPlayer(owner).teleport(location);
         long endTime = System.currentTimeMillis();
         Bukkit.getLogger().info("That took " + (endTime - startTime) + " milliseconds to create the mine");
         return mine;
