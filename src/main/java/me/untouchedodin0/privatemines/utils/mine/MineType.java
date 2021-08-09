@@ -27,6 +27,7 @@ import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
 
@@ -40,9 +41,9 @@ public class MineType {
     private final MineLoopUtil mineLoopUtil;
 
     private Structure structure;
-    private int[][] cornerLocations;
-    private int[] spawnLocation;
-    private int[] npcLocation;
+    private final int[][] cornerLocations;
+    private final int[] spawnLocation;
+    private final int[] npcLocation;
 
     Mine mine;
 
@@ -51,6 +52,9 @@ public class MineType {
         this.multiBlockStructure = multiStructure;
         this.mineLoopUtil = new MineLoopUtil();
         this.privateMines = privateMines;
+        this.cornerLocations = mineLoopUtil.findCornerLocations(multiBlockStructure, Material.POWERED_RAIL);
+        this.spawnLocation = mineLoopUtil.findSpawnPointLocation(multiBlockStructure, Material.CHEST);
+        this.npcLocation = mineLoopUtil.findNpcLocation(multiBlockStructure, Material.WOOL);
     }
 
     public MultiBlockStructure getMultiBlockStructure() {
@@ -68,22 +72,19 @@ public class MineType {
     @SuppressWarnings("UnusedReturnValue")
     public Mine build(Location location, UUID owner) {
         long startTime = System.currentTimeMillis();
-        mine = new Mine(this);
+        this.structure = multiBlockStructure.build(location);
+        mine = new Mine(structure, this);
         mine.setMineLocation(location);
         mine.setMineOwner(owner);
 
-        this.structure = multiBlockStructure.build(mine.getMineLocation());
-        this.cornerLocations = mineLoopUtil.findCornerLocations(multiBlockStructure, Material.POWERED_RAIL);
+//        Bukkit.broadcastMessage("cornerLocations: " + cornerLocations);
+//        Bukkit.broadcastMessage("spawnLocation: " + spawnLocation);
+//        Bukkit.broadcastMessage("npcLocation: " + npcLocation);
+        mine.setSpawnLocation(mine.getSpawnLocation());
+        mine.setNpcLocation(mine.getNpcLocation());
+        Bukkit.broadcastMessage("spawnLocation: " + mine.getSpawnLocation());
+        Bukkit.broadcastMessage("npcLocation: " + mine.getNpcLocation());
 
-        this.spawnLocation = mineLoopUtil.findSpawnPointLocation(structure, Material.CHEST);
-        this.npcLocation = mineLoopUtil.findNpcLocation(structure, Material.WOOL);
-
-        Bukkit.broadcastMessage("cornerLocations: " + cornerLocations);
-        Bukkit.broadcastMessage("spawnLocation: " + spawnLocation);
-        Bukkit.broadcastMessage("npcLocation: " + npcLocation);
-        mine.setSpawnLocation(spawnLocation);
-
-        Bukkit.getPlayer(owner).teleport(location);
         long endTime = System.currentTimeMillis();
         Bukkit.getLogger().info("That took " + (endTime - startTime) + " milliseconds to create the mine");
         return mine;
@@ -105,6 +106,18 @@ public class MineType {
 
     public Structure getStructure() {
         return this.structure;
+    }
+
+    public int[][] getCornerLocations() {
+        return cornerLocations;
+    }
+
+    public int[] getNpcLocation() {
+        return npcLocation;
+    }
+
+    public int[] getSpawnLocation() {
+        return spawnLocation;
     }
 }
 
