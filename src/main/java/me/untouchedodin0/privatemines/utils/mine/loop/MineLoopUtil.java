@@ -25,9 +25,7 @@ package me.untouchedodin0.privatemines.utils.mine.loop;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import redempt.redlib.multiblock.MultiBlockStructure;
-import redempt.redlib.multiblock.Structure;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +64,25 @@ public class MineLoopUtil {
         return locations;
     }
 
+    public int[] findLocation(MultiBlockStructure structure, Material material) {
+        int[] dimensions = structure.getDimensions();
+        int dimX = dimensions[0];
+        int dimY = dimensions[1];
+        int dimZ = dimensions[2];
+
+        for (int x = 0; x < dimX; x++) {
+            for (int y = 0; y < dimY; y++) {
+                for (int z = 0; z < dimZ; z++) {
+                    if (structure.getType(x, y, z) != material) {
+                        continue;
+                    }
+                    return new int[]{x, y, z};
+                }
+            }
+        }
+        return new int[]{0, 0, 0};
+    }
+
     public int[] findSpawnPointLocation(MultiBlockStructure structure, Material spawnMaterial) {
 
         int[] dimensions = structure.getDimensions();
@@ -79,28 +96,6 @@ public class MineLoopUtil {
             for (int y = 0; y < dimY; y++) {
                 for (int z = 0; z < dimZ; z++) {
                     if (structure.getType(x, y, z) != spawnMaterial) {
-                        continue;
-                    }
-                    spawnPoint = new int []{x, y, z};
-                }
-            }
-        }
-        return spawnPoint;
-    }
-
-    public int[] findSpawnPointLocation(Structure structure, Material spawnMaterial) {
-
-        int[] dimensions = structure.getRegion().getBlockDimensions();
-        int dimX = dimensions[0];
-        int dimY = dimensions[1];
-        int dimZ = dimensions[2];
-
-        int[] spawnPoint = new int[1];
-
-        for (int x = 0; x < dimX; x++) {
-            for (int y = 0; y < dimY; y++) {
-                for (int z = 0; z < dimZ; z++) {
-                    if (structure.getRelative(x, y, z).getStructureType() != spawnMaterial) {
                         continue;
                     }
                     spawnPoint = new int []{x, y, z};
@@ -132,28 +127,7 @@ public class MineLoopUtil {
         return npcLocation;
     }
 
-    public int[] findNpcLocation(Structure structure, Material npcMaterial) {
-
-        int[] dimensions = structure.getRegion().getBlockDimensions();
-        int dimX = dimensions[0];
-        int dimY = dimensions[1];
-        int dimZ = dimensions[2];
-
-        int[] npcLocation = new int[1];
-
-        for (int x = 0; x < dimX; x++) {
-            for (int y = 0; y < dimY; y++) {
-                for (int z = 0; z < dimZ; z++) {
-                    if (structure.getRelative(x, y, z).getStructureType() != npcMaterial) {
-                        continue;
-                    }
-                    npcLocation = new int []{x, y, z};
-                }
-            }
-        }
-        return npcLocation;
-    }
-
+    /*
     public List<Location> findCornerLocations(Location startLocation, Location endLocation, Material
             cornerMaterial) {
         List<Location> cornerLocation = new ArrayList<>();
@@ -222,18 +196,20 @@ public class MineLoopUtil {
         }
         return npcLoc;
     }
+     */
 
-    public void setBlockLocations(Location startLocation,
-                                  Location endLocation,
-                                  Material cornerMaterial,
-                                  Material expandMaterial,
-                                  Material npcMaterial,
-                                  Material spawnPointMaterial) {
-        this.cornerLocations = findCornerLocations(startLocation, endLocation, cornerMaterial);
-        this.expandCornerLocations = findExpandCornerLocations(startLocation, endLocation, expandMaterial);
-//        this.npcLocation = findNpcLocation(startLocation, endLocation, npcMaterial);
-        this.spawnLocation = findSpawnPointLocation(startLocation, endLocation, spawnPointMaterial);
-    }
+
+//    public void setBlockLocations(Location startLocation,
+//                                  Location endLocation,
+//                                  Material cornerMaterial,
+//                                  Material expandMaterial,
+//                                  Material npcMaterial,
+//                                  Material spawnPointMaterial) {
+//        this.cornerLocations = findCornerLocations(startLocation, endLocation, cornerMaterial);
+//        this.expandCornerLocations = findExpandCornerLocations(startLocation, endLocation, expandMaterial);
+////        this.npcLocation = findNpcLocation(startLocation, endLocation, npcMaterial);
+//        this.spawnLocation = findSpawnPointLocation(startLocation, endLocation, spawnPointMaterial);
+//    }
 
     @SuppressWarnings("unused")
     public List<Location> getCornerLocations() {
