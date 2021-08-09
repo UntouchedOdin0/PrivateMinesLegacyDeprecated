@@ -12,6 +12,8 @@ public class Mine {
 
     Location mineLocation;
     Location spawnLoc;
+    Location npcLoc;
+
     UUID mineOwner;
     MineType type;
 
@@ -27,10 +29,12 @@ public class Mine {
     int[] spawnLocation;
     int[] npcLocation;
 
-    public Mine(MineType mineType) {
+    public Mine(Structure structure, MineType mineType) {
         this.mineLoopUtil = new MineLoopUtil();
+        this.structure = structure;
         this.type = mineType;
-        this.structure = type.getStructure();
+        this.spawnLoc = getRelative(mineType.getSpawnLocation());
+        this.npcLoc = getRelative(mineType.getNpcLocation());
 
         /*
         this.cornerLocations = mineLoopUtil.findCornerLocations(structure, cornerMaterial);
@@ -47,21 +51,33 @@ public class Mine {
         return this.mineLocation;
     }
 
-    public void setSpawnLocation(int[] spawnLocation) {
-        this.spawnLocation = spawnLocation;
+    public void setSpawnLocation(Location spawnLocation) {
+        this.spawnLoc = spawnLocation;
     }
 
-    public int[] getSpawnLocation() {
-        return spawnLocation;
+    public Location getSpawnLocation() {
+        return spawnLoc;
     }
+
+    public void setNpcLocation(Location npcLocation) {
+        this.npcLoc = npcLocation;
+    }
+
+    public Location getNpcLocation() {
+        return npcLoc;
+    }
+
+//    public int[] getSpawnLocation() {
+//        return spawnLocation;
+//    }
 
     public void setNpcLocation(int[] npcLocation) {
         this.npcLocation = npcLocation;
     }
 
-    public int[] getNpcLocation() {
-        return npcLocation;
-    }
+//    public int[] getNpcLocation() {
+//        return npcLocation;
+//    }
 
     public void setCornerLocations(int[][] cornerLocations) {
         this.cornerLocations = cornerLocations;
@@ -85,5 +101,12 @@ public class Mine {
 
     public MineType getType() {
         return type;
+    }
+
+    public Location getRelative(int[] relative) {
+        return structure
+                .getRelative(relative[0], relative[1], relative[2])
+                .getBlock()
+                .getLocation();
     }
 }
