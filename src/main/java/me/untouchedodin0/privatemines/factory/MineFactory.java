@@ -203,9 +203,8 @@ public class MineFactory {
         }
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
         start = mineConfig.getSerializable(CORNER_1_STRING, Location.class);
-        start = mineConfig.getSerializable(CORNER_2_STRING, Location.class);
-//        start = mineConfig.getLocation(CORNER_1_STRING);
-//        end = mineConfig.getLocation(CORNER_2_STRING);
+        end = mineConfig.getSerializable(CORNER_2_STRING, Location.class);
+
         expandRegion = new CuboidRegion(start, end);
         expandRegionBedrock = new CuboidRegion(start, end);
 
