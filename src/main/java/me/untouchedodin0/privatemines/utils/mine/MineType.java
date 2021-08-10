@@ -27,7 +27,6 @@ import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
 
@@ -76,17 +75,29 @@ public class MineType {
         mine = new Mine(structure, this);
         mine.setMineLocation(location);
         mine.setMineOwner(owner);
+        mine.setSpawnLocation(mine.getRelative(spawnLocation));
 
+//        mine.setSpawnLocation(mine.getRelative(mine.getSpawnLocation()));
+//        mine.setNpcLocation(mine.getRelative(mine.getNPCLocationRelative()));
+
+//        mine.setSpawnLocation(mine.getSpawnLocation());
+//        mine.setNpcLocation(npcLocation);
 //        Bukkit.broadcastMessage("cornerLocations: " + cornerLocations);
 //        Bukkit.broadcastMessage("spawnLocation: " + spawnLocation);
 //        Bukkit.broadcastMessage("npcLocation: " + npcLocation);
-        mine.setSpawnLocation(mine.getSpawnLocation());
-        mine.setNpcLocation(mine.getNpcLocation());
-        Bukkit.broadcastMessage("spawnLocation: " + mine.getSpawnLocation());
-        Bukkit.broadcastMessage("npcLocation: " + mine.getNpcLocation());
+//        mine.setSpawnLocation(mine.getSpawnLocation());
+//        mine.setNpcLocation(mine.getNpcLocation());
+        Bukkit.broadcastMessage("spawnLocation: " + mine.getSpawnLocationRelative());
+        Bukkit.broadcastMessage("spawnLocation 2: " + mine.getRelative(mine.getSpawnLocationRelative()));
+
+//        Bukkit.broadcastMessage("npcLocation: " + mine.getNPCLocationRelative());
+        multiBlockStructure.getAt(mine.getRelative(mine.getSpawnLocationRelative()));
 
         long endTime = System.currentTimeMillis();
-        Bukkit.getLogger().info("That took " + (endTime - startTime) + " milliseconds to create the mine");
+        String timeString = String.valueOf(endTime - startTime);
+        String loadingTime = "That took {} milliseconds to create the mine".replace("{}", timeString);
+        Bukkit.getLogger().info(loadingTime);
+//        Bukkit.getLogger().info("That took " + (endTime - startTime) + " milliseconds to create the mine");
         return mine;
     }
 

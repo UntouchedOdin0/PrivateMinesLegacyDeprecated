@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
 
 import java.util.UUID;
@@ -17,6 +18,7 @@ public class Mine {
     UUID mineOwner;
     MineType type;
 
+    MultiBlockStructure multiBlockStructure;
     Structure structure;
     MineLoopUtil mineLoopUtil;
 
@@ -33,14 +35,15 @@ public class Mine {
         this.mineLoopUtil = new MineLoopUtil();
         this.structure = structure;
         this.type = mineType;
+
+        this.spawnLocation = mineLoopUtil.findSpawnPointLocation(type.getMultiBlockStructure(), spawnMaterial);
+        this.npcLocation = mineLoopUtil.findNpcLocation(type.getMultiBlockStructure(), npcMaterial);
+
         this.spawnLoc = getRelative(mineType.getSpawnLocation());
         this.npcLoc = getRelative(mineType.getNpcLocation());
 
-        /*
-        this.cornerLocations = mineLoopUtil.findCornerLocations(structure, cornerMaterial);
-        this.spawnLocation = mineLoopUtil.findSpawnPointLocation(structure, spawnMaterial);
-        this.npcLocation = mineLoopUtil.findNpcLocation(structure, npcMaterial);
-         */
+//        this.cornerLocations = mineLoopUtil.findCornerLocations(structure, cornerMaterial);
+//        this.npcLocation = mineLoopUtil.findNpcLocation(structure, npcMaterial);
     }
 
     public void setMineLocation(Location mineLocation) {
@@ -55,9 +58,9 @@ public class Mine {
         this.spawnLoc = spawnLocation;
     }
 
-    public Location getSpawnLocation() {
-        return spawnLoc;
-    }
+//    public Location getSpawnLocation() {
+//        return spawnLoc;
+//    }
 
     public void setNpcLocation(Location npcLocation) {
         this.npcLoc = npcLocation;
@@ -67,9 +70,9 @@ public class Mine {
         return npcLoc;
     }
 
-//    public int[] getSpawnLocation() {
-//        return spawnLocation;
-//    }
+    public int[] getSpawnLocation() {
+        return spawnLocation;
+    }
 
     public void setNpcLocation(int[] npcLocation) {
         this.npcLocation = npcLocation;
@@ -108,5 +111,13 @@ public class Mine {
                 .getRelative(relative[0], relative[1], relative[2])
                 .getBlock()
                 .getLocation();
+    }
+
+    public int[] getSpawnLocationRelative() {
+        return spawnLocation;
+    }
+
+    public int[] getNPCLocationRelative() {
+        return npcLocation;
     }
 }

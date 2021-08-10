@@ -22,6 +22,7 @@
 
 package me.untouchedodin0.privatemines.utils.mine.loop;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -55,13 +56,18 @@ public class MineLoopUtil {
                     if (structure.getType(x, y, z) != cornerMaterial) {
                         continue;
                     }
-                    locations[corners] = new int[] {x, y, z};
+                    locations[corners] = new int[]{x, y, z};
                     corners++;
                     if (corners >= 2) break;
                 }
             }
         }
-        return locations;
+        if (locations.length < 2) {
+            Bukkit.getLogger().warning("Failed to find 2 locations, actual size was " + locations.length);
+        } else {
+            return locations;
+        }
+        return new int[][]{};
     }
 
     public int[] findLocation(MultiBlockStructure structure, Material material) {
