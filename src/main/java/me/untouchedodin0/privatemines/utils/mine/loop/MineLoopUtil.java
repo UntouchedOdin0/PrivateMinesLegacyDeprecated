@@ -76,12 +76,16 @@ public class MineLoopUtil {
         int dimY = dimensions[1];
         int dimZ = dimensions[2];
 
+        System.out.println("looking for the material " + material);
+
         for (int x = 0; x < dimX; x++) {
             for (int y = 0; y < dimY; y++) {
                 for (int z = 0; z < dimZ; z++) {
                     if (structure.getType(x, y, z) != material) {
                         continue;
                     }
+                    System.out.println("found block");
+
                     return new int[]{x, y, z};
                 }
             }
