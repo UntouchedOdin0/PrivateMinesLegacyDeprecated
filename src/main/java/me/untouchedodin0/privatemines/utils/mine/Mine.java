@@ -4,6 +4,8 @@ import com.cryptomorin.xseries.XMaterial;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
 
@@ -27,6 +29,8 @@ public class Mine {
     private final Material spawnMaterial = XMaterial.CHEST.parseMaterial();
     private final Material expandMaterial = XMaterial.SPONGE.parseMaterial();
 
+    private WeightedRandom<Material> weightedRandom;
+
     int[][] cornerLocations;
     int[] spawnLocation;
     int[] npcLocation;
@@ -38,12 +42,10 @@ public class Mine {
 
         this.spawnLocation = mineLoopUtil.findLocation(type.getMultiBlockStructure(), spawnMaterial);
         this.npcLocation = mineLoopUtil.findLocation(type.getMultiBlockStructure(), npcMaterial);
+        this.cornerLocations = mineLoopUtil.findCornerLocations(type.getMultiBlockStructure(), cornerMaterial);
 
         this.spawnLoc = getRelative(mineType.getSpawnLocation());
         this.npcLoc = getRelative(mineType.getNpcLocation());
-
-//        this.cornerLocations = mineLoopUtil.findCornerLocations(structure, cornerMaterial);
-//        this.npcLocation = mineLoopUtil.findNpcLocation(structure, npcMaterial);
     }
 
     public void setMineLocation(Location mineLocation) {
@@ -55,12 +57,21 @@ public class Mine {
     }
 
     public void setSpawnLocation(Location spawnLocation) {
+        spawnLocation.getBlock().setType(Material.AIR);
         this.spawnLoc = spawnLocation;
     }
 
 //    public Location getSpawnLocation() {
 //        return spawnLoc;
 //    }
+
+    public void setWeightedRandomMaterials(WeightedRandom<Material> weightedRandom) {
+        this.weightedRandom = weightedRandom;
+    }
+
+    public WeightedRandom<Material> getWeightedRandom() {
+        return weightedRandom;
+    }
 
     public void setNpcLocation(Location npcLocation) {
         this.npcLoc = npcLocation;
@@ -119,5 +130,15 @@ public class Mine {
 
     public int[] getNPCLocationRelative() {
         return npcLocation;
+    }
+
+    public void teleportToMine(Player player) {
+        if (spawnLocation != null) {
+            player.teleport(spawnLoc);
+        }
+    }
+
+    public void resetMine() {
+        
     }
 }
