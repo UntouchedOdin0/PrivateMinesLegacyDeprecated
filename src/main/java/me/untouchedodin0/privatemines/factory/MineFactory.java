@@ -108,8 +108,8 @@ public class MineFactory {
     List<UUID> whitelistedPlayers = new ArrayList<>();
     List<UUID> bannedPlayers = new ArrayList<>();
     List<UUID> priorityPlayers = new ArrayList<>();
-//    List<MineType> mineTypes = new ArrayList<>();
-    Map<String , MineType> mineTypes;
+    //    List<MineType> mineTypes = new ArrayList<>();
+    Map<String, MineType> mineTypes;
 
     UUID coowner = null;
 
@@ -168,15 +168,6 @@ public class MineFactory {
         mineType = mineTypes.get("structure");
         nextLocation = mineWorldManager.nextFreeLocation();
 
-//        Bukkit.getLogger().info("type: " + mineType.getMineType());
-//        Bukkit.getLogger().info("structure: " + mineType.getStructure());
-//        Bukkit.getLogger().info("structure name: " + mineType.getStructureName());
-//        Bukkit.getLogger().info("corner locations: " + mineType.getCornerLocations());
-//        Bukkit.getLogger().info("spawn Location: " + mineType.getSpawnLocation());
-//        Bukkit.getLogger().info("npc Location: " + mineType.getNpcLocation());
-
-//        multiBlockStructure = privateMines.getStructureLoader().getBlockStructure();
-
         if (mineStorage.hasMine(player)) {
             Bukkit.getLogger().warning("Couldn't give mine, due to player already having a mine!");
         } else {
@@ -184,82 +175,8 @@ public class MineFactory {
                 Bukkit.broadcastMessage("Ok, I've found the issue and it was that nextLocation was null, " + nextLocation);
             }
             mine = mineType.build(nextLocation, player.getUniqueId());
-            
+            mine.teleportToMine(player);
             Bukkit.broadcastMessage("" + nextLocation);
-            player.teleport(mine.getMineLocation());
-
-            /*
-            if (multiBlockStructure == null) {
-                Bukkit.getLogger().info("The structure was null, likely meaning it couldn't find the file or " +
-                        "there was a problem loading the structure! Feel free to make a ticket in the discord to " +
-                        "get help.");
-            }
-
-            world = location.getWorld();
-            cuboidRegion = multiBlockStructure.getRegion(location);
-            start = cuboidRegion.getStart().clone();
-            end = cuboidRegion.getEnd().clone();
-
-            multiBlockStructure.build(location);
-            mineLoopUtil.setBlockLocations(start, end, cornerMaterial, expandMaterial, npcMaterial, spawnMaterial);
-            corner1 = mineLoopUtil.getCorner1();
-            corner2 = mineLoopUtil.getCorner2();
-
-            miningRegion = new CuboidRegion(corner1, corner2)
-                    .expand(1, 0, 1, 0, 1, 0);
-            mineSize = miningRegion.getBlockDimensions()[0];
-            cornerBlocks.add(corner1);
-            cornerBlocks.add(corner2);
-            if (mineBlocks.isEmpty() && XMaterial.STONE.parseMaterial() != null) {
-                mineBlocks.add(new ItemStack(XMaterial.STONE.parseMaterial()));
-            }
-        }
-
-        Location miningRegionStart = miningRegion.getStart();
-        Location miningRegionEnd = miningRegion.getEnd();
-        startBlock = miningRegionStart.getBlock();
-        endBlock = miningRegionEnd.getBlock();
-        privateMineUtil = new PrivateMineUtil(player, mineFile, mineBlocks, whitelistedPlayers, bannedPlayers, priorityPlayers, coowner);
-        privateMineLocations = new PrivateMineLocations(player, nextLocation, spawnLocation, npcLocation, corner1, corner2);
-        wgWrapper = WorldGuardWrapper.getInstance();
-        mineConfig.set(CORNER_1_STRING, mineLoopUtil.getCorner1());
-        mineConfig.set(CORNER_2_STRING, mineLoopUtil.getCorner2());
-        mineConfig.set(SPAWN_LOCATION_STRING, mineLoopUtil.getSpawnLocation());
-//        mineConfig.set(NPC_LOCATION_STRING, mineLoopUtil.getNpcLocation());
-        mineConfig.set(PLACE_LOCATION_STRING, privateMineLocations.getMineLocation());
-        mineConfig.set(BLOCKS_STRING, privateMineUtil.getMineBlocks());
-        mineConfig.set(MINE_SIZE, mineSize);
-        mineConfig.set(TAX, tax);
-        mineConfig.set(OPEN, false);
-        mineConfig.set(WHITELISTED_PLAYERS, privateMineUtil.getWhitelistedPlayers());
-        mineConfig.set(BANNED_PLAYERS, privateMineUtil.getBannedPlayers());
-        mineConfig.set(PRIORITY_PLAYERS, privateMineUtil.getPriorityPlayers());
-        mineConfig.set(CO_OWNER, privateMineUtil.getCoOwner());
-        try {
-            mineConfig.save(userFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        iWrappedRegion = WorldGuardWrapper.getInstance().addCuboidRegion(
-                "mine-" + player.getUniqueId().toString(),
-                mineLoopUtil.getCorner1(),
-                mineLoopUtil.getCorner2())
-                .orElseThrow(() -> new RuntimeException("Could not create Main WorldGuard region"));
-        util.setMainFlags(iWrappedRegion);
-
-        resetUtil.startResetTask(player.getUniqueId(), privateMines.getConfig().getInt("resetDelay"));
-        cornerBlocks = new ArrayList<>();
-        Messages.msg("recievedMine");
-        player.teleport(mineLoopUtil.getSpawnLocation());
-        Messages.msg("teleportedToMine");
-        npcLocation = null;
-        corner1 = null;
-        corner2 = null;
-        start = null;
-        end = null;
-        mineSize = 0;
-             */
         }
     }
 
