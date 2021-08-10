@@ -43,9 +43,9 @@ public class Mine {
         this.spawnLocation = mineLoopUtil.findLocation(type.getMultiBlockStructure(), spawnMaterial);
         this.npcLocation = mineLoopUtil.findLocation(type.getMultiBlockStructure(), npcMaterial);
         this.cornerLocations = mineLoopUtil.findCornerLocations(type.getMultiBlockStructure(), cornerMaterial);
-
-        this.spawnLoc = getRelative(mineType.getSpawnLocation());
-        this.npcLoc = getRelative(mineType.getNpcLocation());
+//
+//        this.spawnLoc = getSpawnLocation();
+//        this.npcLoc = getRelative(mineType.getNpcLocation());
     }
 
     public void setMineLocation(Location mineLocation) {
@@ -61,9 +61,9 @@ public class Mine {
         this.spawnLoc = spawnLocation;
     }
 
-//    public Location getSpawnLocation() {
-//        return spawnLoc;
-//    }
+    public Location getSpawnLocation() {
+        return spawnLoc;
+    }
 
     public void setWeightedRandomMaterials(WeightedRandom<Material> weightedRandom) {
         this.weightedRandom = weightedRandom;
@@ -81,7 +81,7 @@ public class Mine {
         return npcLoc;
     }
 
-    public int[] getSpawnLocation() {
+    public int[] getNpcLoc() {
         return spawnLocation;
     }
 
@@ -139,6 +139,6 @@ public class Mine {
     }
 
     public void resetMine() {
-        
+
     }
 }
