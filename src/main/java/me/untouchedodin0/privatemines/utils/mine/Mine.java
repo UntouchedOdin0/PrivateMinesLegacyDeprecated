@@ -36,8 +36,8 @@ public class Mine {
         this.structure = structure;
         this.type = mineType;
 
-        this.spawnLocation = mineLoopUtil.findSpawnPointLocation(type.getMultiBlockStructure(), spawnMaterial);
-        this.npcLocation = mineLoopUtil.findNpcLocation(type.getMultiBlockStructure(), npcMaterial);
+        this.spawnLocation = mineLoopUtil.findLocation(type.getMultiBlockStructure(), spawnMaterial);
+        this.npcLocation = mineLoopUtil.findLocation(type.getMultiBlockStructure(), npcMaterial);
 
         this.spawnLoc = getRelative(mineType.getSpawnLocation());
         this.npcLoc = getRelative(mineType.getNpcLocation());
