@@ -27,9 +27,12 @@ import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import redempt.redlib.RedLib;
+import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 public class MineType {
@@ -40,11 +43,13 @@ public class MineType {
     private final MineLoopUtil mineLoopUtil;
 
     private Structure structure;
+    private final WeightedRandom weightedRandom;
     private final int[][] cornerLocations;
     private final int[] spawnLocation;
     private final int[] npcLocation;
 
     Mine mine;
+    Material WOOL = Material.valueOf(RedLib.MID_VERSION >= 13 ? "WHITE_WOOL" : "WOOL");
 
     public MineType(String typeString, MultiBlockStructure multiStructure, PrivateMines privateMines) {
         this.mineTypeName = typeString;
@@ -53,7 +58,14 @@ public class MineType {
         this.privateMines = privateMines;
         this.cornerLocations = mineLoopUtil.findCornerLocations(multiBlockStructure, Material.POWERED_RAIL);
         this.spawnLocation = mineLoopUtil.findLocation(multiBlockStructure, Material.CHEST);
-        this.npcLocation = mineLoopUtil.findLocation(multiBlockStructure, Material.WOOL);
+        this.npcLocation = mineLoopUtil.findLocation(multiBlockStructure, WOOL);
+        this.weightedRandom = new WeightedRandom<>();
+
+        System.out.println("MineType debug:");
+        System.out.println("CornerLocations: " + Arrays.toString(cornerLocations));
+        System.out.println("spawnLocation: " + Arrays.toString(spawnLocation));
+        System.out.println("npcLocation: " + Arrays.toString(npcLocation));
+
     }
 
     public MultiBlockStructure getMultiBlockStructure() {
@@ -72,23 +84,20 @@ public class MineType {
     public Mine build(Location location, UUID owner) {
         long startTime = System.currentTimeMillis();
         this.structure = multiBlockStructure.build(location);
+
+        weightedRandom.set(Material.COBBLESTONE, 1);
+        weightedRandom.set(Material.STONE, 1);
+
         mine = new Mine(structure, this);
         mine.setMineLocation(location);
         mine.setMineOwner(owner);
         mine.setSpawnLocation(mine.getRelative(spawnLocation));
+        mine.setWeightedRandomMaterials(weightedRandom);
 
-//        mine.setSpawnLocation(mine.getRelative(mine.getSpawnLocation()));
-//        mine.setNpcLocation(mine.getRelative(mine.getNPCLocationRelative()));
-
-//        mine.setSpawnLocation(mine.getSpawnLocation());
-//        mine.setNpcLocation(npcLocation);
-//        Bukkit.broadcastMessage("cornerLocations: " + cornerLocations);
-//        Bukkit.broadcastMessage("spawnLocation: " + spawnLocation);
-//        Bukkit.broadcastMessage("npcLocation: " + npcLocation);
-//        mine.setSpawnLocation(mine.getSpawnLocation());
-//        mine.setNpcLocation(mine.getNpcLocation());
-        Bukkit.broadcastMessage("spawnLocation: " + mine.getSpawnLocationRelative());
         Bukkit.broadcastMessage("spawnLocation 2: " + mine.getRelative(mine.getSpawnLocationRelative()));
+        Bukkit.broadcastMessage("random block choice was: " + weightedRandom.roll());
+
+        mine.teleportToMine(Bukkit.getPlayer(owner));
 
 //        Bukkit.broadcastMessage("npcLocation: " + mine.getNPCLocationRelative());
         multiBlockStructure.getAt(mine.getRelative(mine.getSpawnLocationRelative()));
