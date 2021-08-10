@@ -52,8 +52,8 @@ public class MineType {
         this.mineLoopUtil = new MineLoopUtil();
         this.privateMines = privateMines;
         this.cornerLocations = mineLoopUtil.findCornerLocations(multiBlockStructure, Material.POWERED_RAIL);
-        this.spawnLocation = mineLoopUtil.findSpawnPointLocation(multiBlockStructure, Material.CHEST);
-        this.npcLocation = mineLoopUtil.findNpcLocation(multiBlockStructure, Material.WOOL);
+        this.spawnLocation = mineLoopUtil.findLocation(multiBlockStructure, Material.CHEST);
+        this.npcLocation = mineLoopUtil.findLocation(multiBlockStructure, Material.WOOL);
     }
 
     public MultiBlockStructure getMultiBlockStructure() {
