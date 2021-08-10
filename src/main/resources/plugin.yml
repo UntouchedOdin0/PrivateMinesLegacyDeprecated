@@ -2,7 +2,7 @@ name: PrivateMinesRewrite
 version: 2.1.7 # Change this to update version
 main: me.untouchedodin0.privatemines.PrivateMines
 author: UntouchedOdin0
-#api-version: 1.16
+api-version: 1.13
 
 depend:
   - RedLib
