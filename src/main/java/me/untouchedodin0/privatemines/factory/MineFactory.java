@@ -176,6 +176,7 @@ public class MineFactory {
             }
             mine = mineType.build(nextLocation, player.getUniqueId());
             mine.teleportToMine(player);
+            mine.resetMine();
             Bukkit.broadcastMessage("" + nextLocation);
         }
     }
