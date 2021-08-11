@@ -43,13 +43,13 @@ public class MineType {
     private final MineLoopUtil mineLoopUtil;
 
     private Structure structure;
-    private final WeightedRandom weightedRandom;
+    private final WeightedRandom<Material> weightedRandom;
     private final int[][] cornerLocations;
     private final int[] spawnLocation;
     private final int[] npcLocation;
 
     Mine mine;
-    Material WOOL = Material.valueOf(RedLib.MID_VERSION >= 13 ? "WHITE_WOOL" : "WOOL");
+    Material wool = Material.valueOf(RedLib.MID_VERSION >= 13 ? "WHITE_WOOL" : "WOOL");
 
     public MineType(String typeString, MultiBlockStructure multiStructure, PrivateMines privateMines) {
         this.mineTypeName = typeString;
@@ -58,7 +58,7 @@ public class MineType {
         this.privateMines = privateMines;
         this.cornerLocations = mineLoopUtil.findCornerLocations(multiBlockStructure, Material.POWERED_RAIL);
         this.spawnLocation = mineLoopUtil.findLocation(multiBlockStructure, Material.CHEST);
-        this.npcLocation = mineLoopUtil.findLocation(multiBlockStructure, WOOL);
+        this.npcLocation = mineLoopUtil.findLocation(multiBlockStructure, wool);
         this.weightedRandom = new WeightedRandom<>();
 
         System.out.println("MineType debug:");
@@ -92,21 +92,18 @@ public class MineType {
         mine.setMineLocation(location);
         mine.setMineOwner(owner);
         mine.setSpawnLocation(mine.getRelative(spawnLocation));
+        mine.setNpcLocation(mine.getRelative(npcLocation));
         mine.setWeightedRandomMaterials(weightedRandom);
 
         Bukkit.broadcastMessage("spawnLocation 2: " + mine.getRelative(mine.getSpawnLocationRelative()));
         Bukkit.broadcastMessage("random block choice was: " + weightedRandom.roll());
 
         mine.teleportToMine(Bukkit.getPlayer(owner));
-
-//        Bukkit.broadcastMessage("npcLocation: " + mine.getNPCLocationRelative());
         multiBlockStructure.getAt(mine.getRelative(mine.getSpawnLocationRelative()));
-
         long endTime = System.currentTimeMillis();
         String timeString = String.valueOf(endTime - startTime);
         String loadingTime = "That took {} milliseconds to create the mine".replace("{}", timeString);
         Bukkit.getLogger().info(loadingTime);
-//        Bukkit.getLogger().info("That took " + (endTime - startTime) + " milliseconds to create the mine");
         return mine;
     }
 
