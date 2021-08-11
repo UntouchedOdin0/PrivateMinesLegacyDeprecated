@@ -1,2 +1,3 @@
 recievedMine: You've recieved a private mine!
 teleportedToMine: You've been teleported to your mine!
+mineReset: Your mine has been reset!
