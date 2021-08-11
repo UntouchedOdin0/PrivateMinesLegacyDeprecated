@@ -172,12 +172,14 @@ public class MineFactory {
             Bukkit.getLogger().warning("Couldn't give mine, due to player already having a mine!");
         } else {
             if (nextLocation == null) {
-                Bukkit.broadcastMessage("Ok, I've found the issue and it was that nextLocation was null, " + nextLocation);
+                Bukkit.broadcastMessage("Ok, I've found the issue and it was that nextLocation was null");
             }
+
             mine = mineType.build(nextLocation, player.getUniqueId());
             mine.teleportToMine(player);
             mine.resetMine();
             Bukkit.broadcastMessage("" + nextLocation);
+            mineStorage.addMine(player.getUniqueId(), mine);
         }
     }
 
