@@ -8,32 +8,31 @@ import org.bukkit.entity.Player;
 import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
+import redempt.redlib.region.CuboidRegion;
 
 import java.util.UUID;
 
 public class Mine {
 
-    Location mineLocation;
-    Location spawnLoc;
-    Location npcLoc;
-
-    UUID mineOwner;
-    MineType type;
-
-    MultiBlockStructure multiBlockStructure;
-    Structure structure;
-    MineLoopUtil mineLoopUtil;
-
     private final Material cornerMaterial = XMaterial.POWERED_RAIL.parseMaterial();
     private final Material npcMaterial = XMaterial.WHITE_WOOL.parseMaterial();
     private final Material spawnMaterial = XMaterial.CHEST.parseMaterial();
     private final Material expandMaterial = XMaterial.SPONGE.parseMaterial();
-
-    private WeightedRandom<Material> weightedRandom;
-
+    Location mineLocation;
+    Location spawnLoc;
+    Location npcLoc;
+    Location[][] corners;
+    CuboidRegion cuboidRegion;
+    UUID mineOwner;
+    MineType type;
+    MultiBlockStructure multiBlockStructure;
+    Structure structure;
+    MineLoopUtil mineLoopUtil;
     int[][] cornerLocations;
     int[] spawnLocation;
     int[] npcLocation;
+    private WeightedRandom<Material> weightedRandom;
+
 
     public Mine(Structure structure, MineType mineType) {
         this.mineLoopUtil = new MineLoopUtil();
@@ -43,17 +42,22 @@ public class Mine {
         this.spawnLocation = mineLoopUtil.findLocation(type.getMultiBlockStructure(), spawnMaterial);
         this.npcLocation = mineLoopUtil.findLocation(type.getMultiBlockStructure(), npcMaterial);
         this.cornerLocations = mineLoopUtil.findCornerLocations(type.getMultiBlockStructure(), cornerMaterial);
+
 //
 //        this.spawnLoc = getSpawnLocation();
 //        this.npcLoc = getRelative(mineType.getNpcLocation());
+    }
+
+    public Location getMineLocation() {
+        return this.mineLocation;
     }
 
     public void setMineLocation(Location mineLocation) {
         this.mineLocation = mineLocation;
     }
 
-    public Location getMineLocation() {
-        return this.mineLocation;
+    public Location getSpawnLocation() {
+        return spawnLoc;
     }
 
     public void setSpawnLocation(Location spawnLocation) {
@@ -61,8 +65,21 @@ public class Mine {
         this.spawnLoc = spawnLocation;
     }
 
-    public Location getSpawnLocation() {
-        return spawnLoc;
+    public Location getNpcLocation() {
+        return npcLoc;
+    }
+
+    public void setNpcLocation(Location npcLocation) {
+        npcLocation.getBlock().setType(Material.AIR);
+        this.npcLoc = npcLocation;
+    }
+
+    public void setNpcLocation(int[] npcLocation) {
+        this.npcLocation = npcLocation;
+    }
+
+    public int[] getNpcLoc() {
+        return spawnLocation;
     }
 
     public void setWeightedRandomMaterials(WeightedRandom<Material> weightedRandom) {
@@ -73,40 +90,28 @@ public class Mine {
         return weightedRandom;
     }
 
-    public void setNpcLocation(Location npcLocation) {
-        this.npcLoc = npcLocation;
-    }
-
-    public Location getNpcLocation() {
-        return npcLoc;
-    }
-
-    public int[] getNpcLoc() {
-        return spawnLocation;
-    }
-
-    public void setNpcLocation(int[] npcLocation) {
-        this.npcLocation = npcLocation;
-    }
-
 //    public int[] getNpcLocation() {
 //        return npcLocation;
 //    }
-
-    public void setCornerLocations(int[][] cornerLocations) {
-        this.cornerLocations = cornerLocations;
-    }
 
     public int[][] getCornerLocations() {
         return cornerLocations;
     }
 
-    public void setMineOwner(UUID mineOwner) {
-        this.mineOwner = mineOwner;
+    public Location[][] getCorners() {
+        return corners;
+    }
+
+    public void setCorners(Location[][] corners) {
+        this.corners = corners;
     }
 
     public UUID getMineOwner() {
         return mineOwner;
+    }
+
+    public void setMineOwner(UUID mineOwner) {
+        this.mineOwner = mineOwner;
     }
 
     public Structure getStructure() {
@@ -139,6 +144,11 @@ public class Mine {
     }
 
     public void resetMine() {
-
+        Location corner1 = getRelative(getCornerLocations()[0]);
+        Location corner2 = getRelative(getCornerLocations()[1]);
+        if (corner1 != null && corner2 != null) {
+            this.cuboidRegion = new CuboidRegion(corner1, corner2);
+        }
+        cuboidRegion.forEachBlock(block -> block.setType(getWeightedRandom().roll()));
     }
 }
