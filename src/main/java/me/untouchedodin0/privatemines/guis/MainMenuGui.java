@@ -27,6 +27,8 @@ import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
+import me.untouchedodin0.privatemines.utils.mine.Mine;
+import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -85,8 +87,12 @@ public class MainMenuGui {
     ItemStack coownerstack;
     ItemMeta coownerMeta;
 
-    public MainMenuGui(MineFillManager mineFillManager) {
+    MineStorage mineStorage;
+    Mine mine;
+
+    public MainMenuGui(MineFillManager mineFillManager, MineStorage mineStorage) {
         this.mineFillManager = mineFillManager;
+        this.mineStorage = mineStorage;
     }
 
     public void setIsClosed(boolean toggle) {
@@ -97,7 +103,12 @@ public class MainMenuGui {
 
         userFile = new File("plugins/PrivateMinesRewrite/mines/" + player.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        this.teleportLocation = mineConfig.getSerializable("spawnLocation", Location.class);
+
+        if (mineStorage.getMines().containsKey(player.getUniqueId())) {
+            this.mine = mineStorage.getMines().get(player.getUniqueId());
+        }
+
+        this.teleportLocation = mine.getSpawnLocation();
 
         size = mineConfig.getInt("mineSize");
         whitelistedPlayersGui = new WhitelistedPlayersGui();
@@ -199,7 +210,7 @@ public class MainMenuGui {
         GuiItem teleportToMine = ItemBuilder.from(bedStack).asGuiItem(event -> {
             event.setCancelled(true);
             player.sendMessage(ChatColor.GREEN + "Teleporting to your mine!");
-            player.teleport(teleportLocation);
+            mine.teleportToMine(player);
         });
 
         GuiItem openItem = ItemBuilder.from(statusOpen).asGuiItem(event -> {
@@ -254,8 +265,8 @@ public class MainMenuGui {
         GuiItem resetMineItem = ItemBuilder.from(resetMine).asGuiItem(event -> {
             player.closeInventory();
             event.setCancelled(true);
-            mineFillManager.fillPlayerMine(player);
             player.sendMessage(ChatColor.GREEN + "Resetting your mine!");
+            mine.resetMine();
         });
 
         GuiItem whitelistItem = ItemBuilder.from(whitelistedMembers).asGuiItem(event -> {
@@ -310,9 +321,5 @@ public class MainMenuGui {
         gui.setItem(8, coOwnerItem);
 
         gui.open(player);
-    }
-
-    public void teleportToMine(Player player) {
-        player.teleport(teleportLocation);
     }
 }
