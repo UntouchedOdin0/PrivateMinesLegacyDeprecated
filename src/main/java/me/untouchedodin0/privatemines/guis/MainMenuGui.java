@@ -108,6 +108,11 @@ public class MainMenuGui {
             this.mine = mineStorage.getMines().get(player.getUniqueId());
         }
 
+        if (mine == null) {
+            Bukkit.getLogger().info("Failed to open the menu, player didn't have a mine.");
+            return;
+        }
+
         this.teleportLocation = mine.getSpawnLocation();
 
         size = mineConfig.getInt("mineSize");
