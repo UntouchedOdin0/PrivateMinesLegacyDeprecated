@@ -65,7 +65,6 @@ public class MineType {
         System.out.println("CornerLocations: " + Arrays.toString(cornerLocations));
         System.out.println("spawnLocation: " + Arrays.toString(spawnLocation));
         System.out.println("npcLocation: " + Arrays.toString(npcLocation));
-
     }
 
     public MultiBlockStructure getMultiBlockStructure() {
@@ -94,7 +93,7 @@ public class MineType {
         mine.setSpawnLocation(mine.getRelative(spawnLocation));
         mine.setNpcLocation(mine.getRelative(npcLocation));
         mine.setWeightedRandomMaterials(weightedRandom);
-
+        
         Bukkit.broadcastMessage("spawnLocation 2: " + mine.getRelative(mine.getSpawnLocationRelative()));
         Bukkit.broadcastMessage("random block choice was: " + weightedRandom.roll());
 
