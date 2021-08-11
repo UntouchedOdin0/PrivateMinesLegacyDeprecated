@@ -6,7 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import redempt.redlib.misc.WeightedRandom;
-import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
 import redempt.redlib.region.CuboidRegion;
 
@@ -25,14 +24,14 @@ public class Mine {
     CuboidRegion cuboidRegion;
     UUID mineOwner;
     MineType type;
-    MultiBlockStructure multiBlockStructure;
     Structure structure;
     MineLoopUtil mineLoopUtil;
     int[][] cornerLocations;
     int[] spawnLocation;
     int[] npcLocation;
+    Location corner1;
+    Location corner2;
     private WeightedRandom<Material> weightedRandom;
-
 
     public Mine(Structure structure, MineType mineType) {
         this.mineLoopUtil = new MineLoopUtil();
@@ -42,8 +41,11 @@ public class Mine {
         this.spawnLocation = mineLoopUtil.findLocation(type.getMultiBlockStructure(), spawnMaterial);
         this.npcLocation = mineLoopUtil.findLocation(type.getMultiBlockStructure(), npcMaterial);
         this.cornerLocations = mineLoopUtil.findCornerLocations(type.getMultiBlockStructure(), cornerMaterial);
+        this.corner1 = getRelative(getCornerLocations()[0]);
+        this.corner2 = getRelative(getCornerLocations()[1]);
+        this.cuboidRegion = new CuboidRegion(corner1, corner2);
+        this.cuboidRegion.expand(1, 0, 1, 0, 1, 0);
 
-//
 //        this.spawnLoc = getSpawnLocation();
 //        this.npcLoc = getRelative(mineType.getNpcLocation());
     }
@@ -89,10 +91,6 @@ public class Mine {
     public WeightedRandom<Material> getWeightedRandom() {
         return weightedRandom;
     }
-
-//    public int[] getNpcLocation() {
-//        return npcLocation;
-//    }
 
     public int[][] getCornerLocations() {
         return cornerLocations;
@@ -144,11 +142,6 @@ public class Mine {
     }
 
     public void resetMine() {
-        Location corner1 = getRelative(getCornerLocations()[0]);
-        Location corner2 = getRelative(getCornerLocations()[1]);
-        if (corner1 != null && corner2 != null) {
-            this.cuboidRegion = new CuboidRegion(corner1, corner2);
-        }
         cuboidRegion.forEachBlock(block -> block.setType(getWeightedRandom().roll()));
     }
 }
