@@ -118,22 +118,16 @@ public class PrivateMinesCommand extends BaseCommand {
 
     @Default
     @Description("Manage privatemines")
-    public void main(Player p) {
-        if (p.hasPermission("privatemines.owner")) {
-            userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
+    public void main(Player player) {
+        if (player.hasPermission("privatemines.owner")) {
+
+            if (!mineStorage.hasMine(player)) {
+                player.sendMessage(ChatColor.RED + "You currently don't have a mine!");
+                return;
+            }
+            userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
             mineConfig = YamlConfiguration.loadConfiguration(userFile);
-//            this.teleportLocation = LocationUtils.fromString(SPAWN_LOCATION_STRING);
-//            this.teleportLocation = mineConfig.getSerializable(SPAWN_LOCATION_STRING, Location.class);
-
-//            this.teleportLocation = mineConfig.getLocation(SPAWN_LOCATION_STRING);
-
-            /*
-                Add gui menu with following items
-                BED: Teleports to mine?
-                ENDER_PEARL: resets the mine
-             */
-
-            mainMenuGui.openMainMenuGui(p);
+            mainMenuGui.openMainMenuGui(player);
         }
     }
 
@@ -142,19 +136,6 @@ public class PrivateMinesCommand extends BaseCommand {
     @CommandPermission("privatemines.give")
     @CommandCompletion("@players")
     public void give(Player p) {
-        File file = new File("plugins/PrivateMinesRewrite/schematics/structure.dat");
-        userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
-        locationsFile = new File(UTIL_DIRECTORY, "locations.yml");
-        mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        locationConfig = YamlConfiguration.loadConfiguration(locationsFile);
-        playerID = p.getUniqueId().toString();
-
-        try {
-            inputStream = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
         if (mineStorage.hasMine(p)) {
             p.sendMessage(ChatColor.RED + "You already have a mine!");
         } else {
