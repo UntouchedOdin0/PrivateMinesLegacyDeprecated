@@ -22,12 +22,14 @@
 
 package me.untouchedodin0.privatemines.utils.storage;
 
-import me.untouchedodin0.privatemines.utils.mine.MineType;
+import me.untouchedodin0.privatemines.utils.mine.Mine;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class MineStorage {
 
@@ -37,11 +39,18 @@ public class MineStorage {
     File structureFolder = new File("plugins/PrivateMinesRewrite/schematics/");
     File[] structuresList;
 
-    Map<File, MineType> mines = new HashMap<>();
+    Map<UUID, Mine> mines = new HashMap<>();
+
+    public void addMine(UUID uuid, Mine mine) {
+        if (mines.containsKey(uuid)) {
+            Bukkit.getLogger().warning("User already had a mine, if you believe this is an error please report it!");
+        } else {
+            mines.put(uuid, mine);
+        }
+    }
 
     public boolean hasMine(Player player) {
-        userFile = new File("plugins/PrivateMinesRewrite/mines/" + player.getUniqueId() + ".yml");
-        return userFile.exists();
+        return mines.containsKey(player.getUniqueId());
     }
 
     public File[] getMineFiles() {
@@ -53,11 +62,13 @@ public class MineStorage {
     }
 
     public void loadMines() {
-        structuresList = structureFolder.listFiles();
-        int n = 0;
-        for (File file : structuresList) {
-            n++;
-//            MineType type = new MineType("mine-" + n);
-        }
+        mines.forEach((uuid, mine) -> {
+            Bukkit.getLogger().info("Loading the mine " + mine.getMineOwner());
+        });
+    }
+
+    public Map<UUID, Mine> getMines() {
+        return mines;
     }
 }
+
