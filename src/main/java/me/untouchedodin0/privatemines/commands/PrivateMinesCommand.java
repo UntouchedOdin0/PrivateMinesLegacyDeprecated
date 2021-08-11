@@ -30,6 +30,7 @@ import me.untouchedodin0.privatemines.factory.MineFactory;
 import me.untouchedodin0.privatemines.guis.MainMenuGui;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
+import me.untouchedodin0.privatemines.utils.mine.Mine;
 import me.untouchedodin0.privatemines.utils.mine.MineType;
 import me.untouchedodin0.privatemines.utils.mine.util.ExpandingMineUtil;
 import me.untouchedodin0.privatemines.utils.mine.util.MineUpgradeUtil;
@@ -96,6 +97,7 @@ public class PrivateMinesCommand extends BaseCommand {
     MineQueueSystem mineQueueSystem;
     int queueSlot;
     Map<String, MineType> mineTypeMap;
+    Mine mine;
 
     public PrivateMinesCommand(Util util,
                                MineFillManager fillManager,
@@ -107,7 +109,7 @@ public class PrivateMinesCommand extends BaseCommand {
         this.privateMines = privateMines;
         this.mineStorage = mineStorage;
         this.mineFactory = mineFactory;
-        this.mainMenuGui = new MainMenuGui(fillManager);
+        this.mainMenuGui = new MainMenuGui(fillManager, mineStorage);
         this.mineWorldManager = new MineWorldManager();
         this.mineUpgradeUtil = new MineUpgradeUtil();
         this.expandingMineUtil = new ExpandingMineUtil();
@@ -219,20 +221,11 @@ public class PrivateMinesCommand extends BaseCommand {
     @CommandPermission("privatemines.reset")
     public void reset(Player p) {
         if (p != null) {
-            userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
-            mineConfig = YamlConfiguration.loadConfiguration(userFile);
-            corner1 = mineConfig.getSerializable("Corner1", Location.class);
-            corner2 = mineConfig.getSerializable("Corner2", Location.class);
-
-//            corner1 = mineConfig.getLocation("Corner1");
-//            corner2 = mineConfig.getLocation("Corner2");
-            mineBlocks = (List<ItemStack>) mineConfig.getList(BLOCKS_STRING);
-
-            if (corner1 != null && corner2 != null && mineBlocks != null) {
-                Bukkit.getScheduler().runTaskLater(privateMines, ()
-                        -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
+            if (mineStorage.getMines().containsKey(p.getUniqueId())) {
+                this.mine = mineStorage.getMines().get(p.getUniqueId());
+                mine.resetMine();
+                p.sendMessage(ChatColor.GREEN + "Your mine has been reset!");
             }
-            p.sendMessage(ChatColor.GREEN + "Your mine has been reset!");
         }
     }
 
