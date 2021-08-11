@@ -32,7 +32,6 @@ import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
 
-import java.util.Arrays;
 import java.util.UUID;
 
 public class MineType {
@@ -60,11 +59,6 @@ public class MineType {
         this.spawnLocation = mineLoopUtil.findLocation(multiBlockStructure, Material.CHEST);
         this.npcLocation = mineLoopUtil.findLocation(multiBlockStructure, wool);
         this.weightedRandom = new WeightedRandom<>();
-
-        System.out.println("MineType debug:");
-        System.out.println("CornerLocations: " + Arrays.toString(cornerLocations));
-        System.out.println("spawnLocation: " + Arrays.toString(spawnLocation));
-        System.out.println("npcLocation: " + Arrays.toString(npcLocation));
     }
 
     public MultiBlockStructure getMultiBlockStructure() {
@@ -77,6 +71,10 @@ public class MineType {
 
     public String getStructureName() {
         return multiBlockStructure.getName();
+    }
+
+    public void addMaterial(Material material, Double chance) {
+        weightedRandom.set(material, chance);
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -93,7 +91,7 @@ public class MineType {
         mine.setSpawnLocation(mine.getRelative(spawnLocation));
         mine.setNpcLocation(mine.getRelative(npcLocation));
         mine.setWeightedRandomMaterials(weightedRandom);
-        
+
         Bukkit.broadcastMessage("spawnLocation 2: " + mine.getRelative(mine.getSpawnLocationRelative()));
         Bukkit.broadcastMessage("random block choice was: " + weightedRandom.roll());
 
