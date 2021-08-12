@@ -22,39 +22,28 @@
 
 package me.untouchedodin0.privatemines.factory;
 
-import com.cryptomorin.xseries.XMaterial;
 import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.structure.StructureLoader;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.mine.Mine;
 import me.untouchedodin0.privatemines.utils.mine.MineType;
-import me.untouchedodin0.privatemines.utils.mine.PrivateMineLocations;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import me.untouchedodin0.privatemines.utils.mine.util.PrivateMineResetUtil;
-import me.untouchedodin0.privatemines.utils.mine.util.PrivateMineUtil;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.codemc.worldguardwrapper.WorldGuardWrapper;
-import org.codemc.worldguardwrapper.region.IWrappedRegion;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
 import redempt.redlib.region.CuboidRegion;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class MineFactory {
 
@@ -63,37 +52,18 @@ public class MineFactory {
     private static final String CORNER_1_STRING = "Corner1";
     private static final String CORNER_2_STRING = "Corner2";
     private static final String SPAWN_LOCATION_STRING = "spawnLocation";
-    private static final String NPC_LOCATION_STRING = "npcLocation";
-    private static final String PLACE_LOCATION_STRING = "placeLocation";
-    private static final String BLOCKS_STRING = "blocks";
-    private static final String WHITELISTED_PLAYERS = "whitelistedPlayers";
-    private static final String BANNED_PLAYERS = "bannedPlayers";
-    private static final String PRIORITY_PLAYERS = "priorityPlayers";
-    private static final String CO_OWNER = "coowner";
-    private static final String MINE_SIZE = "mineSize";
-    private static final String TAX = "tax";
-    private static final String OPEN = "status";
 
     PrivateMines privateMines;
     MineStorage mineStorage;
     MultiBlockStructure multiBlockStructure;
     Structure old;
 
-    World world;
-    CuboidRegion cuboidRegion;
-    CuboidRegion miningRegion;
     CuboidRegion expandRegion;
     CuboidRegion expandRegionBedrock;
 
     Location start;
     Location end;
-    Location corner1;
-    Location corner2;
-    Location spawnLocation;
-    Location npcLocation;
     Location nextLocation;
-    Block startBlock;
-    Block endBlock;
     MineWorldManager mineWorldManager;
     MineFillManager fillManager;
     File userFile;
@@ -103,35 +73,15 @@ public class MineFactory {
     YamlConfiguration mineConfig;
     YamlConfiguration locationConfig;
 
-    List<ItemStack> mineBlocks = new ArrayList<>();
-    List<Location> cornerBlocks = new ArrayList<>();
-    List<UUID> whitelistedPlayers = new ArrayList<>();
-    List<UUID> bannedPlayers = new ArrayList<>();
-    List<UUID> priorityPlayers = new ArrayList<>();
-    //    List<MineType> mineTypes = new ArrayList<>();
     Map<String, MineType> mineTypes;
-
-    UUID coowner = null;
 
     String fileName;
     File mineFile;
 
-    PrivateMineUtil privateMineUtil;
-    PrivateMineLocations privateMineLocations;
     PrivateMineResetUtil resetUtil;
     MineLoopUtil mineLoopUtil;
     Util util;
     StructureLoader structureLoader;
-    int mineSize = 0;
-    int tax = 5;
-
-    Material cornerMaterial = XMaterial.POWERED_RAIL.parseMaterial();
-    Material npcMaterial = XMaterial.WHITE_WOOL.parseMaterial();
-    Material spawnMaterial = XMaterial.CHEST.parseMaterial();
-    Material expandMaterial = XMaterial.SPONGE.parseMaterial();
-
-    WorldGuardWrapper wgWrapper;
-    IWrappedRegion iWrappedRegion;
 
     Mine mine;
     MineType mineType;
@@ -191,9 +141,7 @@ public class MineFactory {
 
         old = multiBlockStructure.assumeAt(mineConfig.getSerializable(SPAWN_LOCATION_STRING, Location.class));
         if (old != null) {
-            old.getRegion().forEachBlock(block -> {
-                block.setType(Material.AIR);
-            });
+            old.getRegion().forEachBlock(block -> block.setType(Material.AIR));
         }
     }
 
@@ -214,9 +162,7 @@ public class MineFactory {
         expandRegion.expand(1, 1, 0, 0, 1, 1);
         expandRegionBedrock.expand(3, 2, 0, 2, 3, 2);
 
-        expandRegion.stream().forEach(block -> {
-            block.setType(Material.EMERALD_BLOCK);
-        });
+        expandRegion.stream().forEach(block -> block.setType(Material.EMERALD_BLOCK));
 
         expandRegionBedrock.stream().forEach(block -> {
             if (block.isEmpty()) {
