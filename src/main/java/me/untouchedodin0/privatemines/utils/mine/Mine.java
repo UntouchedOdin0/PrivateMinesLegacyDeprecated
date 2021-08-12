@@ -20,7 +20,6 @@ public class Mine {
     Location mineLocation;
     Location spawnLoc;
     Location npcLoc;
-    Location[][] corners;
     CuboidRegion cuboidRegion;
     UUID mineOwner;
     MineType type;
@@ -45,9 +44,6 @@ public class Mine {
         this.corner2 = getRelative(getCornerLocations()[1]);
         this.cuboidRegion = new CuboidRegion(corner1, corner2);
         this.cuboidRegion.expand(1, 0, 1, 0, 1, 0);
-
-//        this.spawnLoc = getSpawnLocation();
-//        this.npcLoc = getRelative(mineType.getNpcLocation());
     }
 
     public Location getMineLocation() {
@@ -67,21 +63,9 @@ public class Mine {
         this.spawnLoc = spawnLocation;
     }
 
-    public Location getNpcLocation() {
-        return npcLoc;
-    }
-
     public void setNpcLocation(Location npcLocation) {
         npcLocation.getBlock().setType(Material.AIR);
         this.npcLoc = npcLocation;
-    }
-
-    public void setNpcLocation(int[] npcLocation) {
-        this.npcLocation = npcLocation;
-    }
-
-    public int[] getNpcLoc() {
-        return spawnLocation;
     }
 
     public void setWeightedRandomMaterials(WeightedRandom<Material> weightedRandom) {
@@ -94,14 +78,6 @@ public class Mine {
 
     public int[][] getCornerLocations() {
         return cornerLocations;
-    }
-
-    public Location[][] getCorners() {
-        return corners;
-    }
-
-    public void setCorners(Location[][] corners) {
-        this.corners = corners;
     }
 
     public UUID getMineOwner() {
