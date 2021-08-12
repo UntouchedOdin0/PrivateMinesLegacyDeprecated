@@ -136,7 +136,9 @@ public class PrivateMines extends JavaPlugin {
 
         privateMine = this;
         structuresList = structureFolder.listFiles();
+        loadStructureList(util, structuresList);
 
+        /*
         if (structuresList != null) {
             for (File file : structuresList) {
                 String name = file.getName().replace(".dat", "");
@@ -146,6 +148,7 @@ public class PrivateMines extends JavaPlugin {
                 multiBlockStructures.add(multiBlockStructure); // a fix?
             }
         }
+         */
 
         mineTypeMap.forEach(((name, mineType) -> {
             Bukkit.getLogger().info("FOREACH: Name: " + name + " Type: " + mineType);
@@ -156,15 +159,6 @@ public class PrivateMines extends JavaPlugin {
             structureLoader.loadStructure(structure);
             test++;
             MineType mineType = new MineType(String.valueOf(test), structure, this);
-
-//            cornerLocations = mineLoopUtil.findCornerLocations(structure, cornerMaterial);
-//            spawnLocation = mineLoopUtil.findSpawnPointLocation(structure, spawnMaterial);
-//            npcLocation = mineLoopUtil.findNpcLocation(structure, npcMaterial);
-//
-//            mineType.setCornerLocations(cornerLocations);
-//            mineType.setSpawnLocation(spawnLocation);
-//            mineType.setNpcLocation(npcLocation);
-
             mineTypes.add(mineType);
             Bukkit.getLogger().info("MINETYPE: " + mineType);
         }
@@ -256,5 +250,18 @@ public class PrivateMines extends JavaPlugin {
 
     public Map<String, MineType> getMineTypeMap() {
         return mineTypeMap;
+    }
+
+    public void loadStructureList(Util util, File[] structuresList) {
+        Bukkit.getLogger().info("Loading structure list from method");
+        if (structuresList != null) {
+            for (File file : structuresList) {
+                String name = file.getName().replace(".dat", "");
+                multiBlockStructure = util.loadStructure(file.getName(), file);
+                MineType mineType = new MineType(name, multiBlockStructure, this);
+                mineTypeMap.putIfAbsent(name, mineType);
+                multiBlockStructures.add(multiBlockStructure);
+            }
+        }
     }
 }
