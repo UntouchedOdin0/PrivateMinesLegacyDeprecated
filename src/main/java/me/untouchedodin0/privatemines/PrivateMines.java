@@ -64,6 +64,8 @@ public class PrivateMines extends JavaPlugin {
     int resetDelay;
     File[] structuresList;
     File structureFolder = new File("plugins/PrivateMinesRewrite/structures/");
+    File minesFolder = new File("plugins/PrivateMinesRewrite/mines/");
+
     MultiBlockStructure multiBlockStructure;
 
     List<MineType> mineTypes = new ArrayList<>();
@@ -88,12 +90,10 @@ public class PrivateMines extends JavaPlugin {
     @Override
     public void onEnable() {
         Bukkit.getLogger().info("Loading PrivateMinesRewrite...");
-        File minesFolder = new File(getDataFolder(), MINES_FOLDER_NAME);
 
         Util util = new Util();
         saveDefaultConfig();
         saveResource("messages.txt", false);
-        saveResource("structures", false);
 
         Bukkit.getLogger().info("Setting up the Private Mines World...");
         mineManager = new MineWorldManager();
@@ -117,15 +117,7 @@ public class PrivateMines extends JavaPlugin {
         mineUpgradeUtil = new MineUpgradeUtil();
         structureManagers = new StructureManagers();
 
-        BukkitCommandManager manager = new PaperCommandManager(this);
-
-        if (!minesFolder.exists()) {
-            Bukkit.getLogger().info("Creating mines directory...");
-            boolean createdMinesDirectorySuccessfully = minesFolder.mkdir();
-            if (createdMinesDirectorySuccessfully) {
-                Bukkit.getLogger().info("The mines directory was successfully created!");
-            }
-        }
+        createMinesFolder();
         createStructureFolder();
         privateMine = this;
         structuresList = structureFolder.listFiles();
@@ -242,6 +234,15 @@ public class PrivateMines extends JavaPlugin {
                 MineType mineType = new MineType(name, multiBlockStructure, this);
                 mineTypeMap.putIfAbsent(name, mineType);
                 multiBlockStructures.add(multiBlockStructure);
+            }
+        }
+    }
+
+    public void createMinesFolder() {
+        if (!minesFolder.exists()) {
+            boolean minesFolderSuccessfully = minesFolder.mkdir();
+            if (minesFolderSuccessfully) {
+                Bukkit.getLogger().info("The mines directory was successfully created!");
             }
         }
     }
