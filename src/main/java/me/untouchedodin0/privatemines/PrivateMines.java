@@ -126,29 +126,10 @@ public class PrivateMines extends JavaPlugin {
                 Bukkit.getLogger().info("The mines directory was successfully created!");
             }
         }
-
-        if (!structureFolder.exists()) {
-            boolean createdStructureFolderSuccessfully = structureFolder.mkdir();
-            if (createdStructureFolderSuccessfully) {
-                Bukkit.getLogger().info("The structures directory was successfully created!");
-            }
-        }
-
+        createStructureFolder();
         privateMine = this;
         structuresList = structureFolder.listFiles();
         loadStructureList(util, structuresList);
-
-        /*
-        if (structuresList != null) {
-            for (File file : structuresList) {
-                String name = file.getName().replace(".dat", "");
-                multiBlockStructure = util.loadStructure(file.getName(), file);
-                MineType mineType = new MineType(name, multiBlockStructure, this);
-                mineTypeMap.putIfAbsent(name, mineType);
-                multiBlockStructures.add(multiBlockStructure); // a fix?
-            }
-        }
-         */
 
         mineTypeMap.forEach(((name, mineType) -> {
             Bukkit.getLogger().info("FOREACH: Name: " + name + " Type: " + mineType);
@@ -261,6 +242,15 @@ public class PrivateMines extends JavaPlugin {
                 MineType mineType = new MineType(name, multiBlockStructure, this);
                 mineTypeMap.putIfAbsent(name, mineType);
                 multiBlockStructures.add(multiBlockStructure);
+            }
+        }
+    }
+
+    public void createStructureFolder() {
+        if (!structureFolder.exists()) {
+            boolean createdStructureFolderSuccessfully = structureFolder.mkdir();
+            if (createdStructureFolderSuccessfully) {
+                Bukkit.getLogger().info("The structures directory was successfully created!");
             }
         }
     }
