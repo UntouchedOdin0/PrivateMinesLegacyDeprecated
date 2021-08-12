@@ -22,8 +22,6 @@
 
 package me.untouchedodin0.privatemines;
 
-import co.aikar.commands.BukkitCommandManager;
-import co.aikar.commands.PaperCommandManager;
 import me.untouchedodin0.privatemines.commands.PrivateMinesCmd;
 import me.untouchedodin0.privatemines.factory.MineFactory;
 import me.untouchedodin0.privatemines.structure.StructureLoader;
@@ -31,7 +29,6 @@ import me.untouchedodin0.privatemines.structure.StructureManagers;
 import me.untouchedodin0.privatemines.utils.Metrics;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
-import me.untouchedodin0.privatemines.utils.mine.Mine;
 import me.untouchedodin0.privatemines.utils.mine.MineType;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import me.untouchedodin0.privatemines.utils.mine.util.MineUpgradeUtil;
@@ -58,8 +55,6 @@ import java.util.*;
 
 public class PrivateMines extends JavaPlugin {
 
-    public static final String MINES_FOLDER_NAME = "mines";
-
     int minesCount;
     int resetDelay;
     File[] structuresList;
@@ -69,7 +64,6 @@ public class PrivateMines extends JavaPlugin {
     MultiBlockStructure multiBlockStructure;
 
     List<MineType> mineTypes = new ArrayList<>();
-    List<Mine> mines = new ArrayList<>();
 
     List<MultiBlockStructure> multiBlockStructures = new ArrayList<>();
 
@@ -123,9 +117,8 @@ public class PrivateMines extends JavaPlugin {
         structuresList = structureFolder.listFiles();
         loadStructureList(util, structuresList);
 
-        mineTypeMap.forEach(((name, mineType) -> {
-            Bukkit.getLogger().info("FOREACH: Name: " + name + " Type: " + mineType);
-        }));
+        mineTypeMap.forEach(((name, mineType) ->
+                Bukkit.getLogger().info("FOREACH: Name: " + name + " Type: " + mineType)));
 
         int test = 0;
         for (MultiBlockStructure structure : multiBlockStructures) {
@@ -133,7 +126,6 @@ public class PrivateMines extends JavaPlugin {
             test++;
             MineType mineType = new MineType(String.valueOf(test), structure, this);
             mineTypes.add(mineType);
-            Bukkit.getLogger().info("MINETYPE: " + mineType);
         }
 
         for (MineType type : mineTypes) {
@@ -142,14 +134,14 @@ public class PrivateMines extends JavaPlugin {
 
         Bukkit.getLogger().info("Loading mines...");
         if (!minesFolder.exists()) {
-            minesFolder.mkdir();
+            createMinesFolder();
         } else {
             minesCount = minesFolder.list().length;
         }
 
         Bukkit.getLogger().info(String.format("Found a total of %d mines!", minesCount));
-
         Bukkit.getLogger().info("Registering the command...");
+
         new CommandParser(this.getResource("command.txt")).parse().register("privatemines",
                 new PrivateMinesCmd(mineStorage, mineFactory));
 
@@ -162,7 +154,10 @@ public class PrivateMines extends JavaPlugin {
         Bukkit.getLogger().info("Starting the private mine reset task...");
 
         if (!mineStorage.getMineFolder().exists()) {
-            mineStorage.getMineFolder().mkdir();
+            boolean success = mineStorage.getMineFolder().mkdir();
+            if (success) {
+                Bukkit.getLogger().info("Mines folder was successfully created!");
+            }
         }
 
         if (mineStorage.getMineFiles() == null) {
