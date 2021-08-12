@@ -211,9 +211,10 @@ public class PrivateMines extends JavaPlugin {
             for (File file : mineStorage.getMineFiles()) {
                 UUID uuid = UUID.fromString(fileNameWithOutExt(file.getName()));
                 if (getConfig().getBoolean("autoResets")) {
+                    Bukkit.getLogger().info("Private Mines will auto-reset!");
                     privateMineResetUtil.startResetTask(uuid, resetDelay);
                 } else {
-                    return;
+                    Bukkit.getLogger().info("Private Mines will not auto-reset!");
                 }
             }
         }
