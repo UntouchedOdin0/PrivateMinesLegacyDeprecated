@@ -24,7 +24,7 @@ package me.untouchedodin0.privatemines;
 
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
-import me.untouchedodin0.privatemines.commands.PrivateMinesCommand;
+import me.untouchedodin0.privatemines.commands.PrivateMinesCmd;
 import me.untouchedodin0.privatemines.factory.MineFactory;
 import me.untouchedodin0.privatemines.structure.StructureLoader;
 import me.untouchedodin0.privatemines.structure.StructureManagers;
@@ -41,6 +41,7 @@ import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import redempt.redlib.commandmanager.CommandParser;
 import redempt.redlib.commandmanager.Messages;
 import redempt.redlib.multiblock.MultiBlockStructure;
 
@@ -189,13 +190,17 @@ public class PrivateMines extends JavaPlugin {
         Bukkit.getLogger().info(String.format("Found a total of %d mines!", minesCount));
 
         Bukkit.getLogger().info("Registering the command...");
+        new CommandParser(this.getResource("command.txt")).parse().register("privatemines",
+                new PrivateMinesCmd(mineStorage, mineFactory));
+
+        /*
         manager.registerCommand(new PrivateMinesCommand(
                 util,
                 fillManager,
                 this,
                 mineStorage,
                 mineFactory));
-
+         */
         Bukkit.getLogger().info("Command registered!");
 
         Bukkit.getLogger().info("Setting up the private mine util...");
