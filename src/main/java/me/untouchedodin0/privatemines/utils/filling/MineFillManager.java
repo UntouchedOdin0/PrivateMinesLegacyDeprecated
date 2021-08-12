@@ -74,32 +74,9 @@ public class MineFillManager {
     }
 
     @SuppressWarnings("unchecked")
-    public void fillPlayerMine(Player player) {
-        userFile = new File(minesPath + player.getUniqueId() + ".yml");
-        mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        corner1 = mineConfig.getSerializable(corner1String, Location.class);
-        corner2 = mineConfig.getSerializable(corner2String, Location.class);
-
-//        corner1 = mineConfig.getLocation("Corner1");
-//        corner2 = mineConfig.getLocation("Corner2");
-        mineBlocks = (List<ItemStack>) mineConfig.getList("blocks");
-        if (corner1 != null && corner2 != null && mineBlocks != null) {
-            Bukkit.getScheduler().runTaskLater(privateMines, ()
-                    -> {
-                if (inMine(player)) {
-                    player.teleport(mineConfig.getSerializable(spawnLocation, Location.class));
-                }
-                fillMineMultiple(corner1, corner2, mineBlocks);
-            }, 20L);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
     public void fillPlayerMine(UUID uuid) {
         userFile = new File(minesPath + uuid + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-//        corner1 = mineConfig.getLocation("Corner1");
-//        corner2 = mineConfig.getLocation("Corner2");
         corner1 = mineConfig.getSerializable(corner1String, Location.class);
         corner2 = mineConfig.getSerializable(corner2String, Location.class);
         mineBlocks = (List<ItemStack>) mineConfig.getList("blocks");
