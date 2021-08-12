@@ -193,14 +193,6 @@ public class PrivateMines extends JavaPlugin {
         new CommandParser(this.getResource("command.txt")).parse().register("privatemines",
                 new PrivateMinesCmd(mineStorage, mineFactory));
 
-        /*
-        manager.registerCommand(new PrivateMinesCommand(
-                util,
-                fillManager,
-                this,
-                mineStorage,
-                mineFactory));
-         */
         Bukkit.getLogger().info("Command registered!");
 
         Bukkit.getLogger().info("Setting up the private mine util...");
