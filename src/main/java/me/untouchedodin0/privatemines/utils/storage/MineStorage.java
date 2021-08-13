@@ -70,5 +70,9 @@ public class MineStorage {
     public Map<UUID, Mine> getMines() {
         return mines;
     }
+
+    public Mine getMine(Player player) {
+        return mines.get(player.getUniqueId());
+    }
 }
 
