@@ -1,6 +1,11 @@
 privatemine,privatemines,pmine {
     give player:target{
         hook give
-        help /pmine give <name> to give a mine to a player
+        help /pmine give <name> - Gives a private mine to a player
+    }
+
+    delete player:target{
+        hook delete
+        help /pmine delete <name> - Deletes a players Private Mine
     }
 }
