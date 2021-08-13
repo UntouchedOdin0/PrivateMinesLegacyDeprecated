@@ -133,6 +133,7 @@ public class MineFactory {
             mineStorage.addMine(player.getUniqueId(), mine);
             mineConfig.set("mine.owner", mine.getMineOwner().toString());
             mineConfig.set(LOCATION_STRING, mine.getMineLocation());
+            mineConfig.set(SPAWN_LOCATION_STRING, mine.getSpawnLocation());
             try {
                 mineConfig.save(userFile);
             } catch (IOException e) {
@@ -155,7 +156,7 @@ public class MineFactory {
         userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
 
         if (!userFile.exists()) {
-            Bukkit.getLogger().info("Failed to upgrade " + player.getName() + "'s mine due to them not owning one");
+            privateMines.getLogger().warning("Failed to upgrade " + player.getName() + "'s mine due to them not owning one");
             return;
         }
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
