@@ -3,8 +3,6 @@ package me.untouchedodin0.privatemines.structure;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import org.bukkit.Location;
 import redempt.redlib.multiblock.MultiBlockStructure;
-import redempt.redlib.multiblock.Structure;
-import redempt.redlib.region.CuboidRegion;
 
 public class StructureLoader {
 
