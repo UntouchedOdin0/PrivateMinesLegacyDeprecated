@@ -52,6 +52,7 @@ public class MineFactory {
     private static final String CORNER_1_STRING = "Corner1";
     private static final String CORNER_2_STRING = "Corner2";
     private static final String SPAWN_LOCATION_STRING = "spawnLocation";
+    private static final String LOCATION_STRING = "mine.location";
 
     PrivateMines privateMines;
     MineStorage mineStorage;
@@ -130,16 +131,21 @@ public class MineFactory {
             mine.resetMine();
             Bukkit.broadcastMessage("" + nextLocation);
             mineStorage.addMine(player.getUniqueId(), mine);
+            mineConfig.set("mine.owner", mine.getMineOwner().toString());
+            mineConfig.set(LOCATION_STRING, mine.getMineLocation());
+            try {
+                mineConfig.save(userFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void deleteMine(Player player) {
         userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
-        locationsFile = new File(UTIL_DIRECTORY, "locations.yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        locationConfig = YamlConfiguration.loadConfiguration(locationsFile);
 
-        old = multiBlockStructure.assumeAt(mineConfig.getSerializable(SPAWN_LOCATION_STRING, Location.class));
+        old = multiBlockStructure.assumeAt(mineConfig.getSerializable(LOCATION_STRING, Location.class));
         if (old != null) {
             old.getRegion().forEachBlock(block -> block.setType(Material.AIR));
         }
