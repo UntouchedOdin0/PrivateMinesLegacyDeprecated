@@ -77,7 +77,6 @@ public class MineType {
         weightedRandom.set(material, chance);
     }
 
-    @SuppressWarnings("UnusedReturnValue")
     public Mine build(Location location, UUID owner) {
         long startTime = System.currentTimeMillis();
         this.structure = multiBlockStructure.build(location);
@@ -95,6 +94,7 @@ public class MineType {
         Bukkit.broadcastMessage("spawnLocation 2: " + mine.getRelative(mine.getSpawnLocationRelative()));
         Bukkit.broadcastMessage("random block choice was: " + weightedRandom.roll());
 
+        mine.createNPC(Bukkit.getPlayer(owner), owner.toString());
         mine.teleportToMine(Bukkit.getPlayer(owner));
         multiBlockStructure.getAt(mine.getRelative(mine.getSpawnLocationRelative()));
         long endTime = System.currentTimeMillis();
