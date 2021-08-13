@@ -25,18 +25,15 @@ package me.untouchedodin0.privatemines;
 import me.untouchedodin0.privatemines.commands.PrivateMinesCmd;
 import me.untouchedodin0.privatemines.factory.MineFactory;
 import me.untouchedodin0.privatemines.structure.StructureLoader;
-import me.untouchedodin0.privatemines.structure.StructureManagers;
 import me.untouchedodin0.privatemines.utils.Metrics;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.mine.MineType;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
-import me.untouchedodin0.privatemines.utils.mine.util.MineUpgradeUtil;
 import me.untouchedodin0.privatemines.utils.mine.util.PrivateMineResetUtil;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import redempt.redlib.commandmanager.CommandParser;
 import redempt.redlib.commandmanager.Messages;
@@ -71,10 +68,7 @@ public class PrivateMines extends JavaPlugin {
 
     private PrivateMines privateMine;
     private MineWorldManager mineManager;
-    private StructureManagers structureManagers;
     private StructureLoader structureLoader;
-    private MineUpgradeUtil mineUpgradeUtil;
-    private YamlConfiguration schematicsYml;
 
     public static String fileNameWithOutExt(String fileName) {
         return Optional.of(fileName.lastIndexOf(".")).filter(i -> i >= 0)
@@ -108,9 +102,6 @@ public class PrivateMines extends JavaPlugin {
                 util,
                 structureLoader);
 
-        mineUpgradeUtil = new MineUpgradeUtil();
-        structureManagers = new StructureManagers();
-
         createMinesFolder();
         createStructureFolder();
         privateMine = this;
@@ -139,7 +130,8 @@ public class PrivateMines extends JavaPlugin {
             minesCount = minesFolder.list().length;
         }
 
-        Bukkit.getLogger().info(String.format("Found a total of %d mines!", minesCount));
+        String minesCountString = String.valueOf(minesCount);
+        Bukkit.getLogger().info("Found a total of {0} mines!".replace("{0}", minesCountString));
         Bukkit.getLogger().info("Registering the command...");
 
         new CommandParser(this.getResource("command.txt")).parse().register("privatemines",
