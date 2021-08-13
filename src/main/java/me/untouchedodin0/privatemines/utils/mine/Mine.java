@@ -2,6 +2,7 @@ package me.untouchedodin0.privatemines.utils.mine;
 
 import com.cryptomorin.xseries.XMaterial;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -13,9 +14,6 @@ import java.util.UUID;
 
 public class Mine {
 
-    private final Material cornerMaterial = XMaterial.POWERED_RAIL.parseMaterial();
-    private final Material npcMaterial = XMaterial.WHITE_WOOL.parseMaterial();
-    private final Material spawnMaterial = XMaterial.CHEST.parseMaterial();
     private final Material expandMaterial = XMaterial.SPONGE.parseMaterial();
     Location mineLocation;
     Location spawnLoc;
@@ -37,6 +35,10 @@ public class Mine {
         this.structure = structure;
         this.type = mineType;
 
+        Material spawnMaterial = XMaterial.CHEST.parseMaterial();
+        Material npcMaterial = XMaterial.WHITE_WOOL.parseMaterial();
+        Material cornerMaterial = XMaterial.POWERED_RAIL.parseMaterial();
+        
         this.spawnLocation = mineLoopUtil.findLocation(type.getMultiBlockStructure(), spawnMaterial);
         this.npcLocation = mineLoopUtil.findLocation(type.getMultiBlockStructure(), npcMaterial);
         this.cornerLocations = mineLoopUtil.findCornerLocations(type.getMultiBlockStructure(), cornerMaterial);
@@ -119,5 +121,11 @@ public class Mine {
 
     public void resetMine() {
         cuboidRegion.forEachBlock(block -> block.setType(getWeightedRandom().roll()));
+    }
+
+    public void createNPC(Player player, String name) {
+        if (npcLocation != null) {
+            Bukkit.getLogger().info("Creating a npc for " + player.getName() + " npc name: " + name);
+        }
     }
 }
