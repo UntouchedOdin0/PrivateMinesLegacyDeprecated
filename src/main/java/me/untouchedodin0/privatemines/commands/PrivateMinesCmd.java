@@ -19,10 +19,13 @@ public class PrivateMinesCmd {
 
     @CommandHook("give")
     public void giveCommand(CommandSender sender, Player target) {
-        sender.sendMessage("Private Mines Command");
-        sender.sendMessage(target.getDisplayName());
         mineFactory.createMine(target);
         Messages.msg("recievedMine");
-        target.sendMessage("You've been given a private mine!");
+    }
+
+    @CommandHook("delete")
+    public void deleteCommand(CommandSender sender, Player target) {
+        mineFactory.deleteMine(target);
+        Messages.msg("deletedMine");
     }
 }
