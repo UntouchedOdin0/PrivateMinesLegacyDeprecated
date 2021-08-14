@@ -8,4 +8,14 @@ privatemine,privatemines,pmine {
         hook delete
         help /pmine delete <name> - Deletes a players Private Mine
     }
+
+   reset {
+        hook reset
+        help /pmine reset - Resets your mine
+   }
+
+   resetother player:target{
+        hook resetother
+        help /pmine resetother <name> - Resets a player mine
+   }
 }
