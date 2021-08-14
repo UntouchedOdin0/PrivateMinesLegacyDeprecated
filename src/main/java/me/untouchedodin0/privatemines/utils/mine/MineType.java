@@ -78,7 +78,6 @@ public class MineType {
         return multiBlockStructure.getName();
     }
 
-
     @ConfigValue("materials")
     private final Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
 
