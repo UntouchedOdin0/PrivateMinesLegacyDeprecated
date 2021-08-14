@@ -24,6 +24,7 @@ package me.untouchedodin0.privatemines;
 
 import me.untouchedodin0.privatemines.commands.PrivateMinesCmd;
 import me.untouchedodin0.privatemines.factory.MineFactory;
+import me.untouchedodin0.privatemines.listener.FallInVoidListener;
 import me.untouchedodin0.privatemines.structure.StructureLoader;
 import me.untouchedodin0.privatemines.utils.Metrics;
 import me.untouchedodin0.privatemines.utils.Util;
@@ -174,6 +175,9 @@ public class PrivateMines extends JavaPlugin {
         int pluginId = 11413;
         Metrics metrics = new Metrics(this, pluginId);
         Bukkit.getLogger().info("Loaded metrics!");
+
+        // Register listeners
+        getServer().getPluginManager().registerEvents(new FallInVoidListener(this, mineStorage), this);
     }
 
     @Override
