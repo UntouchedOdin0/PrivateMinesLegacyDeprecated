@@ -45,7 +45,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -201,12 +203,10 @@ public class PrivateMinesCommand extends BaseCommand {
     @Description("Resets your mine")
     @CommandPermission("privatemines.reset")
     public void reset(Player p) {
-        if (p != null) {
-            if (mineStorage.getMines().containsKey(p.getUniqueId())) {
-                this.mine = mineStorage.getMines().get(p.getUniqueId());
-                mine.resetMine();
-                p.sendMessage(ChatColor.GREEN + "Your mine has been reset!");
-            }
+        if (p != null && mineStorage.getMines().containsKey(p.getUniqueId())) {
+            this.mine = mineStorage.getMines().get(p.getUniqueId());
+            mine.resetMine();
+            p.sendMessage(ChatColor.GREEN + "Your mine has been reset!");
         }
     }
 
@@ -219,20 +219,12 @@ public class PrivateMinesCommand extends BaseCommand {
     @CommandPermission("privatemines.reset.other")
     @CommandCompletion("@players")
     public void reset(Player p, OnlinePlayer target) {
-        userFile = new File(MINE_DIRECTORY + target.player.getUniqueId() + ".yml");
-        mineConfig = YamlConfiguration.loadConfiguration(userFile);
-//        corner1 = mineConfig.getLocation("corner1");
-//        corner2 = mineConfig.getLocation("corner2");
-        corner1 = mineConfig.getSerializable("Corner1", Location.class);
-        corner2 = mineConfig.getSerializable("Corner2", Location.class);
-
-        mineBlocks = (List<ItemStack>) mineConfig.getList(BLOCKS_STRING);
-
-        if (corner1 != null && corner2 != null && mineBlocks != null) {
-            Bukkit.getScheduler().runTaskLater(privateMines, ()
-                    -> fillManager.fillMineMultiple(corner1, corner2, mineBlocks), 20L);
+        Player targetPlayer = target.player;
+        if (targetPlayer != null) {
+            this.mine = mineStorage.getMines().get(targetPlayer.getUniqueId());
+            mine.resetMine();
+            targetPlayer.sendMessage(ChatColor.GREEN + "Your mine has been reset!");
         }
-        target.getPlayer().sendMessage(ChatColor.GREEN + "Your mine has been reset!");
     }
 
     /*
