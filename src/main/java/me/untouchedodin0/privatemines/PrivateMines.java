@@ -36,9 +36,13 @@ import me.untouchedodin0.privatemines.utils.placeholderapi.PrivateMinesExpansion
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 import redempt.redlib.commandmanager.CommandParser;
 import redempt.redlib.commandmanager.Messages;
+import redempt.redlib.configmanager.ConfigManager;
+import redempt.redlib.configmanager.annotations.ConfigMappable;
+import redempt.redlib.configmanager.annotations.ConfigValue;
 import redempt.redlib.multiblock.MultiBlockStructure;
 
 import java.io.File;
@@ -52,6 +56,7 @@ import java.util.*;
     Redempt: https://github.com/Redempt
  */
 
+@ConfigMappable
 public class PrivateMines extends JavaPlugin {
 
     int minesCount;
@@ -71,11 +76,15 @@ public class PrivateMines extends JavaPlugin {
     private PrivateMines privateMine;
     private MineWorldManager mineManager;
     private StructureLoader structureLoader;
+    private ConfigManager configManager;
 
     public static String fileNameWithOutExt(String fileName) {
         return Optional.of(fileName.lastIndexOf(".")).filter(i -> i >= 0)
                 .map(i -> fileName.substring(0, i)).orElse(fileName);
     }
+
+    @ConfigValue("value")
+    private Map<Material, Integer> materials = ConfigManager.map(Material.class, Integer.class);
 
     @Override
     public void onEnable() {
@@ -107,11 +116,12 @@ public class PrivateMines extends JavaPlugin {
         createMinesFolder();
         createStructureFolder();
         privateMine = this;
+
         structuresList = structureFolder.listFiles();
         loadStructureList(util, structuresList);
 
         mineTypeMap.forEach(((name, mineType) ->
-                Bukkit.getLogger().info("FOREACH: Name: " + name + " Type: " + mineType)));
+                Bukkit.getLogger().info("Loading mine " + name + " with type " + mineType)));
 
         for (MultiBlockStructure structure : multiBlockStructures) {
             structureLoader.loadStructure(structure);
@@ -136,6 +146,14 @@ public class PrivateMines extends JavaPlugin {
 
         new CommandParser(this.getResource("command.txt")).parse().register("privatemines",
                 new PrivateMinesCmd(mineStorage, mineFactory));
+        new ConfigManager(this)
+                .addConverter(
+                        Material.class,
+                        Material::valueOf,
+                        Material::toString)
+                .register(this)
+                .saveDefaults()
+                .load();
 
         Bukkit.getLogger().info("Command registered!");
 
