@@ -26,13 +26,12 @@ public class FallInVoidListener implements Listener {
 
         if (privateMines.getConfig().getBoolean("teleportToMineFromVoid") && event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            if (event.getCause() == DamageCause.VOID) {
-                if (mineStorage.hasMine(player)) {
-                    mine = mineStorage.getMine(player);
-                    mine.teleportToMine(player);
-                }
+            if (event.getCause() == DamageCause.VOID && mineStorage.hasMine(player)) {
+                mine = mineStorage.getMine(player);
+                mine.teleportToMine(player);
             }
         }
     }
 }
+
 
