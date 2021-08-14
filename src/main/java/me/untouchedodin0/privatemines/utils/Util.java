@@ -114,10 +114,6 @@ public class Util {
         return SkullCreator.itemFromBase64(base64);
     }
 
-    public static void setBlockViaNMS(World world, int x, int y, int z, Material type, boolean applyPhysics) {
-
-    }
-
     public void setMainFlags(IWrappedRegion region) {
         final WorldGuardWrapper w = WorldGuardWrapper.getInstance();
         Stream.of(
