@@ -48,7 +48,11 @@ public class PrivateMinesExpansion extends PlaceholderExpansion {
                     return "No";
                 }
             case "location":
-                return mine.getMineLocation().toString();
+                if (mine == null) {
+                    return "Player doesn't own a mine";
+                } else {
+                    return mine.getMineLocation().toString();
+                }
             default:
                 break;
         }

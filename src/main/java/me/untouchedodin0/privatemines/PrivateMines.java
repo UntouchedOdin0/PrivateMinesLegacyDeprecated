@@ -32,6 +32,7 @@ import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.mine.MineType;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import me.untouchedodin0.privatemines.utils.mine.util.PrivateMineResetUtil;
+import me.untouchedodin0.privatemines.utils.placeholderapi.PrivateMinesExpansion;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
@@ -178,6 +179,14 @@ public class PrivateMines extends JavaPlugin {
 
         // Register listeners
         getServer().getPluginManager().registerEvents(new FallInVoidListener(this, mineStorage), this);
+
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            Bukkit.getLogger().info("Found PlaceholderAPI registering expansion!");
+            new PrivateMinesExpansion(mineStorage).register();
+            Bukkit.getLogger().info("Registered the expansion!");
+        } else {
+            Bukkit.getLogger().info("Couldn't find PlaceholderAPI so couldn't register placeholders!");
+        }
     }
 
     @Override
