@@ -1,0 +1,26 @@
+privatemine,privatemines,pmine {
+
+    give player:target {
+        hook give
+        help /pmine give <name> - Gives a private mine to a player
+        permission privatemines.give
+    }
+
+    delete player:target {
+        hook delete
+        help /pmine delete <name> - Deletes a players Private Mine
+        permission privatemines.delete
+    }
+
+   reset {
+        hook reset
+        help /pmine reset - Resets your mine
+        permission privatemines.reset
+   }
+
+   resetother player:target {
+        hook resetother
+        help /pmine resetother <name> - Resets a player mine
+        permission privatemines.reset.other
+   }
+}
