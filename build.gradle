@@ -18,9 +18,9 @@ repositories {
     maven { url = 'https://repo.citizensnpcs.co/' }
     maven { url = 'https://maven.sk89q.com/repo/' }
     maven { url = "https://repo.mattstudios.me/artifactory/public/" }
-    maven { url "https://maven.enginehub.org/repo/" }
+    maven { url = "https://maven.enginehub.org/repo/" }
     maven { url = "https://repo.codemc.org/repository/maven-public/" }
-
+    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
     maven {
         name = "sonatype-oss-snapshots"
         url = "https://oss.sonatype.org/content/repositories/snapshots/"
@@ -52,6 +52,8 @@ dependencies {
     compileOnly 'com.github.Redempt:RedLib:5.0.4'
     compileOnly 'dev.dbassett:skullcreator:3.0.1'
     compileOnly 'net.citizensnpcs:citizens-main:2.0.28-SNAPSHOT'
+    compileOnly 'me.clip:placeholderapi:2.10.10'
+
     compile 'org.codemc.worldguardwrapper:worldguardwrapper:1.1.6-SNAPSHOT'
 
 //    compileOnly files('libs/spigot-1.17.1.jar')
