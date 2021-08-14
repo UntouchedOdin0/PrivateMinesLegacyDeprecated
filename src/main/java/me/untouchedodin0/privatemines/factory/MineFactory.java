@@ -152,6 +152,7 @@ public class MineFactory {
         }
     }
 
+    @SuppressWarnings("unused")
     public void expandMine(Player player) {
         userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
 
