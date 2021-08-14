@@ -113,11 +113,9 @@ public class PrivateMines extends JavaPlugin {
         mineTypeMap.forEach(((name, mineType) ->
                 Bukkit.getLogger().info("FOREACH: Name: " + name + " Type: " + mineType)));
 
-        int test = 0;
         for (MultiBlockStructure structure : multiBlockStructures) {
             structureLoader.loadStructure(structure);
-            test++;
-            MineType mineType = new MineType(String.valueOf(test), structure, this);
+            MineType mineType = new MineType(structure.getName(), structure, this);
             mineTypes.add(mineType);
         }
 
@@ -179,14 +177,7 @@ public class PrivateMines extends JavaPlugin {
 
         // Register listeners
         getServer().getPluginManager().registerEvents(new FallInVoidListener(this, mineStorage), this);
-
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            Bukkit.getLogger().info("Found PlaceholderAPI registering expansion!");
-            new PrivateMinesExpansion(mineStorage).register();
-            Bukkit.getLogger().info("Registered the expansion!");
-        } else {
-            Bukkit.getLogger().info("Couldn't find PlaceholderAPI so couldn't register placeholders!");
-        }
+        registerPlaceholderAPI(mineStorage);
     }
 
     @Override
@@ -246,6 +237,16 @@ public class PrivateMines extends JavaPlugin {
             if (createdStructureFolderSuccessfully) {
                 Bukkit.getLogger().info("The structures directory was successfully created!");
             }
+        }
+    }
+
+    public void registerPlaceholderAPI(MineStorage storage) {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            Bukkit.getLogger().info("Found PlaceholderAPI registering expansion!");
+            new PrivateMinesExpansion(storage).register();
+            Bukkit.getLogger().info("Registered the expansion!");
+        } else {
+            Bukkit.getLogger().info("Couldn't find PlaceholderAPI so couldn't register placeholders!");
         }
     }
 }
