@@ -50,4 +50,17 @@ public class PrivateMinesCmd {
             mine.resetMine();
         }
     }
+
+    @CommandHook("reset")
+    public void resetOther(CommandSender sender, Player target) {
+        if (sender != null) {
+            this.hasMine = mineStorage.hasMine(target);
+            if (!hasMine) {
+                sender.sendMessage("Target didn't own a mine!");
+                return;
+            }
+            mine = mineStorage.getMine(target);
+            mine.resetMine();
+        }
+    }
 }
