@@ -2,3 +2,21 @@ resetDelay: 5 # This is the reset delay in minutes.
 structureFile: "structure" # This is the structure file name without the .dat on the end!
 autoResets: true # Should the plugin auto-reset the mines?
 teleportToMineFromVoid: true # Should players be teleported to their mines if they fall in the void?
+blocks:
+  - STONE
+  - COBBLESTONE
+
+mineTypes:
+  Type1:
+    file: structure.dat
+    tier: 1
+    blocks:
+      STONE: 1.0
+      COBBLESTONE: 2.0
+  Type2:
+    file: structure2.dat
+    tier: 2
+    blocks:
+      STONE: 1.0
+      COBBLESTONE: 2.0
+      EMERALD_BLOCK: 0.3
