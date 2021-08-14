@@ -28,12 +28,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import redempt.redlib.RedLib;
+import redempt.redlib.configmanager.ConfigManager;
+import redempt.redlib.configmanager.annotations.ConfigMappable;
+import redempt.redlib.configmanager.annotations.ConfigValue;
 import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
 
+import java.util.Map;
 import java.util.UUID;
 
+@ConfigMappable
 public class MineType {
 
     private final String mineTypeName;
@@ -50,8 +55,8 @@ public class MineType {
     Mine mine;
     Material wool = Material.valueOf(RedLib.MID_VERSION >= 13 ? "WHITE_WOOL" : "WOOL");
 
-    public MineType(String typeString, MultiBlockStructure multiStructure, PrivateMines privateMines) {
-        this.mineTypeName = typeString;
+    public MineType(String name, MultiBlockStructure multiStructure, PrivateMines privateMines) {
+        this.mineTypeName = name;
         this.multiBlockStructure = multiStructure;
         this.mineLoopUtil = new MineLoopUtil();
         this.privateMines = privateMines;
@@ -73,8 +78,12 @@ public class MineType {
         return multiBlockStructure.getName();
     }
 
+
+    @ConfigValue("materials")
+    private final Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
+
     public void addMaterial(Material material, Double chance) {
-        weightedRandom.set(material, chance);
+        materials.put(material, chance);
     }
 
     public Mine build(Location location, UUID owner) {
