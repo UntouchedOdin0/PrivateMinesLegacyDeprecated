@@ -127,7 +127,7 @@ public class PrivateMines extends JavaPlugin {
         if (!minesFolder.exists()) {
             createMinesFolder();
         } else {
-            minesCount = minesFolder.list().length;
+            minesCount = Objects.requireNonNull(minesFolder.list()).length;
         }
 
         String minesCountString = String.valueOf(minesCount);
