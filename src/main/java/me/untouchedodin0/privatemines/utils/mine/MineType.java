@@ -78,12 +78,12 @@ public class MineType {
         return multiBlockStructure.getName();
     }
 
-    @ConfigValue("materials")
+    @ConfigValue
     private final Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
 
-    public void addMaterial(Material material, Double chance) {
-        materials.put(material, chance);
-    }
+//    public void addMaterial(Material material, Double chance) {
+//        blocks.put(material, chance);
+//    }
 
     public Mine build(Location location, UUID owner) {
         long startTime = System.currentTimeMillis();
@@ -91,6 +91,8 @@ public class MineType {
 
         weightedRandom.set(Material.COBBLESTONE, 1);
         weightedRandom.set(Material.STONE, 1);
+
+        Bukkit.getLogger().info("MineType build materials config value: " + materials);
 
         mine = new Mine(structure, this);
         mine.setMineLocation(location);
