@@ -22,26 +22,15 @@
 
 package me.untouchedodin0.privatemines;
 
-import me.untouchedodin0.privatemines.commands.PrivateMinesCmd;
-import me.untouchedodin0.privatemines.factory.MineFactory;
-import me.untouchedodin0.privatemines.listener.FallInVoidListener;
 import me.untouchedodin0.privatemines.structure.StructureLoader;
-import me.untouchedodin0.privatemines.utils.Metrics;
 import me.untouchedodin0.privatemines.utils.Util;
-import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.mine.MineType;
-import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
-import me.untouchedodin0.privatemines.utils.mine.util.PrivateMineResetUtil;
 import me.untouchedodin0.privatemines.utils.placeholderapi.PrivateMinesExpansion;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
-import redempt.redlib.commandmanager.CommandParser;
-import redempt.redlib.commandmanager.Messages;
 import redempt.redlib.configmanager.ConfigManager;
-import redempt.redlib.configmanager.annotations.ConfigMappable;
 import redempt.redlib.configmanager.annotations.ConfigValue;
 import redempt.redlib.multiblock.MultiBlockStructure;
 
@@ -56,11 +45,10 @@ import java.util.*;
     Redempt: https://github.com/Redempt
  */
 
-@ConfigMappable
 public class PrivateMines extends JavaPlugin {
 
     int minesCount;
-    int resetDelay;
+//    int resetDelay;
     File[] structuresList;
     File structureFolder = new File("plugins/PrivateMinesRewrite/structures/");
     File minesFolder = new File("plugins/PrivateMinesRewrite/mines/");
@@ -78,22 +66,25 @@ public class PrivateMines extends JavaPlugin {
     private StructureLoader structureLoader;
     private ConfigManager configManager;
 
+    @ConfigValue
+    private int resetDelay = 5;
+
+    @ConfigValue
+    private Map<String, Double> types = ConfigManager.map(String.class, Double.class);
+
     public static String fileNameWithOutExt(String fileName) {
         return Optional.of(fileName.lastIndexOf(".")).filter(i -> i >= 0)
                 .map(i -> fileName.substring(0, i)).orElse(fileName);
     }
-
-    @ConfigValue("value")
-    private Map<Material, Integer> materials = ConfigManager.map(Material.class, Integer.class);
 
     @Override
     public void onEnable() {
         Bukkit.getLogger().info("Loading PrivateMinesRewrite...");
 
         Util util = new Util();
-        saveDefaultConfig();
+//        saveDefaultConfig();
         saveResource("messages.txt", false);
-
+        /*
         Bukkit.getLogger().info("Setting up the Private Mines World...");
         mineManager = new MineWorldManager();
         Bukkit.getLogger().info("Private Mines World has been setup!");
@@ -146,15 +137,17 @@ public class PrivateMines extends JavaPlugin {
 
         new CommandParser(this.getResource("command.txt")).parse().register("privatemines",
                 new PrivateMinesCmd(mineStorage, mineFactory));
-        new ConfigManager(this)
-                .addConverter(
-                        Material.class,
-                        Material::valueOf,
-                        Material::toString)
+         */
+
+        configManager = new ConfigManager(this)
                 .register(this)
                 .saveDefaults()
                 .load();
 
+        Bukkit.getLogger().info("delay: " + resetDelay);
+        Bukkit.getLogger().info("types map: " + types);
+
+        /*
         Bukkit.getLogger().info("Command registered!");
 
         Bukkit.getLogger().info("Setting up the private mine util...");
@@ -196,6 +189,7 @@ public class PrivateMines extends JavaPlugin {
         // Register listeners
         getServer().getPluginManager().registerEvents(new FallInVoidListener(this, mineStorage), this);
         registerPlaceholderAPI(mineStorage);
+         */
     }
 
     @Override
