@@ -53,6 +53,7 @@ dependencies {
     compileOnly 'dev.dbassett:skullcreator:3.0.1'
     compileOnly 'net.citizensnpcs:citizens-main:2.0.28-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.10.10'
+    compileOnly 'me.byteful.lib:blockeditapi:1.0.3'
 
     compile 'org.codemc.worldguardwrapper:worldguardwrapper:1.1.6-SNAPSHOT'
 
