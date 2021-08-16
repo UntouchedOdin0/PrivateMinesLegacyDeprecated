@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.privateminesrewrite'
-version '2.1.7-SNAPSHOT' // Change this for the jar version
+version '2.1.7-2-SNAPSHOT' // Change this for the jar version
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -37,6 +37,7 @@ repositories {
     }
 
     maven { url = "https://repo.citizensnpcs.co/" }
+    maven { url = "https://maven.pkg.github.com/byteful/" }
 }
 
 dependencies {
@@ -53,11 +54,12 @@ dependencies {
     compileOnly 'dev.dbassett:skullcreator:3.0.1'
     compileOnly 'net.citizensnpcs:citizens-main:2.0.28-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.10.10'
-    compileOnly 'me.byteful.lib:blockeditapi:1.0.3'
+//    compileOnly 'me.byteful.lib:blockeditapi:1.0.3'
 
     compile 'org.codemc.worldguardwrapper:worldguardwrapper:1.1.6-SNAPSHOT'
 
-//    compileOnly files('libs/spigot-1.17.1.jar')
+    compile files('libs/blockeditapi-1.0.3.jar')
+//    compile files('libs/RedLib.jar')
 
     implementation 'com.github.cryptomorin:XSeries:8.2.0'
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'

@@ -22,14 +22,26 @@
 
 package me.untouchedodin0.privatemines;
 
+import me.byteful.lib.blockedit.BlockEditAPI;
+import me.byteful.lib.blockedit.BlockEditOption;
+import me.untouchedodin0.privatemines.commands.PrivateMinesCmd;
+import me.untouchedodin0.privatemines.factory.MineFactory;
+import me.untouchedodin0.privatemines.listener.FallInVoidListener;
 import me.untouchedodin0.privatemines.structure.StructureLoader;
+import me.untouchedodin0.privatemines.utils.Metrics;
 import me.untouchedodin0.privatemines.utils.Util;
+import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.mine.MineType;
+import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
+import me.untouchedodin0.privatemines.utils.mine.util.PrivateMineResetUtil;
 import me.untouchedodin0.privatemines.utils.placeholderapi.PrivateMinesExpansion;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
+import redempt.redlib.commandmanager.CommandParser;
+import redempt.redlib.commandmanager.Messages;
 import redempt.redlib.configmanager.ConfigManager;
 import redempt.redlib.configmanager.annotations.ConfigValue;
 import redempt.redlib.multiblock.MultiBlockStructure;
@@ -47,20 +59,21 @@ import java.util.*;
 
 public class PrivateMines extends JavaPlugin {
 
+    @ConfigValue
+    private static String mineFillSpeed = "BUKKIT";
+
+    @ConfigValue
+    private Map<String, Double> types = ConfigManager.map(String.class, Double.class);
+
     int minesCount;
-//    int resetDelay;
+    //    int resetDelay;
     File[] structuresList;
     File structureFolder = new File("plugins/PrivateMinesRewrite/structures/");
     File minesFolder = new File("plugins/PrivateMinesRewrite/mines/");
-
     MultiBlockStructure multiBlockStructure;
-
     List<MineType> mineTypes = new ArrayList<>();
-
     List<MultiBlockStructure> multiBlockStructures = new ArrayList<>();
-
     Map<String, MineType> mineTypeMap = new HashMap<>();
-
     private PrivateMines privateMine;
     private MineWorldManager mineManager;
     private StructureLoader structureLoader;
@@ -70,7 +83,7 @@ public class PrivateMines extends JavaPlugin {
     private int resetDelay = 5;
 
     @ConfigValue
-    private Map<String, Double> types = ConfigManager.map(String.class, Double.class);
+    private Map<Material, Double> blocks = ConfigManager.map(Material.class, Double.class);
 
     public static String fileNameWithOutExt(String fileName) {
         return Optional.of(fileName.lastIndexOf(".")).filter(i -> i >= 0)
@@ -83,8 +96,11 @@ public class PrivateMines extends JavaPlugin {
 
         Util util = new Util();
 //        saveDefaultConfig();
+        ConfigManager config = new ConfigManager(this).addConverter(UUID.class, UUID::fromString, UUID::toString)
+                .register(this).saveDefaults().load();
+
         saveResource("messages.txt", false);
-        /*
+
         Bukkit.getLogger().info("Setting up the Private Mines World...");
         mineManager = new MineWorldManager();
         Bukkit.getLogger().info("Private Mines World has been setup!");
@@ -117,6 +133,7 @@ public class PrivateMines extends JavaPlugin {
         for (MultiBlockStructure structure : multiBlockStructures) {
             structureLoader.loadStructure(structure);
             MineType mineType = new MineType(structure.getName(), structure, this);
+//            mineType.setBlocks(blocks);
             mineTypes.add(mineType);
         }
 
@@ -135,19 +152,20 @@ public class PrivateMines extends JavaPlugin {
         Bukkit.getLogger().info("Found a total of {0} mines!".replace("{0}", minesCountString));
         Bukkit.getLogger().info("Registering the command...");
 
-        new CommandParser(this.getResource("command.txt")).parse().register("privatemines",
+//        new CommandParser(this.getResource("command.txt")).parse().register("privatemines",
+//                new PrivateMinesCmd(mineStorage, mineFactory));
+        new CommandParser(this.getResource("command.rdcml")).parse().register("privatemines",
                 new PrivateMinesCmd(mineStorage, mineFactory));
-         */
 
-        configManager = new ConfigManager(this)
-                .register(this)
-                .saveDefaults()
-                .load();
+//        configManager = new ConfigManager(this)
+//                .register(this)
+//                .saveDefaults()
+//                .load();
 
         Bukkit.getLogger().info("delay: " + resetDelay);
         Bukkit.getLogger().info("types map: " + types);
+        Bukkit.getLogger().info("blocks from main: " + blocks);
 
-        /*
         Bukkit.getLogger().info("Command registered!");
 
         Bukkit.getLogger().info("Setting up the private mine util...");
@@ -161,6 +179,20 @@ public class PrivateMines extends JavaPlugin {
             if (success) {
                 Bukkit.getLogger().info("Mines folder was successfully created!");
             }
+        }
+
+        Bukkit.getLogger().info("Setting the mine fill speed to " + mineFillSpeed);
+
+        if (mineFillSpeed.equalsIgnoreCase("NMS_SAFE")) {
+            BlockEditAPI.initialize(BlockEditOption.NMS_SAFE);
+        } else if (mineFillSpeed.equalsIgnoreCase("NMS_FAST")) {
+            BlockEditAPI.initialize(BlockEditOption.NMS_FAST);
+        } else if (mineFillSpeed.equalsIgnoreCase("NMS_UNSAFE")) {
+            BlockEditAPI.initialize(BlockEditOption.NMS_UNSAFE);
+        } else if (mineFillSpeed.equalsIgnoreCase("BUKKIT")) {
+            BlockEditAPI.initialize(BlockEditOption.BUKKIT);
+        } else {
+            Bukkit.getLogger().info("Couldn't find the specified the specified mine fill speed.");
         }
 
         if (mineStorage.getMineFiles() == null) {
@@ -189,7 +221,6 @@ public class PrivateMines extends JavaPlugin {
         // Register listeners
         getServer().getPluginManager().registerEvents(new FallInVoidListener(this, mineStorage), this);
         registerPlaceholderAPI(mineStorage);
-         */
     }
 
     @Override
@@ -260,5 +291,9 @@ public class PrivateMines extends JavaPlugin {
         } else {
             Bukkit.getLogger().info("Couldn't find PlaceholderAPI so couldn't register placeholders!");
         }
+    }
+
+    public Map<Material, Double> getBlocks() {
+        return blocks;
     }
 }

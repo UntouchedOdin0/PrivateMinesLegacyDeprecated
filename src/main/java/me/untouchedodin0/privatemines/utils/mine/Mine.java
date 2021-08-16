@@ -1,6 +1,7 @@
 package me.untouchedodin0.privatemines.utils.mine;
 
 import com.cryptomorin.xseries.XMaterial;
+import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -10,6 +11,7 @@ import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.multiblock.Structure;
 import redempt.redlib.region.CuboidRegion;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class Mine {
@@ -38,7 +40,7 @@ public class Mine {
         Material spawnMaterial = XMaterial.CHEST.parseMaterial();
         Material npcMaterial = XMaterial.WHITE_WOOL.parseMaterial();
         Material cornerMaterial = XMaterial.POWERED_RAIL.parseMaterial();
-        
+
         this.spawnLocation = mineLoopUtil.findLocation(type.getMultiBlockStructure(), spawnMaterial);
         this.npcLocation = mineLoopUtil.findLocation(type.getMultiBlockStructure(), npcMaterial);
         this.cornerLocations = mineLoopUtil.findCornerLocations(type.getMultiBlockStructure(), cornerMaterial);

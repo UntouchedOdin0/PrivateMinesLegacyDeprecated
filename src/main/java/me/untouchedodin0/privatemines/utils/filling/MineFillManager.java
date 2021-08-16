@@ -23,6 +23,7 @@
 package me.untouchedodin0.privatemines.utils.filling;
 
 import com.cryptomorin.xseries.XMaterial;
+import me.byteful.lib.blockedit.BlockEditAPI;
 import me.untouchedodin0.privatemines.PrivateMines;
 import org.apache.commons.lang.math.IntRange;
 import org.bukkit.Bukkit;
@@ -31,6 +32,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.region.CuboidRegion;
 
@@ -65,10 +67,11 @@ public class MineFillManager {
             weightedRandom.set(item.getType(), 1);
         }
         cuboidRegion.forEachBlock(block -> {
+            MaterialData data = block.getState().getData();
             Material toSet = weightedRandom.roll();
             Material xMaterial = XMaterial.matchXMaterial(toSet).parseMaterial();
             if (xMaterial != null) {
-                block.setType(xMaterial);
+                BlockEditAPI.setBlock(block, xMaterial, data, false);
             }
         });
     }

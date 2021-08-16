@@ -144,6 +144,3 @@ public class MineType {
         return spawnLocation;
     }
 }
-
-
-

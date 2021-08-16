@@ -2,11 +2,20 @@ resetDelay: 5 # This is the reset delay in minutes.
 structureFile: "structure" # This is the structure file name without the .dat on the end!
 autoResets: true # Should the plugin auto-reset the mines?
 teleportToMineFromVoid: true # Should players be teleported to their mines if they fall in the void?
-blocks:
-  - STONE
-  - COBBLESTONE
 
-types:
+# Options
+# - BUKKIT
+# - NMS_SAFE
+# - NMS_FAST
+# - NMS_UNSAFE
+
+mineFillSpeed: BUKKIT
+
+#blocks:
+#  - STONE
+#  - COBBLESTONE
+
+blocks:
   COBBLESTONE: 1.0
   STONE: 5
 
