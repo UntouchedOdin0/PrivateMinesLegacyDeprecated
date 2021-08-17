@@ -28,14 +28,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import redempt.redlib.RedLib;
-import redempt.redlib.configmanager.ConfigManager;
 import redempt.redlib.configmanager.annotations.ConfigMappable;
-import redempt.redlib.configmanager.annotations.ConfigValue;
 import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
 
-import java.util.Map;
 import java.util.UUID;
 
 @ConfigMappable
@@ -66,10 +63,6 @@ public class MineType {
         this.weightedRandom = new WeightedRandom<>();
     }
 
-    public MultiBlockStructure getMultiBlockStructure() {
-        return this.multiBlockStructure;
-    }
-
     public MineType getMineType() {
         return this;
     }
@@ -78,17 +71,11 @@ public class MineType {
         return multiBlockStructure.getName();
     }
 
-//    @ConfigValue
-//    private final Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
-
     public Mine build(Location location, UUID owner) {
         long startTime = System.currentTimeMillis();
         this.structure = multiBlockStructure.build(location);
 
         getPrivateMines().getBlocks().forEach(weightedRandom::set);
-
-//        weightedRandom.set(Material.COBBLESTONE, 1);
-//        weightedRandom.set(Material.STONE, 1);
 
         Bukkit.getLogger().info("MineType build materials main class value: " + privateMines.getBlocks());
 
@@ -124,8 +111,14 @@ public class MineType {
         return mineLoopUtil;
     }
 
+    @SuppressWarnings("unused")
     public Structure getStructure() {
         return this.structure;
+    }
+
+    @SuppressWarnings("unused")
+    public MultiBlockStructure getMultiBlockStructure() {
+        return this.multiBlockStructure;
     }
 
     public int[][] getCornerLocations() {
