@@ -11,6 +11,7 @@ import redempt.redlib.region.CuboidRegion;
 
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class Mine {
 
     Location mineLocation;
@@ -83,6 +84,7 @@ public class Mine {
     public void setMineOwner(UUID mineOwner) {
         this.mineOwner = mineOwner;
     }
+
 
     public Structure getStructure() {
         return structure;
