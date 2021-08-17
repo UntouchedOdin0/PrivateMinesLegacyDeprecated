@@ -35,6 +35,7 @@ import redempt.redlib.multiblock.Structure;
 
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 @ConfigMappable
 public class MineType {
 
@@ -97,7 +98,6 @@ public class MineType {
         return mine;
     }
 
-    @SuppressWarnings("unused")
     public String getMineTypeName() {
         return mineTypeName;
     }
@@ -106,17 +106,14 @@ public class MineType {
         return privateMines;
     }
 
-    @SuppressWarnings("unused")
     public MineLoopUtil getMineLoopUtil() {
         return mineLoopUtil;
     }
 
-    @SuppressWarnings("unused")
     public Structure getStructure() {
         return this.structure;
     }
 
-    @SuppressWarnings("unused")
     public MultiBlockStructure getMultiBlockStructure() {
         return this.multiBlockStructure;
     }
