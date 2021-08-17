@@ -83,7 +83,7 @@ public class Util {
             Bukkit.broadcastMessage("Failed to load structure," +
                     " inputStream was null!");
         }
-        multiBlockStructure = MultiBlockStructure.create(inputStream, structureName);
+        multiBlockStructure = MultiBlockStructure.create(inputStream, structureName, false, true);
         return multiBlockStructure;
     }
 
