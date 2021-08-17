@@ -95,7 +95,6 @@ public class PrivateMines extends JavaPlugin {
         Bukkit.getLogger().info("Loading PrivateMinesRewrite...");
 
         Util util = new Util();
-//        saveDefaultConfig();
         ConfigManager config = new ConfigManager(this).addConverter(UUID.class, UUID::fromString, UUID::toString)
                 .register(this).saveDefaults().load();
 
@@ -133,7 +132,6 @@ public class PrivateMines extends JavaPlugin {
         for (MultiBlockStructure structure : multiBlockStructures) {
             structureLoader.loadStructure(structure);
             MineType mineType = new MineType(structure.getName(), structure, this);
-//            mineType.setBlocks(blocks);
             mineTypes.add(mineType);
         }
 
@@ -152,15 +150,8 @@ public class PrivateMines extends JavaPlugin {
         Bukkit.getLogger().info("Found a total of {0} mines!".replace("{0}", minesCountString));
         Bukkit.getLogger().info("Registering the command...");
 
-//        new CommandParser(this.getResource("command.txt")).parse().register("privatemines",
-//                new PrivateMinesCmd(mineStorage, mineFactory));
         new CommandParser(this.getResource("command.rdcml")).parse().register("privatemines",
                 new PrivateMinesCmd(mineStorage, mineFactory));
-
-//        configManager = new ConfigManager(this)
-//                .register(this)
-//                .saveDefaults()
-//                .load();
 
         Bukkit.getLogger().info("delay: " + resetDelay);
         Bukkit.getLogger().info("types map: " + types);
