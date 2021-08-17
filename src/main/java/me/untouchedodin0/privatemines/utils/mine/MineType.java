@@ -81,10 +81,6 @@ public class MineType {
     @ConfigValue
     private final Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
 
-//    public void addMaterial(Material material, Double chance) {
-//        blocks.put(material, chance);
-//    }
-
     public Mine build(Location location, UUID owner) {
         long startTime = System.currentTimeMillis();
         this.structure = multiBlockStructure.build(location);
@@ -95,17 +91,15 @@ public class MineType {
         Bukkit.getLogger().info("MineType build materials config value: " + materials);
 
         mine = new Mine(structure, this);
+
         mine.setMineLocation(location);
         mine.setMineOwner(owner);
         mine.setSpawnLocation(mine.getRelative(spawnLocation));
         mine.setNpcLocation(mine.getRelative(npcLocation));
         mine.setWeightedRandomMaterials(weightedRandom);
-
-        Bukkit.broadcastMessage("spawnLocation 2: " + mine.getRelative(mine.getSpawnLocationRelative()));
-        Bukkit.broadcastMessage("random block choice was: " + weightedRandom.roll());
-
         mine.createNPC(Bukkit.getPlayer(owner), owner.toString());
         mine.teleportToMine(Bukkit.getPlayer(owner));
+
         multiBlockStructure.getAt(mine.getRelative(mine.getSpawnLocationRelative()));
         long endTime = System.currentTimeMillis();
         String timeString = String.valueOf(endTime - startTime);
