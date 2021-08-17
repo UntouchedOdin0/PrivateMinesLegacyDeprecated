@@ -33,11 +33,8 @@ import java.util.UUID;
 
 public class MineStorage {
 
-    File userFile;
     File mineFolder = new File("plugins/PrivateMinesRewrite/mines");
     File[] mineFiles = new File("plugins/PrivateMinesRewrite/mines").listFiles();
-    File structureFolder = new File("plugins/PrivateMinesRewrite/schematics/");
-    File[] structuresList;
 
     Map<UUID, Mine> mines = new HashMap<>();
 
@@ -59,12 +56,6 @@ public class MineStorage {
 
     public File getMineFolder() {
         return mineFolder;
-    }
-
-    public void loadMines() {
-        mines.forEach((uuid, mine) -> {
-            Bukkit.getLogger().info("Loading the mine " + mine.getMineOwner());
-        });
     }
 
     public Map<UUID, Mine> getMines() {
