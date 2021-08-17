@@ -11,10 +11,6 @@ teleportToMineFromVoid: true # Should players be teleported to their mines if th
 
 mineFillSpeed: BUKKIT
 
-#blocks:
-#  - STONE
-#  - COBBLESTONE
-
 materials:
   COBBLESTONE: 1.0
   STONE: 5

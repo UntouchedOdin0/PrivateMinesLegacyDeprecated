@@ -62,14 +62,12 @@ public class PrivateMines extends JavaPlugin {
     @ConfigValue
     private static String mineFillSpeed = "BUKKIT";
 
-    @ConfigValue
-    private Map<String, Double> types = ConfigManager.map(String.class, Double.class);
-
     int minesCount;
     //    int resetDelay;
     File[] structuresList;
     File structureFolder = new File("plugins/PrivateMinesRewrite/structures/");
     File minesFolder = new File("plugins/PrivateMinesRewrite/mines/");
+    File configFile;
     MultiBlockStructure multiBlockStructure;
     List<MineType> mineTypes = new ArrayList<>();
     List<MultiBlockStructure> multiBlockStructures = new ArrayList<>();
@@ -93,10 +91,14 @@ public class PrivateMines extends JavaPlugin {
     @Override
     public void onEnable() {
         Bukkit.getLogger().info("Loading PrivateMinesRewrite...");
-
+        materials.put(Material.STONE, 1.0);
         Util util = new Util();
-        ConfigManager config = new ConfigManager(this).addConverter(UUID.class, UUID::fromString, UUID::toString)
-                .register(this).saveDefaults().load();
+        configFile = new File(getDataFolder(), "config.yml");
+        if (!configFile.exists()) {
+            saveDefaultConfig();
+        }
+        configManager = new ConfigManager(this).addConverter(UUID.class, UUID::fromString, UUID::toString)
+                .register(this).load();
 
         saveResource("messages.txt", false);
 
@@ -153,10 +155,6 @@ public class PrivateMines extends JavaPlugin {
         new CommandParser(this.getResource("command.rdcml")).parse().register("privatemines",
                 new PrivateMinesCmd(mineStorage, mineFactory));
 
-        Bukkit.getLogger().info("delay: " + resetDelay);
-        Bukkit.getLogger().info("types map: " + types);
-        Bukkit.getLogger().info("materials from main: " + materials);
-
         Bukkit.getLogger().info("Command registered!");
 
         Bukkit.getLogger().info("Setting up the private mine util...");
@@ -173,18 +171,19 @@ public class PrivateMines extends JavaPlugin {
         }
 
         Bukkit.getLogger().info("Setting the mine fill speed to " + mineFillSpeed);
+        setMineFillSpeed(mineFillSpeed);
 
-        if (mineFillSpeed.equalsIgnoreCase("NMS_SAFE")) {
-            BlockEditAPI.initialize(BlockEditOption.NMS_SAFE);
-        } else if (mineFillSpeed.equalsIgnoreCase("NMS_FAST")) {
-            BlockEditAPI.initialize(BlockEditOption.NMS_FAST);
-        } else if (mineFillSpeed.equalsIgnoreCase("NMS_UNSAFE")) {
-            BlockEditAPI.initialize(BlockEditOption.NMS_UNSAFE);
-        } else if (mineFillSpeed.equalsIgnoreCase("BUKKIT")) {
-            BlockEditAPI.initialize(BlockEditOption.BUKKIT);
-        } else {
-            Bukkit.getLogger().info("Couldn't find the specified the specified mine fill speed.");
-        }
+//        if (mineFillSpeed.equalsIgnoreCase("NMS_SAFE")) {
+//            BlockEditAPI.initialize(BlockEditOption.NMS_SAFE);
+//        } else if (mineFillSpeed.equalsIgnoreCase("NMS_FAST")) {
+//            BlockEditAPI.initialize(BlockEditOption.NMS_FAST);
+//        } else if (mineFillSpeed.equalsIgnoreCase("NMS_UNSAFE")) {
+//            BlockEditAPI.initialize(BlockEditOption.NMS_UNSAFE);
+//        } else if (mineFillSpeed.equalsIgnoreCase("BUKKIT")) {
+//            BlockEditAPI.initialize(BlockEditOption.BUKKIT);
+//        } else {
+//            Bukkit.getLogger().info("Couldn't find the specified the specified mine fill speed.");
+//        }
 
         if (mineStorage.getMineFiles() == null) {
             Bukkit.getLogger().info("No mine files to load!");
@@ -286,5 +285,19 @@ public class PrivateMines extends JavaPlugin {
 
     public Map<Material, Double> getBlocks() {
         return materials;
+    }
+
+    public void setMineFillSpeed(String speed) {
+        if (speed.equalsIgnoreCase("NMS_SAFE")) {
+            BlockEditAPI.initialize(BlockEditOption.NMS_SAFE);
+        } else if (speed.equalsIgnoreCase("NMS_FAST")) {
+            BlockEditAPI.initialize(BlockEditOption.NMS_FAST);
+        } else if (speed.equalsIgnoreCase("NMS_UNSAFE")) {
+            BlockEditAPI.initialize(BlockEditOption.NMS_UNSAFE);
+        } else if (speed.equalsIgnoreCase("BUKKIT")) {
+            BlockEditAPI.initialize(BlockEditOption.BUKKIT);
+        } else {
+            Bukkit.getLogger().info("Couldn't find the specified the specified mine fill speed.");
+        }
     }
 }
