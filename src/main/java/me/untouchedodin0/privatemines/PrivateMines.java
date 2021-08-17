@@ -83,7 +83,7 @@ public class PrivateMines extends JavaPlugin {
     private int resetDelay = 5;
 
     @ConfigValue
-    private Map<Material, Double> blocks = ConfigManager.map(Material.class, Double.class);
+    private Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
 
     public static String fileNameWithOutExt(String fileName) {
         return Optional.of(fileName.lastIndexOf(".")).filter(i -> i >= 0)
@@ -164,7 +164,7 @@ public class PrivateMines extends JavaPlugin {
 
         Bukkit.getLogger().info("delay: " + resetDelay);
         Bukkit.getLogger().info("types map: " + types);
-        Bukkit.getLogger().info("blocks from main: " + blocks);
+        Bukkit.getLogger().info("materials from main: " + materials);
 
         Bukkit.getLogger().info("Command registered!");
 
@@ -294,6 +294,6 @@ public class PrivateMines extends JavaPlugin {
     }
 
     public Map<Material, Double> getBlocks() {
-        return blocks;
+        return materials;
     }
 }
