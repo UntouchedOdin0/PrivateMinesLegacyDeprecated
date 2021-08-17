@@ -129,7 +129,6 @@ public class MineFactory {
             mine = mineType.build(nextLocation, player.getUniqueId());
             mine.teleportToMine(player);
             mine.resetMine();
-            Bukkit.broadcastMessage("" + nextLocation);
             mineStorage.addMine(player.getUniqueId(), mine);
             mineConfig.set("mine.owner", mine.getMineOwner().toString());
             mineConfig.set(LOCATION_STRING, mine.getMineLocation());
