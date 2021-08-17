@@ -22,23 +22,10 @@
 
 package me.untouchedodin0.privatemines.utils.mine.loop;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import redempt.redlib.multiblock.MultiBlockStructure;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MineLoopUtil {
-
-    World world;
-    List<Location> cornerLocations = new ArrayList<>();
-    List<Location> expandCornerLocations = new ArrayList<>();
-    Location spawnLocation;
-//    Location npcLocation;
-
 
     public int[][] findCornerLocations(MultiBlockStructure structure, Material cornerMaterial) {
 
@@ -62,12 +49,7 @@ public class MineLoopUtil {
                 }
             }
         }
-        if (locations.length < 2) {
-            Bukkit.getLogger().warning("Failed to find 2 locations, actual size was " + locations.length);
-        } else {
-            return locations;
-        }
-        return new int[][]{};
+        return locations;
     }
 
     public int[] findLocation(MultiBlockStructure structure, Material material) {
@@ -76,53 +58,16 @@ public class MineLoopUtil {
         int dimY = dimensions[1];
         int dimZ = dimensions[2];
 
-        System.out.println("looking for the material " + material);
-
         for (int x = 0; x < dimX; x++) {
             for (int y = 0; y < dimY; y++) {
                 for (int z = 0; z < dimZ; z++) {
                     if (structure.getType(x, y, z) != material) {
                         continue;
                     }
-                    System.out.println("found block");
-
                     return new int[]{x, y, z};
                 }
             }
         }
         return new int[]{0, 0, 0};
     }
-
-//    public void setBlockLocations(Location startLocation,
-//                                  Location endLocation,
-//                                  Material cornerMaterial,
-//                                  Material expandMaterial,
-//                                  Material npcMaterial,
-//                                  Material spawnPointMaterial) {
-//        this.cornerLocations = findCornerLocations(startLocation, endLocation, cornerMaterial);
-//        this.expandCornerLocations = findExpandCornerLocations(startLocation, endLocation, expandMaterial);
-////        this.npcLocation = findNpcLocation(startLocation, endLocation, npcMaterial);
-//        this.spawnLocation = findSpawnPointLocation(startLocation, endLocation, spawnPointMaterial);
-//    }
-
-    @SuppressWarnings("unused")
-    public List<Location> getCornerLocations() {
-        return cornerLocations;
-    }
-
-    public Location getCorner1() {
-        return cornerLocations.get(0);
-    }
-
-    public Location getCorner2() {
-        return cornerLocations.get(1);
-    }
-
-    public Location getSpawnLocation() {
-        return spawnLocation;
-    }
-
-//    public Location getNpcLocation() {
-//        return npcLocation;
-//    }
 }
