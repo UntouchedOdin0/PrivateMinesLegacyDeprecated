@@ -63,8 +63,6 @@ public class PrivateMines extends JavaPlugin {
     private static String mineFillSpeed = "BUKKIT";
 
     int minesCount;
-    //    int resetDelay;
-    File[] structuresList;
     File structureFolder = new File("plugins/PrivateMinesRewrite/structures/");
     File minesFolder = new File("plugins/PrivateMinesRewrite/mines/");
     File configFile;
@@ -124,13 +122,9 @@ public class PrivateMines extends JavaPlugin {
         createMinesFolder();
         createStructureFolder();
         privateMine = this;
-
-        structuresList = structureFolder.listFiles();
-        loadStructureList(util, structuresList);
-
+        loadStructureList(util, structureFolder.listFiles());
         mineTypeMap.forEach(((name, mineType) ->
                 Bukkit.getLogger().info("Loading mine " + name + " with type " + mineType)));
-
         for (MultiBlockStructure structure : multiBlockStructures) {
             structureLoader.loadStructure(structure);
             MineType mineType = new MineType(structure.getName(), structure, this);
@@ -173,18 +167,6 @@ public class PrivateMines extends JavaPlugin {
         Bukkit.getLogger().info("Setting the mine fill speed to " + mineFillSpeed);
         setMineFillSpeed(mineFillSpeed);
 
-//        if (mineFillSpeed.equalsIgnoreCase("NMS_SAFE")) {
-//            BlockEditAPI.initialize(BlockEditOption.NMS_SAFE);
-//        } else if (mineFillSpeed.equalsIgnoreCase("NMS_FAST")) {
-//            BlockEditAPI.initialize(BlockEditOption.NMS_FAST);
-//        } else if (mineFillSpeed.equalsIgnoreCase("NMS_UNSAFE")) {
-//            BlockEditAPI.initialize(BlockEditOption.NMS_UNSAFE);
-//        } else if (mineFillSpeed.equalsIgnoreCase("BUKKIT")) {
-//            BlockEditAPI.initialize(BlockEditOption.BUKKIT);
-//        } else {
-//            Bukkit.getLogger().info("Couldn't find the specified the specified mine fill speed.");
-//        }
-
         if (mineStorage.getMineFiles() == null) {
             Bukkit.getLogger().info("No mine files to load!");
         } else {
@@ -193,8 +175,6 @@ public class PrivateMines extends JavaPlugin {
                 if (getConfig().getBoolean("autoResets")) {
                     Bukkit.getLogger().info("Private Mines will auto-reset!");
                     privateMineResetUtil.startResetTask(uuid, resetDelay);
-                } else {
-                    Bukkit.getLogger().info("Private Mines will not auto-reset!");
                 }
             }
         }
