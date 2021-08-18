@@ -12,17 +12,17 @@ teleportToMineFromVoid: true # Should players be teleported to their mines if th
 mineFillSpeed: BUKKIT
 
 materials:
-  COBBLESTONE: 1.0
+  COBBLESTONE: 1
   STONE: 5
 
 
-#mineTypes:
-#  Type1:
-#    file: structure.dat
-#    tier: 1
-#    blocks:
-#      STONE: 1.0
-#      COBBLESTONE: 2.0
+mineTypes:
+  Type1:
+    file: structure.dat
+    tier: 1
+    blocks:
+      STONE: 1.0
+      COBBLESTONE: 2.0
 #  Type2:
 #    file: structure2.dat
 #    tier: 2
