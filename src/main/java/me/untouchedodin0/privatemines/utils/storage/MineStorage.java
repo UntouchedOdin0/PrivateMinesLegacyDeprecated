@@ -46,6 +46,14 @@ public class MineStorage {
         }
     }
 
+    public void deleteMine(UUID uuid) {
+        if (!mines.containsKey(uuid)) {
+            Bukkit.getLogger().warning("User didn't own a private mine!");
+        } else {
+            mines.remove(uuid);
+        }
+    }
+
     public boolean hasMine(Player player) {
         return mines.containsKey(player.getUniqueId());
     }

@@ -144,24 +144,28 @@ public class MineFactory {
     }
 
     public void deleteMine(Player player) {
-        mine = mineStorage.getMine(player);
-        old = mine.getStructure();
-        userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
-        userFilePath = userFile.toPath();
-        if (userFile.exists() && old != null) {
-            old.getRegion().forEachBlock(block -> block.setType(Material.AIR));
-            boolean deleted = false;
-            try {
-                deleted = Files.deleteIfExists(userFilePath);
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-            if (deleted) {
-                Bukkit.getLogger().info("Successfully deleted " + player.getName() + "'s Private Mine!");
+        if (!mineStorage.hasMine(player)) {
+            Bukkit.getLogger().warning("Couldn't delete mine, due to player not owning mine!");
+        } else {
+            mine = mineStorage.getMine(player);
+            old = mine.getStructure();
+            userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
+            userFilePath = userFile.toPath();
+            if (userFile.exists() && old != null) {
+                old.getRegion().forEachBlock(block -> block.setType(Material.AIR));
+                boolean deleted = false;
+                try {
+                    deleted = Files.deleteIfExists(userFilePath);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                if (deleted) {
+                    mineStorage.deleteMine(player.getUniqueId());
+                    Bukkit.getLogger().info("Successfully deleted " + player.getName() + "'s Private Mine!");
+                }
             }
         }
     }
-
 
 
     @SuppressWarnings("unused")
