@@ -22,6 +22,7 @@
 
 package me.untouchedodin0.privatemines.utils.mine;
 
+import me.byteful.lib.blockedit.BlockEditAPI;
 import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import org.bukkit.Bukkit;
@@ -80,6 +81,14 @@ public class MineType {
 
     public Mine build(Location location, UUID owner) {
         long startTime = System.currentTimeMillis();
+
+        multiBlockStructure.forEachBlock(location, blockState ->
+                BlockEditAPI.setBlock(
+                        location,
+                        blockState.getType(),
+                        blockState.getData(),
+                        false));
+
         this.structure = multiBlockStructure.build(location);
 
         getPrivateMines().getBlocks().forEach(weightedRandom::set);
