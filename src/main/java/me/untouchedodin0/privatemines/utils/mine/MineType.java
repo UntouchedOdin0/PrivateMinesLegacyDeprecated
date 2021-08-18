@@ -28,11 +28,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import redempt.redlib.RedLib;
+import redempt.redlib.configmanager.ConfigManager;
 import redempt.redlib.configmanager.annotations.ConfigMappable;
+import redempt.redlib.configmanager.annotations.ConfigValue;
 import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
 
+import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("unused")
@@ -63,6 +66,9 @@ public class MineType {
         this.npcLocation = mineLoopUtil.findLocation(multiBlockStructure, wool);
         this.weightedRandom = new WeightedRandom<>();
     }
+
+    @ConfigValue
+    private Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
 
     public MineType getMineType() {
         return this;
