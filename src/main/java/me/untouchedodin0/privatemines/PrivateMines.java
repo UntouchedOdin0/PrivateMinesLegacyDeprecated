@@ -280,4 +280,9 @@ public class PrivateMines extends JavaPlugin {
             Bukkit.getLogger().info("Couldn't find the specified the specified mine fill speed.");
         }
     }
+
+    @SuppressWarnings("unused")
+    public ConfigManager getConfigManager() {
+        return configManager;
+    }
 }
