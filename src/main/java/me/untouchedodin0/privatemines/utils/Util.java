@@ -22,12 +22,7 @@
 
 package me.untouchedodin0.privatemines.utils;
 
-import dev.dbassett.skullcreator.SkullCreator;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.BlockFace;
-import org.bukkit.inventory.ItemStack;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.flag.WrappedState;
 import org.codemc.worldguardwrapper.region.IWrappedRegion;
@@ -37,33 +32,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 public class Util {
 
     MultiBlockStructure multiBlockStructure;
-    File[] mines = new File("plugins/PrivateMinesRewrite/mines/").listFiles();
-    Map<String, MultiBlockStructure> structureMap = new HashMap<>();
-
-    // stops it from saying the class is empty.
-
-    public static float getYaw(BlockFace blockFace) {
-        switch (blockFace) {
-            case NORTH:
-                return 180f;
-            case EAST:
-                return -90f;
-            case SOUTH:
-                return -180f;
-            case WEST:
-                return 90f;
-            default:
-                return 0f;
-        }
-    }
 
     @Override
     public String toString() {
@@ -85,31 +59,6 @@ public class Util {
         }
         multiBlockStructure = MultiBlockStructure.create(inputStream, structureName, false, true);
         return multiBlockStructure;
-    }
-
-    public MultiBlockStructure getMultiBlockStructure() {
-        if (multiBlockStructure == null) {
-            Bukkit.getLogger().info("Failed to load structure" +
-                    " due to not existing!");
-            return null;
-        }
-        return multiBlockStructure;
-    }
-
-    public void saveToStructureMap(String structureName, MultiBlockStructure multiBlockStructure) {
-        structureMap.putIfAbsent(structureName, multiBlockStructure);
-    }
-
-    public Map<String, MultiBlockStructure> getStructureMap() {
-        return structureMap;
-    }
-
-    public static ItemStack getPlayerSkull() {
-        // Got this base64 string from minecraft-heads.com
-        String base64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L" +
-                "3RleHR1cmUvNTIyODRlMTMyYmZkNjU5YmM2YWRhNDk3YzRmYTMwOTRjZDkzMjMxYTZiNTA1YTEyY2U3Y2Q1MTM1YmE4ZmY5MyJ9fX0=";
-
-        return SkullCreator.itemFromBase64(base64);
     }
 
     public void setMainFlags(IWrappedRegion region) {
