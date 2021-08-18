@@ -56,14 +56,11 @@ import java.util.Map;
 @CommandAlias("privatemines|privatemine|pm|pmine")
 public class PrivateMinesCommand extends BaseCommand {
 
-    private static final String UTIL_DIRECTORY = "plugins/PrivateMinesRewrite/util/";
     private static final String MINE_DIRECTORY = "plugins/PrivateMinesRewrite/mines/";
-    private static final String SPAWN_LOCATION_STRING = "spawnLocation";
     private static final String WHITELISTED_PLAYERS_STRING = "whitelistedPlayers";
     private static final String BANNED_PLAYERS_STRING = "bannedPlayers";
     private static final String PRIORITY_PLAYERS_STRING = "priorityPlayers";
     private static final String COOWNER_STRING = "coowner";
-    private static final String BLOCKS_STRING = "blocks";
 
     Util util;
 
