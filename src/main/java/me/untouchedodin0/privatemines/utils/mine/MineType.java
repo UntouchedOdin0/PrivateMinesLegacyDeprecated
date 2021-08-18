@@ -54,6 +54,7 @@ public class MineType {
     Mine mine;
     Material wool = Material.valueOf(RedLib.MID_VERSION >= 13 ? "WHITE_WOOL" : "WOOL");
     private Structure structure;
+
     @ConfigValue
     private Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
 
