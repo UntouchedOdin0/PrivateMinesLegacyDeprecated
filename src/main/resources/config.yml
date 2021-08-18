@@ -18,15 +18,17 @@ materials:
 
 mineTypes:
   Type1:
+    name: "one"
     file: structure.dat
     tier: 1
     blocks:
       STONE: 1.0
       COBBLESTONE: 2.0
-#  Type2:
-#    file: structure2.dat
-#    tier: 2
-#    blocks:
-#      STONE: 1.0
-#      COBBLESTONE: 2.0
-#      EMERALD_BLOCK: 0.3
+  Type2:
+    name: "two"
+    file: structure2.dat
+    tier: 2
+    blocks:
+      STONE: 1.0
+      COBBLESTONE: 2.0
+      EMERALD_BLOCK: 0.3
