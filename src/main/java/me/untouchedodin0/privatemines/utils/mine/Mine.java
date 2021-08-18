@@ -18,6 +18,7 @@ public class Mine {
     Location spawnLoc;
     Location npcLoc;
     CuboidRegion cuboidRegion;
+    CuboidRegion structureCuboid;
     UUID mineOwner;
     MineType type;
     Structure structure;
@@ -33,7 +34,7 @@ public class Mine {
         this.mineLoopUtil = new MineLoopUtil();
         this.structure = structure;
         this.type = mineType;
-
+        this.structureCuboid = structure.getRegion();
         this.spawnLocation = type.getSpawnLocation();
         this.npcLocation = type.getNpcLocation();
         this.cornerLocations = type.getCornerLocations();
@@ -84,7 +85,6 @@ public class Mine {
     public void setMineOwner(UUID mineOwner) {
         this.mineOwner = mineOwner;
     }
-
 
     public Structure getStructure() {
         return structure;
