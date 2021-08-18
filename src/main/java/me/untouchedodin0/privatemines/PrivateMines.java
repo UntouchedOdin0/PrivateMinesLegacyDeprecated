@@ -143,7 +143,8 @@ public class PrivateMines extends JavaPlugin {
         }
 
         String minesCountString = String.valueOf(minesCount);
-        Bukkit.getLogger().info("Found a total of {0} mines!".replace("{0}", minesCountString));
+        String mineCountLoggerMessage = String.format("Found a total of %s mines!", minesCountString);
+        Bukkit.getLogger().info(mineCountLoggerMessage);
         Bukkit.getLogger().info("Registering the command...");
 
         new CommandParser(this.getResource("command.rdcml")).parse().register("privatemines",
@@ -163,8 +164,8 @@ public class PrivateMines extends JavaPlugin {
                 Bukkit.getLogger().info("Mines folder was successfully created!");
             }
         }
-
-        Bukkit.getLogger().info("Setting the mine fill speed to " + mineFillSpeed);
+        String mineSpeedMessage = String.format("Setting the mine fill speed to %s", mineFillSpeed);
+        Bukkit.getLogger().info(mineSpeedMessage);
         setMineFillSpeed(mineFillSpeed);
 
         if (mineStorage.getMineFiles() == null) {
