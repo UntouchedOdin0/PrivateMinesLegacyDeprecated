@@ -121,7 +121,9 @@ public class Mine {
 
     public void createNPC(Player player, String name) {
         if (npcLocation != null) {
-            Bukkit.getLogger().info("Creating a npc for " + player.getName() + " npc name: " + name);
+            String playerName = player.getName();
+            String loggermessage = String.format("Creating a npc named %s for playing %s", name, playerName);
+            Bukkit.getLogger().info(loggermessage);
         }
     }
 }
