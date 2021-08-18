@@ -37,12 +37,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
 import redempt.redlib.region.CuboidRegion;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
 public class MineFactory {
@@ -56,7 +57,6 @@ public class MineFactory {
 
     PrivateMines privateMines;
     MineStorage mineStorage;
-    MultiBlockStructure multiBlockStructure;
     Structure old;
 
     CuboidRegion expandRegion;
@@ -67,6 +67,7 @@ public class MineFactory {
     Location nextLocation;
     MineWorldManager mineWorldManager;
     MineFillManager fillManager;
+    Path userFilePath;
     File userFile;
     File locationsFile;
     String playerID;
@@ -86,6 +87,7 @@ public class MineFactory {
 
     Mine mine;
     MineType mineType;
+
 
     public MineFactory(PrivateMines privateMines,
                        MineStorage storage,
@@ -142,14 +144,25 @@ public class MineFactory {
     }
 
     public void deleteMine(Player player) {
+        mine = mineStorage.getMine(player);
+        old = mine.getStructure();
         userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
-        mineConfig = YamlConfiguration.loadConfiguration(userFile);
-
-        old = multiBlockStructure.assumeAt(mineConfig.getSerializable(LOCATION_STRING, Location.class));
-        if (old != null) {
+        userFilePath = userFile.toPath();
+        if (userFile.exists() && old != null) {
             old.getRegion().forEachBlock(block -> block.setType(Material.AIR));
+            boolean deleted = false;
+            try {
+                deleted = Files.deleteIfExists(userFilePath);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            if (deleted) {
+                Bukkit.getLogger().info("Successfully deleted " + player.getName() + "'s Private Mine!");
+            }
         }
     }
+
+
 
     @SuppressWarnings("unused")
     public void expandMine(Player player) {
