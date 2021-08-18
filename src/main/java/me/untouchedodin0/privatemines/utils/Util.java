@@ -61,16 +61,17 @@ public class Util {
         return multiBlockStructure;
     }
 
+    @SuppressWarnings("unused")
     public void setMainFlags(IWrappedRegion region) {
-        final WorldGuardWrapper w = WorldGuardWrapper.getInstance();
+        final WorldGuardWrapper worldGuardWrapper = WorldGuardWrapper.getInstance();
         Stream.of(
-                w.getFlag("mob-spawning", WrappedState.class)
+                worldGuardWrapper.getFlag("mob-spawning", WrappedState.class)
         ).filter(Optional::isPresent)
                 .map(Optional::get)
                 .forEach(flag -> region.setFlag(flag, WrappedState.DENY));
         Stream.of(
-                w.getFlag("block-place", WrappedState.class),
-                w.getFlag("block-break", WrappedState.class)
+                worldGuardWrapper.getFlag("block-place", WrappedState.class),
+                worldGuardWrapper.getFlag("block-break", WrappedState.class)
         ).filter(Optional::isPresent)
                 .map(Optional::get)
                 .forEach(flag -> region.setFlag(flag, WrappedState.ALLOW));
