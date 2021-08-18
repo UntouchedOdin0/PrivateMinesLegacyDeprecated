@@ -47,15 +47,15 @@ public class MineType {
     private final MultiBlockStructure multiBlockStructure;
     private final PrivateMines privateMines;
     private final MineLoopUtil mineLoopUtil;
-
-    private Structure structure;
     private final WeightedRandom<Material> weightedRandom;
     private final int[][] cornerLocations;
     private final int[] spawnLocation;
     private final int[] npcLocation;
-
     Mine mine;
     Material wool = Material.valueOf(RedLib.MID_VERSION >= 13 ? "WHITE_WOOL" : "WOOL");
+    private Structure structure;
+    @ConfigValue
+    private Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
 
     public MineType(String name, MultiBlockStructure multiStructure, PrivateMines privateMines) {
         this.mineTypeName = name;
@@ -67,9 +67,6 @@ public class MineType {
         this.npcLocation = mineLoopUtil.findLocation(multiBlockStructure, wool);
         this.weightedRandom = new WeightedRandom<>();
     }
-
-    @ConfigValue
-    private Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
 
     public MineType getMineType() {
         return this;
@@ -92,8 +89,6 @@ public class MineType {
         this.structure = multiBlockStructure.build(location);
 
         getPrivateMines().getBlocks().forEach(weightedRandom::set);
-
-        Bukkit.getLogger().info("MineType build materials main class value: " + privateMines.getBlocks());
 
         mine = new Mine(structure, this);
 
