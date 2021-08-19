@@ -63,13 +63,17 @@ public class PrivateMines extends JavaPlugin {
     private static String mineFillSpeed = "BUKKIT";
 
     int minesCount;
+    int mineOrder = 1;
+
     File structureFolder = new File("plugins/PrivateMinesRewrite/structures/");
     File minesFolder = new File("plugins/PrivateMinesRewrite/mines/");
     File configFile;
     MultiBlockStructure multiBlockStructure;
-//    List<MineType> mineTypes = new ArrayList<>();
+    List<MineType> mineTypes = new ArrayList<>();
     List<MultiBlockStructure> multiBlockStructures = new ArrayList<>();
     Map<String, MineType> mineTypeMap = new HashMap<>();
+    Map<MineType, Integer> mineTypeOrder = new HashMap<>();
+
     private PrivateMines privateMine;
     private MineWorldManager mineManager;
     private StructureLoader structureLoader;
@@ -77,11 +81,9 @@ public class PrivateMines extends JavaPlugin {
 
     @ConfigValue
     private int resetDelay = 5;
-    @ConfigValue
-    private Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
 
     @ConfigValue
-    private Map<String, MineType> mineTypes = ConfigManager.map(MineType.class);
+    private Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
 
     public static String fileNameWithOutExt(String fileName) {
         return Optional.of(fileName.lastIndexOf(".")).filter(i -> i >= 0)
@@ -126,29 +128,31 @@ public class PrivateMines extends JavaPlugin {
         privateMine = this;
         loadStructureList(util, structureFolder.listFiles());
 
-        mineTypeMap.forEach(((name, mineType) ->
-                Bukkit.getLogger().info("Loading mine "
-                        + name
-                        +
-                        " with type " +
-                        mineType.getMineTypeName())));
-
-        Bukkit.getLogger().info("MINE TYPES = " + mineTypes);
-
-        mineTypes.forEach((s, mineType) -> {
-           Bukkit.getLogger().info("s: " + s);
-            Bukkit.getLogger().info("mineType: " + mineType);
-        });
-
-        /*
-        for (MultiBlockStructure structure : multiBlockStructures) {
-            structureLoader.loadStructure(structure);
-            MineType mineType = new MineType(structure.getName(), structure, this);
-            mineTypes.add(mineType);
-        }
-
         for (MineType type : mineTypes) {
             mineTypeMap.putIfAbsent(type.getStructureName(), type);
+            mineTypeOrder.putIfAbsent(type, mineOrder);
+            Bukkit.getLogger().info("mine type order: " + mineOrder);
+            mineOrder++;
+        }
+
+        mineTypeMap.forEach(((name, mineType) ->
+                Bukkit.getLogger().info("Loading mine " + name + " with type " + mineType)));
+        for (MultiBlockStructure structure : multiBlockStructures) {
+            structureLoader.loadStructure(structure);
+            MineType mineType = new MineType(structure.getName(), mineOrder, structure, this);
+            mineTypes.add(mineType);
+            Bukkit.getLogger().info("Added minetype "
+                    + mineType.getMineType()
+                    + " with order "
+                    + mineType.getMineOrder());
+        }
+
+        /*
+        for (MineType type : mineTypes) {
+            mineTypeMap.putIfAbsent(type.getStructureName(), type);
+            mineTypeOrder.putIfAbsent(type, mineOrder);
+            Bukkit.getLogger().info("mine type order: " + mineOrder);
+            mineOrder++;
         }
          */
         Bukkit.getLogger().info("Loading mines...");
@@ -231,9 +235,9 @@ public class PrivateMines extends JavaPlugin {
         return structureLoader;
     }
 
-//    public List<MineType> getMineTypes() {
-//        return mineTypes;
-//    }
+    public List<MineType> getMineTypes() {
+        return mineTypes;
+    }
 
     public Map<String, MineType> getMineTypeMap() {
         return mineTypeMap;
@@ -245,7 +249,11 @@ public class PrivateMines extends JavaPlugin {
             for (File file : structuresList) {
                 String name = file.getName().replace(".dat", "");
                 multiBlockStructure = util.loadStructure(file.getName(), file);
-                MineType mineType = new MineType();
+                MineType mineType = new MineType(
+                        name,
+                        mineOrder,
+                        multiBlockStructure,
+                        this);
                 mineTypeMap.putIfAbsent(name, mineType);
                 multiBlockStructures.add(multiBlockStructure);
             }
