@@ -31,70 +31,45 @@ import org.bukkit.Material;
 import redempt.redlib.RedLib;
 import redempt.redlib.configmanager.ConfigManager;
 import redempt.redlib.configmanager.annotations.ConfigMappable;
-import redempt.redlib.configmanager.annotations.ConfigPostInit;
 import redempt.redlib.configmanager.annotations.ConfigValue;
 import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.multiblock.Structure;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 @ConfigMappable
 public class MineType {
 
     private final String mineTypeName;
-
+    private final MultiBlockStructure multiBlockStructure;
     private final PrivateMines privateMines;
     private final MineLoopUtil mineLoopUtil;
     private final WeightedRandom<Material> weightedRandom;
+    private final int[][] cornerLocations;
+    private final int[] spawnLocation;
+    private final int[] npcLocation;
+    private final int mineOrder;
+
     Mine mine;
     Material wool = Material.valueOf(RedLib.MID_VERSION >= 13 ? "WHITE_WOOL" : "WOOL");
-    private int[][] cornerLocations;
-    private int[] spawnLocation;
-    private int[] npcLocation;
     private Structure structure;
-
-    @ConfigValue
-    private String name;
-
-    @ConfigValue
-    private String structureFile;
-
-    @ConfigValue
-    private int tier;
 
     @ConfigValue
     private Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
 
-    private MultiBlockStructure multiBlockStructure;
-
-    public MineType() {
+    public MineType(String name, Integer order, MultiBlockStructure multiStructure, PrivateMines privateMines) {
         this.mineTypeName = name;
+        this.mineOrder = order;
+        this.multiBlockStructure = multiStructure;
         this.mineLoopUtil = new MineLoopUtil();
-        this.weightedRandom = new WeightedRandom<>();
-        this.privateMines = getPrivateMines();
-    }
-
-    @ConfigPostInit
-    public void postInit() throws IOException {
-        Path path = privateMines.getDataFolder().toPath().resolve(structureFile);
-        String contents = Files.lines(path).collect(Collectors.joining());
-        Files.lines(path).collect(Collectors.joining());
-        this.multiBlockStructure = MultiBlockStructure.create(
-                contents,
-                structureFile,
-                false,
-                true);
-
+        this.privateMines = privateMines;
         this.cornerLocations = mineLoopUtil.findCornerLocations(multiBlockStructure, Material.POWERED_RAIL);
         this.spawnLocation = mineLoopUtil.findLocation(multiBlockStructure, Material.CHEST);
         this.npcLocation = mineLoopUtil.findLocation(multiBlockStructure, wool);
+        this.weightedRandom = new WeightedRandom<>();
     }
 
     public MineType getMineType() {
@@ -167,5 +142,9 @@ public class MineType {
 
     public int[] getSpawnLocation() {
         return spawnLocation;
+    }
+
+    public int getMineOrder() {
+        return mineOrder;
     }
 }
