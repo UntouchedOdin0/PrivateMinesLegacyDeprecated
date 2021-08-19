@@ -63,13 +63,15 @@ public class PrivateMines extends JavaPlugin {
     private static String mineFillSpeed = "BUKKIT";
 
     int minesCount;
-    int mineOrder = 1;
+    int mineOrder = 0;
 
     File structureFolder = new File("plugins/PrivateMinesRewrite/structures/");
     File minesFolder = new File("plugins/PrivateMinesRewrite/mines/");
     File configFile;
     MultiBlockStructure multiBlockStructure;
+
     List<MineType> mineTypes = new ArrayList<>();
+
     List<MultiBlockStructure> multiBlockStructures = new ArrayList<>();
     Map<String, MineType> mineTypeMap = new HashMap<>();
     Map<MineType, Integer> mineTypeOrder = new HashMap<>();
@@ -78,6 +80,7 @@ public class PrivateMines extends JavaPlugin {
     private MineWorldManager mineManager;
     private StructureLoader structureLoader;
     private ConfigManager configManager;
+    private List<String> mineLevels = new ArrayList<>();
 
     @ConfigValue
     private int resetDelay = 5;
@@ -126,35 +129,19 @@ public class PrivateMines extends JavaPlugin {
         createMinesFolder();
         createStructureFolder();
         privateMine = this;
+
+        // This populates the mineTypeMap
         loadStructureList(util, structureFolder.listFiles());
 
         for (MineType type : mineTypes) {
-            mineTypeMap.putIfAbsent(type.getStructureName(), type);
             mineTypeOrder.putIfAbsent(type, mineOrder);
-            Bukkit.getLogger().info("mine type order: " + mineOrder);
-            mineOrder++;
         }
 
-        mineTypeMap.forEach(((name, mineType) ->
-                Bukkit.getLogger().info("Loading mine " + name + " with type " + mineType)));
-        for (MultiBlockStructure structure : multiBlockStructures) {
-            structureLoader.loadStructure(structure);
-            MineType mineType = new MineType(structure.getName(), mineOrder, structure, this);
-            mineTypes.add(mineType);
-            Bukkit.getLogger().info("Added minetype "
-                    + mineType.getMineType()
-                    + " with order "
-                    + mineType.getMineOrder());
-        }
+        mineLevels.addAll(mineTypeMap.keySet());
+        Bukkit.getLogger().info("mine levels: " + mineLevels);
+        Collections.sort(mineLevels);
+        Bukkit.getLogger().info("mine levels sorted: " + mineLevels);
 
-        /*
-        for (MineType type : mineTypes) {
-            mineTypeMap.putIfAbsent(type.getStructureName(), type);
-            mineTypeOrder.putIfAbsent(type, mineOrder);
-            Bukkit.getLogger().info("mine type order: " + mineOrder);
-            mineOrder++;
-        }
-         */
         Bukkit.getLogger().info("Loading mines...");
         if (!minesFolder.exists()) {
             createMinesFolder();
@@ -309,5 +296,9 @@ public class PrivateMines extends JavaPlugin {
     @SuppressWarnings("unused")
     public ConfigManager getConfigManager() {
         return configManager;
+    }
+
+    public Map<MineType, Integer> getMineTypeOrder() {
+        return mineTypeOrder;
     }
 }

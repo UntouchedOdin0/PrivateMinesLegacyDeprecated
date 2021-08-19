@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.privateminesrewrite'
-version '2.1.7-2-SNAPSHOT' // Change this for the jar version
+version '2.1.8-SNAPSHOT' // Change this for the jar version
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
