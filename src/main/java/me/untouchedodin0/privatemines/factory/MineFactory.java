@@ -87,8 +87,7 @@ public class MineFactory {
 
     Mine mine;
     MineType mineType;
-
-
+    
     public MineFactory(PrivateMines privateMines,
                        MineStorage storage,
                        MineFillManager fillManager,
@@ -108,7 +107,6 @@ public class MineFactory {
     }
 
     public void createMine(Player player) {
-
         fileName = privateMines.getConfig().getString("structureFile");
         mineFile = new File("plugins/PrivateMinesRewrite/structures/" + fileName + ".dat");
         userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
@@ -167,6 +165,9 @@ public class MineFactory {
         }
     }
 
+    public void upgradeMine(Player player) {
+
+    }
 
     @SuppressWarnings("unused")
     public void expandMine(Player player) {
