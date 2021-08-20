@@ -23,4 +23,10 @@ privatemine,privatemines,pmine {
         help /pmine resetother <name> - Resets a player mine
         permission privatemines.reset.other
    }
+
+   upgrade player:target{
+        hook upgrade
+        help /pmine upgrade - Test Command to upgrade mines
+        permission private.mines.upgrade
+   }
 }
