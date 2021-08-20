@@ -51,17 +51,12 @@ public class MineType {
     private final int[][] cornerLocations;
     private final int[] spawnLocation;
     private final int[] npcLocation;
-//    private final int mineOrder;
 
-    Mine mine;
-    Material wool = Material.valueOf(RedLib.MID_VERSION >= 13 ? "WHITE_WOOL" : "WOOL");
+    private static final Material wool = Material.valueOf(RedLib.MID_VERSION >= 13 ? "WHITE_WOOL" : "WOOL");
     private Structure structure;
 
     @ConfigValue
     private Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
-
-    @ConfigValue
-    private int tier;
 
     public MineType(String name, MultiBlockStructure multiStructure, PrivateMines privateMines) {
         this.mineTypeName = name;
@@ -144,9 +139,5 @@ public class MineType {
 
     public int[] getSpawnLocation() {
         return spawnLocation;
-    }
-
-    public int getMineOrder() {
-        return tier;
     }
 }
