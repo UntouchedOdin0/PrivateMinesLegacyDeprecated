@@ -63,7 +63,6 @@ public class PrivateMines extends JavaPlugin {
     private static String mineFillSpeed = "BUKKIT";
 
     int minesCount;
-    int mineOrder = 0;
 
     File structureFolder = new File("plugins/PrivateMinesRewrite/structures/");
     File minesFolder = new File("plugins/PrivateMinesRewrite/mines/");
@@ -73,15 +72,14 @@ public class PrivateMines extends JavaPlugin {
     List<MineType> mineTypes = new ArrayList<>();
 
     List<MultiBlockStructure> multiBlockStructures = new ArrayList<>();
-    Map<String, MineType> mineTypeMap = new HashMap<>();
-    Map<MineType, Integer> mineTypeOrder = new HashMap<>();
+
+    @ConfigValue
+    Map<String, MineType> mineTypeMap = ConfigManager.map(MineType.class);
 
     private PrivateMines privateMine;
     private MineWorldManager mineManager;
     private StructureLoader structureLoader;
     private ConfigManager configManager;
-    private List<String> mineLevels = new ArrayList<>();
-    private List<String> mineLevelsSorted = new ArrayList<>();
 
     @ConfigValue
     private int resetDelay = 5;
@@ -134,6 +132,7 @@ public class PrivateMines extends JavaPlugin {
         // This populates the mineTypeMap
         loadStructureList(util, structureFolder.listFiles());
 
+        /*
         mineTypeMap.forEach((s, mineType) -> {
             Bukkit.getLogger().info(" Mine Type " + mineType.getMineTypeName()
                     + " is at order " + mineType.getMineOrder());
@@ -143,6 +142,7 @@ public class PrivateMines extends JavaPlugin {
         Collections.sort(mineLevels);
         Bukkit.getLogger().info("mine levels sorted: " + mineLevels);
         mineLevelsSorted = mineLevels;
+         */
 
         Bukkit.getLogger().info("Loading mines...");
         if (!minesFolder.exists()) {
@@ -297,13 +297,5 @@ public class PrivateMines extends JavaPlugin {
     @SuppressWarnings("unused")
     public ConfigManager getConfigManager() {
         return configManager;
-    }
-
-    public Map<MineType, Integer> getMineTypeOrder() {
-        return mineTypeOrder;
-    }
-
-    public List<String> getMineLevelsSorted() {
-        return mineLevelsSorted;
     }
 }
