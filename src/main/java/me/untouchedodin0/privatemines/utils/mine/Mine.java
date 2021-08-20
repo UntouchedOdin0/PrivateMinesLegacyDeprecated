@@ -120,10 +120,10 @@ public class Mine {
     }
 
     public void upgradeMine() {
-        int current = type.getMineOrder();
-        Bukkit.broadcastMessage("current: " + current);
-        current++;
-        Bukkit.broadcastMessage("new current: " + current);
+//        int current = type.getMineOrder();
+//        Bukkit.broadcastMessage("current: " + current);
+//        current++;
+//        Bukkit.broadcastMessage("new current: " + current);
     }
 
     public void createNPC(Player player, String name) {
@@ -134,7 +134,7 @@ public class Mine {
         }
     }
 
-    public int getMineTier() {
-        return type.getMineOrder();
-    }
+//    public int getMineTier() {
+//        return type.getMineOrder();
+//    }
 }
