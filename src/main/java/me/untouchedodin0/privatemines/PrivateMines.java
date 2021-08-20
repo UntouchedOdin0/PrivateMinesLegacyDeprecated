@@ -101,7 +101,9 @@ public class PrivateMines extends JavaPlugin {
         if (!configFile.exists()) {
             saveDefaultConfig();
         }
-        configManager = new ConfigManager(this).addConverter(UUID.class, UUID::fromString, UUID::toString)
+        configManager = new ConfigManager(this)
+                .addConverter(MultiBlockStructure.class, util::loadStructure, MultiBlockStructure::getName)
+                .addConverter(UUID.class, UUID::fromString, UUID::toString)
                 .register(this).load();
 
         saveResource("messages.txt", false);

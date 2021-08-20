@@ -23,6 +23,7 @@
 package me.untouchedodin0.privatemines.utils;
 
 import dev.dbassett.skullcreator.SkullCreator;
+import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.utils.mine.MineType;
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
@@ -91,17 +92,12 @@ public class Util {
             Bukkit.broadcastMessage("Failed to load structure," +
                     " inputStream was null!");
         }
-        multiBlockStructure = MultiBlockStructure.create(inputStream, structureName, false, true);
-        return multiBlockStructure;
+        return MultiBlockStructure.create(inputStream, structureName, false, true);
     }
 
-    public MultiBlockStructure getMultiBlockStructure() {
-        if (multiBlockStructure == null) {
-            Bukkit.getLogger().info("Failed to load structure" +
-                    " due to not existing!");
-            return null;
-        }
-        return multiBlockStructure;
+    public MultiBlockStructure loadStructure(String structureName) {
+        File file = new File(PrivateMines.getPlugin(PrivateMines.class).getDataFolder(), "structures/" + structureName);
+        return loadStructure(structureName, file);
     }
 
     public void saveToStructureMap(String structureName, MultiBlockStructure multiBlockStructure) {
