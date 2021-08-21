@@ -23,11 +23,13 @@
 package me.untouchedodin0.privatemines.utils;
 
 import dev.dbassett.skullcreator.SkullCreator;
+import me.byteful.lib.blockedit.BlockEditAPI;
 import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.utils.mine.MineType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.flag.WrappedState;
@@ -126,6 +128,9 @@ public class Util {
     }
 
     public void setAirBlocks(Region region) {
-        region.forEachBlock(block -> block.setType(Material.AIR));
+        region.forEachBlock(block -> {
+            BlockState state = block.getState();
+            BlockEditAPI.setBlock(block, Material.AIR, state.getData(), false);
+        });
     }
 }
