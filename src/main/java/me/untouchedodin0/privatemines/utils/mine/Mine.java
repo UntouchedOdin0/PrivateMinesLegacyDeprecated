@@ -1,6 +1,5 @@
 package me.untouchedodin0.privatemines.utils.mine;
 
-import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,7 +21,6 @@ public class Mine {
     UUID mineOwner;
     MineType type;
     Structure structure;
-    MineLoopUtil mineLoopUtil;
     int[][] cornerLocations;
     int[] spawnLocation;
     int[] npcLocation;
@@ -31,7 +29,6 @@ public class Mine {
     private WeightedRandom<Material> weightedRandom;
 
     public Mine(Structure structure, MineType mineType) {
-        this.mineLoopUtil = new MineLoopUtil();
         this.structure = structure;
         this.type = mineType;
         this.structureCuboid = structure.getRegion();
@@ -101,6 +98,10 @@ public class Mine {
                 .getLocation();
     }
 
+    public CuboidRegion getCuboidRegion() {
+        return cuboidRegion;
+    }
+
     public int[] getSpawnLocationRelative() {
         return spawnLocation;
     }
@@ -120,10 +121,15 @@ public class Mine {
     }
 
     public void upgradeMine() {
+
 //        int current = type.getMineOrder();
 //        Bukkit.broadcastMessage("current: " + current);
 //        current++;
 //        Bukkit.broadcastMessage("new current: " + current);
+    }
+
+    public void setMineType(MineType mineType) {
+        this.type = mineType;
     }
 
     public void createNPC(Player player, String name) {
