@@ -168,6 +168,8 @@ public class MineFactory {
         }
     }
 
+    // Credit goes to Lars for helping with this
+
     public void upgradeMine(Player player) {
 
         if (!mineStorage.hasMine(player)) {
@@ -197,6 +199,7 @@ public class MineFactory {
         }
     }
 
+    // Credit goes to Larsk for helping with this
 
     @Nullable
     public MineType getNextMineType(MineType current) {
