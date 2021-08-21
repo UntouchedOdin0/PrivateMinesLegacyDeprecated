@@ -10,7 +10,6 @@ import redempt.redlib.region.CuboidRegion;
 
 import java.util.UUID;
 
-@SuppressWarnings("unused")
 public class Mine {
 
     Location mineLocation;
