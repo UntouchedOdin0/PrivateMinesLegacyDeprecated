@@ -210,7 +210,9 @@ public class MineFactory {
             next = iterator.next().getValue();
         }
         if (!iterator.hasNext()) {
-            return null;
+            Bukkit.getLogger().info("Failed to find a mine type after the current, setting type back to "
+                    + current.getMineTypeName());
+            return current;
         }
         return iterator.next().getValue();
     }
