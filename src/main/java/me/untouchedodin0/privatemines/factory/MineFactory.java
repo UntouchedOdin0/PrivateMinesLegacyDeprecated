@@ -190,14 +190,14 @@ public class MineFactory {
 
         // set the new mine type
 
-        currentMine.setMineType(nextMineType);
-
-        // build mine with the next MineType
-
         if (nextMineType != null) {
+            currentMine.setMineType(nextMineType);
+            // build mine with the next MineType
             nextMineType.build(currentLocation, playerUUID);
+            currentMine.resetMine();
         }
     }
+
 
     // Credit goes to Larsk for helping with this
 
