@@ -26,13 +26,13 @@ import dev.dbassett.skullcreator.SkullCreator;
 import me.untouchedodin0.privatemines.PrivateMines;
 import me.untouchedodin0.privatemines.utils.mine.MineType;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.flag.WrappedState;
 import org.codemc.worldguardwrapper.region.IWrappedRegion;
 import redempt.redlib.multiblock.MultiBlockStructure;
-import redempt.redlib.region.CuboidRegion;
 import redempt.redlib.region.Region;
 
 import java.io.File;
