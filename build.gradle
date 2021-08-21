@@ -56,7 +56,7 @@ dependencies {
     compileOnly 'me.clip:placeholderapi:2.10.10'
 //    compileOnly 'me.byteful.lib:blockeditapi:1.0.3'
 
-    compileOnly 'org.codemc.worldguardwrapper:worldguardwrapper:1.1.6-SNAPSHOT'
+    compileOnly 'org.codemc.worldguardwrapper:worldguardwrapper:1.2.0-SNAPSHOT'
 
     compile files('libs/blockeditapi-1.0.3.jar')
 //    compile files('libs/RedLib.jar')
