@@ -87,7 +87,7 @@ public class MineFactory {
 
     Mine mine;
     MineType mineType;
-    
+
     public MineFactory(PrivateMines privateMines,
                        MineStorage storage,
                        MineFillManager fillManager,
