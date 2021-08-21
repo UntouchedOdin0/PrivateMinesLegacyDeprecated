@@ -37,6 +37,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 import redempt.redlib.multiblock.Structure;
 import redempt.redlib.region.CuboidRegion;
 
@@ -44,7 +45,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 
 public class MineFactory {
 
@@ -167,9 +170,48 @@ public class MineFactory {
 
     public void upgradeMine(Player player) {
 
+        if (!mineStorage.hasMine(player)) {
+            return;
+        }
+
+        // get current mine from player
+        Mine currentMine = mineStorage.getMine(player);
+        Location currentLocation = currentMine.getMineLocation();
+        UUID playerUUID = player.getUniqueId();
+
+        // delete current mine
+        util.setAirBlocks(currentMine.getCuboidRegion());
+
+        // get next mineType
+        MineType currentMineType = currentMine.getType();
+        MineType nextMineType = getNextMineType(currentMineType);
+
+        // set the new mine type
+
+        currentMine.setMineType(nextMineType);
+
+        // build mine with the next MineType
+
+        if (nextMineType != null) {
+            nextMineType.build(currentLocation, playerUUID);
+        }
     }
 
-    @SuppressWarnings("unused")
+
+    @Nullable
+    public MineType getNextMineType(MineType current) {
+        Iterator<Map.Entry<String, MineType>> iterator = this.mineTypes.entrySet().iterator();
+
+        MineType next = null;
+        while (iterator.hasNext() && next != current) {
+            next = iterator.next().getValue();
+        }
+        if (!iterator.hasNext()) {
+            return null;
+        }
+        return iterator.next().getValue();
+    }
+
     public void expandMine(Player player) {
         userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
 
