@@ -98,7 +98,7 @@ public class MineType {
 
         getPrivateMines().getBlocks().forEach(weightedRandom::set);
 
-        mine = new Mine(structure, this);
+        Mine mine = new Mine(structure, this);
 
         mine.setMineLocation(location);
         mine.setMineOwner(owner);
