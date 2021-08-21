@@ -82,6 +82,8 @@ public class MineType {
         return multiBlockStructure.getName();
     }
 
+    // i don't think it's needed here is it?
+
     public Mine build(Location location, UUID owner) {
         long startTime = System.currentTimeMillis();
 
