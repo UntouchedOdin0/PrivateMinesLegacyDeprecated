@@ -181,12 +181,16 @@ public class MineFactory {
         Location currentLocation = currentMine.getMineLocation();
         UUID playerUUID = player.getUniqueId();
 
-        // delete current mine
-        util.setAirBlocks(currentMine.getCuboidRegion());
-
         // get next mineType
         MineType currentMineType = currentMine.getType();
         MineType nextMineType = getNextMineType(currentMineType);
+
+        if (nextMineType == null) {
+            Bukkit.getLogger().info("You're at the highest mine type already!");
+        }
+
+        // delete current mine
+        util.setAirBlocks(currentMine.getCuboidRegion());
 
         // set the new mine type
 
