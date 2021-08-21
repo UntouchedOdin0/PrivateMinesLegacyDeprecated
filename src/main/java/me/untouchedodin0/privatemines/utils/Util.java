@@ -32,6 +32,8 @@ import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.flag.WrappedState;
 import org.codemc.worldguardwrapper.region.IWrappedRegion;
 import redempt.redlib.multiblock.MultiBlockStructure;
+import redempt.redlib.region.CuboidRegion;
+import redempt.redlib.region.Region;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -121,5 +123,9 @@ public class Util {
         ).filter(Optional::isPresent)
                 .map(Optional::get)
                 .forEach(flag -> region.setFlag(flag, WrappedState.ALLOW));
+    }
+
+    public void setAirBlocks(Region region) {
+        region.forEachBlock(block -> block.setType(Material.AIR));
     }
 }
