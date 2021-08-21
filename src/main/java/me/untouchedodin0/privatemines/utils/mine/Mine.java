@@ -1,8 +1,10 @@
 package me.untouchedodin0.privatemines.utils.mine;
 
+import me.byteful.lib.blockedit.BlockEditAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.multiblock.Structure;
@@ -116,7 +118,10 @@ public class Mine {
     }
 
     public void resetMine() {
-        cuboidRegion.forEachBlock(block -> block.setType(getWeightedRandom().roll()));
+        cuboidRegion.forEachBlock(block -> {
+            BlockState state = block.getState();
+            BlockEditAPI.setBlock(block, getWeightedRandom().roll(), state.getData(), false);
+        });
     }
 
     public void upgradeMine() {
