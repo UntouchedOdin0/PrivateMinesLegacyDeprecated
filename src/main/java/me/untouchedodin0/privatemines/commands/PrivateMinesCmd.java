@@ -76,7 +76,8 @@ public class PrivateMinesCmd {
             } else {
                 mine = mineStorage.getMine(target);
             }
-            mine.upgradeMine();
+            mineFactory.upgradeMine(target.getPlayer());
+//            mine.upgradeMine();
         }
     }
 }
