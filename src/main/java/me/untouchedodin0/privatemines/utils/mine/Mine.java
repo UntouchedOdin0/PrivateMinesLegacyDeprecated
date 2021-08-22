@@ -133,6 +133,10 @@ public class Mine {
     }
 
     public void setMineType(MineType mineType) {
+        if (this.type == mineType) {
+            Bukkit.broadcastMessage("Can't set minetype to the same type!");
+            return;
+        }
         this.type = mineType;
     }
 

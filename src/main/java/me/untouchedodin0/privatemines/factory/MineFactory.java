@@ -185,8 +185,9 @@ public class MineFactory {
         MineType currentMineType = currentMine.getType();
         MineType nextMineType = getNextMineType(currentMineType);
 
-        if (nextMineType == null) {
+        if (nextMineType == currentMineType) {
             Bukkit.getLogger().info("You're at the highest mine type already!");
+            return;
         }
 
         // delete current mine
@@ -213,6 +214,7 @@ public class MineFactory {
         while (iterator.hasNext() && next != current) {
             next = iterator.next().getValue();
         }
+
         if (!iterator.hasNext()) {
             Bukkit.getLogger().info("Failed to find a mine type after the current, setting type back to "
                     + current.getMineTypeName());
