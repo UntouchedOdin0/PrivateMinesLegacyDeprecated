@@ -22,15 +22,11 @@
 
 package me.untouchedodin0.privatemines.utils;
 
-import dev.dbassett.skullcreator.SkullCreator;
 import me.byteful.lib.blockedit.BlockEditAPI;
 import me.untouchedodin0.privatemines.PrivateMines;
-import me.untouchedodin0.privatemines.utils.mine.MineType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.inventory.ItemStack;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.flag.WrappedState;
 import org.codemc.worldguardwrapper.region.IWrappedRegion;
@@ -41,42 +37,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static org.bukkit.plugin.java.JavaPlugin.getPlugin;
+
 public class Util {
-
-    MultiBlockStructure multiBlockStructure;
-    File[] mines = new File("plugins/PrivateMinesRewrite/mines/").listFiles();
-    Map<String, MultiBlockStructure> structureMap = new HashMap<>();
-    Map<String, MineType> mineTypes;
-
-    // stops it from saying the class is empty.
-
-    public static float getYaw(BlockFace blockFace) {
-        switch (blockFace) {
-            case NORTH:
-                return 180f;
-            case EAST:
-                return -90f;
-            case SOUTH:
-                return -180f;
-            case WEST:
-                return 90f;
-            default:
-                return 0f;
-        }
-    }
-
-    public static ItemStack getPlayerSkull() {
-        // Got this base64 string from minecraft-heads.com
-        String base64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L" +
-                "3RleHR1cmUvNTIyODRlMTMyYmZkNjU5YmM2YWRhNDk3YzRmYTMwOTRjZDkzMjMxYTZiNTA1YTEyY2U3Y2Q1MTM1YmE4ZmY5MyJ9fX0=";
-
-        return SkullCreator.itemFromBase64(base64);
-    }
 
     @Override
     public String toString() {
@@ -100,18 +66,11 @@ public class Util {
     }
 
     public MultiBlockStructure loadStructure(String structureName) {
-        File file = new File(PrivateMines.getPlugin(PrivateMines.class).getDataFolder(), "structures/" + structureName);
+        File file = new File(getPlugin(PrivateMines.class).getDataFolder(), "structures/" + structureName);
         return loadStructure(structureName, file);
     }
 
-    public void saveToStructureMap(String structureName, MultiBlockStructure multiBlockStructure) {
-        structureMap.putIfAbsent(structureName, multiBlockStructure);
-    }
-
-    public Map<String, MultiBlockStructure> getStructureMap() {
-        return structureMap;
-    }
-
+    @SuppressWarnings("unused")
     public void setMainFlags(IWrappedRegion region) {
         final WorldGuardWrapper w = WorldGuardWrapper.getInstance();
         Stream.of(
