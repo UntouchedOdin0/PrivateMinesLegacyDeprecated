@@ -39,7 +39,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import redempt.redlib.multiblock.Structure;
-import redempt.redlib.region.CuboidRegion;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,8 +52,6 @@ public class MineFactory {
 
     private static final String UTIL_DIRECTORY = "plugins/PrivateMinesRewrite/util/";
     private static final String MINE_DIRECTORY = "plugins/PrivateMinesRewrite/mines/";
-    private static final String CORNER_1_STRING = "Corner1";
-    private static final String CORNER_2_STRING = "Corner2";
     private static final String SPAWN_LOCATION_STRING = "spawnLocation";
     private static final String LOCATION_STRING = "mine.location";
 
@@ -62,11 +59,6 @@ public class MineFactory {
     MineStorage mineStorage;
     Structure old;
 
-    CuboidRegion expandRegion;
-    CuboidRegion expandRegionBedrock;
-
-    Location start;
-    Location end;
     Location nextLocation;
     MineWorldManager mineWorldManager;
     MineFillManager fillManager;
@@ -219,40 +211,6 @@ public class MineFactory {
             return current;
         }
         return iterator.next().getValue();
-    }
-
-    public void expandMine(Player player) {
-        userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
-
-        if (!userFile.exists()) {
-            privateMines.getLogger().warning("Failed to upgrade " + player.getName() + "'s mine due to them not owning one");
-            return;
-        }
-        mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        start = mineConfig.getSerializable(CORNER_1_STRING, Location.class);
-        end = mineConfig.getSerializable(CORNER_2_STRING, Location.class);
-
-        expandRegion = new CuboidRegion(start, end);
-        expandRegionBedrock = new CuboidRegion(start, end);
-
-        expandRegion.expand(1, 1, 0, 0, 1, 1);
-        expandRegionBedrock.expand(3, 2, 0, 2, 3, 2);
-
-        expandRegion.stream().forEach(block -> block.setType(Material.EMERALD_BLOCK));
-
-        expandRegionBedrock.stream().forEach(block -> {
-            if (block.isEmpty()) {
-                block.setType(Material.REDSTONE_BLOCK);
-            }
-        });
-
-        mineConfig.set(CORNER_1_STRING, expandRegion.getStart());
-        mineConfig.set(CORNER_2_STRING, expandRegion.getEnd());
-        try {
-            mineConfig.save(userFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
 
