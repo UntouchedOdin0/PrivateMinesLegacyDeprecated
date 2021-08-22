@@ -134,8 +134,9 @@ public class Mine {
 
     public void setMineType(MineType mineType) {
         if (this.type == mineType) {
-            Bukkit.broadcastMessage("Can't set minetype to the same type!");
-            return;
+            this.type = getType();
+//            Bukkit.broadcastMessage("Can't set minetype to the same type!");
+            throw new IllegalStateException("Can't set minetype to the same type!");
         }
         this.type = mineType;
     }

@@ -34,7 +34,6 @@ import me.untouchedodin0.privatemines.utils.mine.Mine;
 import me.untouchedodin0.privatemines.utils.mine.MineType;
 import me.untouchedodin0.privatemines.utils.mine.util.ExpandingMineUtil;
 import me.untouchedodin0.privatemines.utils.mine.util.MineUpgradeUtil;
-import me.untouchedodin0.privatemines.utils.queue.MineQueueSystem;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
@@ -93,7 +92,6 @@ public class PrivateMinesCommand extends BaseCommand {
     String playerID;
     MainMenuGui mainMenuGui;
     MineWorldManager mineWorldManager;
-    MineQueueSystem mineQueueSystem;
     int queueSlot;
     Map<String, MineType> mineTypeMap;
     Mine mine;
@@ -112,7 +110,6 @@ public class PrivateMinesCommand extends BaseCommand {
         this.mineWorldManager = new MineWorldManager();
         this.mineUpgradeUtil = new MineUpgradeUtil();
         this.expandingMineUtil = new ExpandingMineUtil();
-        this.mineQueueSystem = new MineQueueSystem();
     }
 
     @Default

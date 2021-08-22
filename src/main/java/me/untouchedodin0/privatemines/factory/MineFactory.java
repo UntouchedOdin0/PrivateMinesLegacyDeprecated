@@ -39,6 +39,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import redempt.redlib.multiblock.Structure;
+import redempt.redlib.region.CuboidRegion;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,6 +53,8 @@ public class MineFactory {
 
     private static final String UTIL_DIRECTORY = "plugins/PrivateMinesRewrite/util/";
     private static final String MINE_DIRECTORY = "plugins/PrivateMinesRewrite/mines/";
+    private static final String CORNER_1_STRING = "Corner1";
+    private static final String CORNER_2_STRING = "Corner2";
     private static final String SPAWN_LOCATION_STRING = "spawnLocation";
     private static final String LOCATION_STRING = "mine.location";
 
@@ -59,6 +62,11 @@ public class MineFactory {
     MineStorage mineStorage;
     Structure old;
 
+    CuboidRegion expandRegion;
+    CuboidRegion expandRegionBedrock;
+
+    Location start;
+    Location end;
     Location nextLocation;
     MineWorldManager mineWorldManager;
     MineFillManager fillManager;
@@ -177,9 +185,8 @@ public class MineFactory {
         MineType currentMineType = currentMine.getType();
         MineType nextMineType = getNextMineType(currentMineType);
 
-        if (nextMineType == currentMineType) {
+        if (nextMineType == null) {
             Bukkit.getLogger().info("You're at the highest mine type already!");
-            return;
         }
 
         // delete current mine
@@ -207,10 +214,10 @@ public class MineFactory {
             next = iterator.next().getValue();
         }
         if (!iterator.hasNext()) {
-            Bukkit.getLogger().info("Failed to find a mine type after the current");
+            Bukkit.getLogger().info("Failed to find a mine type after the current, setting type back to "
+                    + current.getMineTypeName());
             return current;
         }
         return iterator.next().getValue();
     }
 }
-
