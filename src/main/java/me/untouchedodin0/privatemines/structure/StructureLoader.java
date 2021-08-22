@@ -1,18 +1,12 @@
 package me.untouchedodin0.privatemines.structure;
 
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
-import redempt.redlib.multiblock.MultiBlockStructure;
 
 public class StructureLoader {
 
     MineLoopUtil mineLoopUtil;
-    MultiBlockStructure blockStructure;
 
     public StructureLoader(MineLoopUtil mineLoopUtil) {
         this.mineLoopUtil = mineLoopUtil;
-    }
-
-    public void loadStructure(MultiBlockStructure multiBlockStructure) {
-        this.blockStructure = multiBlockStructure;
     }
 }
