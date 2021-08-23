@@ -57,7 +57,6 @@ public class MineType {
 
     private static final Material wool = Material.valueOf(RedLib.MID_VERSION >= 13 ? "WHITE_WOOL" : "WOOL");
     private Structure structure;
-    private int structureInt;
     private final Callback callback;
 
     @ConfigValue
@@ -149,8 +148,7 @@ public class MineType {
 
         Mine mine = new Mine(structure, this);
 
-        this.structureInt =
-                multiBlockStructure.buildAsync(location, 5, callback.mineBuilt(mine)); //build(location);
+        int structureInt = multiBlockStructure.buildAsync(location, 5, callback.mineBuilt(mine)); //build(location);
 
         getPrivateMines().getBlocks().forEach(weightedRandom::set);
 
