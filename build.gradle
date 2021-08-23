@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'org.cadixdev.licenser' version '0.6.1'
     id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
@@ -64,6 +65,11 @@ dependencies {
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
     implementation "dev.triumphteam:triumph-gui:3.0.3" // Replace version here
     implementation "net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT"
+}
+
+license {
+    header = rootProject.file 'LICENSE'
+    include '**/*.java'
 }
 
 shadowJar {
