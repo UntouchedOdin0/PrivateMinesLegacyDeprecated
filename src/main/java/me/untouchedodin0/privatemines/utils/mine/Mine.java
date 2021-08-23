@@ -133,12 +133,13 @@ public class Mine {
     }
 
     public void setMineType(MineType mineType) {
-        if (this.type == mineType) {
-            this.type = getType();
-//            Bukkit.broadcastMessage("Can't set minetype to the same type!");
-            throw new IllegalStateException("Can't set minetype to the same type!");
+        if (mineType == type) {
+//            this.type = getType();
+//            resetMine();
+            Bukkit.getLogger().warning("Can't set minetype to the same type!");
+        } else {
+            this.type = mineType;
         }
-        this.type = mineType;
     }
 
     public void createNPC(Player player, String name) {

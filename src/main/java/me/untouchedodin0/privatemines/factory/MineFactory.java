@@ -185,20 +185,20 @@ public class MineFactory {
         MineType currentMineType = currentMine.getType();
         MineType nextMineType = getNextMineType(currentMineType);
 
-        if (nextMineType == null) {
-            Bukkit.getLogger().info("You're at the highest mine type already!");
-        }
+        if (nextMineType != null && nextMineType != currentMineType) {
 
-        // delete current mine
-        util.setAirBlocks(currentMine.getCuboidRegion());
+            // delete current mine
+            util.setAirBlocks(currentMine.getCuboidRegion());
 
-        // set the new mine type
+            // set the new mine type
 
-        if (nextMineType != null) {
             currentMine.setMineType(nextMineType);
             // build mine with the next MineType
             nextMineType.build(currentLocation, playerUUID);
             currentMine.resetMine();
+        } else {
+            currentMine.resetMine();
+            Bukkit.getLogger().info("Error while setting minetype, likely  same type!");
         }
     }
 
