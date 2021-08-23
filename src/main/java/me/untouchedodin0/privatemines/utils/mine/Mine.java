@@ -59,6 +59,10 @@ public class Mine {
         this.spawnLoc = spawnLocation;
     }
 
+    public Location getNpcLocation() {
+        return npcLoc;
+    }
+
     public void setNpcLocation(Location npcLocation) {
         npcLocation.getBlock().setType(Material.AIR);
         this.npcLoc = npcLocation;
