@@ -124,14 +124,6 @@ public class Mine {
         });
     }
 
-    public void upgradeMine() {
-
-//        int current = type.getMineOrder();
-//        Bukkit.broadcastMessage("current: " + current);
-//        current++;
-//        Bukkit.broadcastMessage("new current: " + current);
-    }
-
     public void setMineType(MineType mineType) {
         if (mineType == type) {
             Bukkit.getLogger().warning("Can't set minetype to the same type!");
@@ -147,8 +139,4 @@ public class Mine {
             Bukkit.getLogger().info(loggermessage);
         }
     }
-
-//    public int getMineTier() {
-//        return type.getMineOrder();
-//    }
 }
