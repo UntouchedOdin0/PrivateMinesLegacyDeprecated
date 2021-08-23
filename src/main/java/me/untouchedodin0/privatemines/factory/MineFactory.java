@@ -190,7 +190,7 @@ public class MineFactory {
             currentMine.resetMine();
         } else {
             currentMine.resetMine();
-            Bukkit.getLogger().info("Error while setting minetype, likely  same type!");
+            Bukkit.getLogger().info("Failed to upgrade mine anymore as it's at it's highest level");
         }
     }
 
