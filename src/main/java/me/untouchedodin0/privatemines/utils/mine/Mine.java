@@ -134,8 +134,6 @@ public class Mine {
 
     public void setMineType(MineType mineType) {
         if (mineType == type) {
-//            this.type = getType();
-//            resetMine();
             Bukkit.getLogger().warning("Can't set minetype to the same type!");
         } else {
             this.type = mineType;
