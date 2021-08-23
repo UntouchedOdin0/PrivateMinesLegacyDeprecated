@@ -55,54 +55,11 @@ public class PrivateMinesExpansion extends PlaceholderExpansion {
             placeholders.put("npclocation", mine.getNpcLocation().toString());
             placeholders.put("weightedrandom", mine.getWeightedRandom().toString());
             placeholders.put("cornerlocations", Arrays.toString(mine.getCornerLocations()));
-            placeholders.put("structure", mine.getType().getStructureName());
+            placeholders.put("owneruuid", mine.getMineOwner().toString());
+            placeholders.put("structure", mine.getStructure().getType().getName());
+            placeholders.put("cuboidregion", mine.getCuboidRegion().toString());
+            placeholders.put("npcrelative", Arrays.toString(mine.getNPCLocationRelative()));
         }
-
-        /*
-        switch (placeholder) {
-            case "owner":
-                if (mineStorage.hasMine(player.getPlayer())) {
-                    return "Yes";
-                } else {
-                    return "No";
-                }
-            case "location":
-                if (mine == null) {
-                    return playerDoesntOwnAMine;
-                } else {
-                    return mine.getMineLocation().toString();
-                }
-            case "spawnlocation":
-                if (mine == null) {
-                    return playerDoesntOwnAMine;
-                } else {
-                    return mine.getSpawnLocation().toString();
-                }
-            case "npclocation":
-                if (mine == null) {
-                    return playerDoesntOwnAMine;
-                } else {
-                    return mine.getNpcLocation().toString();
-                }
-            case "weightedrandom":
-                if (mine == null) {
-                    return playerDoesntOwnAMine;
-                } else {
-                    return mine.getWeightedRandom().toString();
-                }
-            case "cornerlocations":
-                return mine.getCornerLocations().toString();
-            case "structure":
-                if (mine == null) {
-                    return playerDoesntOwnAMine;
-                } else {
-                    return mine.getStructure().getType().getName();
-                }
-            default:
-                break;
-        }
-
-         */
-        return placeholder;
+        return placeholders.get(placeholder);
     }
 }
