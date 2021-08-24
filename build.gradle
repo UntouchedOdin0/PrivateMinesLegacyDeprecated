@@ -80,14 +80,6 @@ shadowJar {
 
 tasks.shadowJar.dependsOn tasks.licenseFormat
 
-tasks.register('buildAndMoveJar') {
-    doLast {
-        println 'Building and moving Jar...'
-        println 'Executing the shadowJar...'
-        shadowJar
-    }
-}
-
 test {
     useJUnitPlatform()
 }
