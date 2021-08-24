@@ -34,8 +34,6 @@ import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
 import me.untouchedodin0.privatemines.utils.mine.Mine;
 import me.untouchedodin0.privatemines.utils.mine.MineType;
-import me.untouchedodin0.privatemines.utils.mine.util.ExpandingMineUtil;
-import me.untouchedodin0.privatemines.utils.mine.util.MineUpgradeUtil;
 import me.untouchedodin0.privatemines.utils.storage.MineStorage;
 import me.untouchedodin0.privatemines.world.MineWorldManager;
 import org.bukkit.Bukkit;
@@ -84,8 +82,6 @@ public class PrivateMinesCommand extends BaseCommand {
     PrivateMines privateMines;
     MineStorage mineStorage;
     MineFactory mineFactory;
-    MineUpgradeUtil mineUpgradeUtil;
-    ExpandingMineUtil expandingMineUtil;
 
     File userFile;
     File locationsFile;
@@ -110,8 +106,6 @@ public class PrivateMinesCommand extends BaseCommand {
         this.mineFactory = mineFactory;
         this.mainMenuGui = new MainMenuGui(fillManager, mineStorage);
         this.mineWorldManager = new MineWorldManager();
-        this.mineUpgradeUtil = new MineUpgradeUtil();
-        this.expandingMineUtil = new ExpandingMineUtil();
     }
 
     @Default
@@ -285,7 +279,6 @@ public class PrivateMinesCommand extends BaseCommand {
     public void upgrade(Player p) {
         userFile = new File(MINE_DIRECTORY + p.getUniqueId() + ".yml");
         mineConfig = YamlConfiguration.loadConfiguration(userFile);
-        expandingMineUtil.expandMine(p, 1);
     }
 
     @Subcommand("upgrade")
@@ -301,9 +294,8 @@ public class PrivateMinesCommand extends BaseCommand {
 
             if (!userFile.exists()) {
                 p.sendMessage(ChatColor.RED + target.getPlayer().getName() + " doesn't own a private mine!");
-            } else {
-                expandingMineUtil.expandMine(p, 1);
             }
+
         }
     }
 
