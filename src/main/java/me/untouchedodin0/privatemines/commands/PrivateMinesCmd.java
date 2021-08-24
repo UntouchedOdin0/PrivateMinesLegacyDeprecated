@@ -104,4 +104,19 @@ public class PrivateMinesCmd {
 //            mine.upgradeMine();
         }
     }
+
+    @CommandHook("teleport")
+    public void teleport(CommandSender sender) {
+        Player player = (Player) sender;
+        if (sender != null) {
+            this.hasMine = mineStorage.hasMine(player);
+            if (!hasMine) {
+                sender.sendMessage("Target didn't own a mine!");
+                return;
+            } else {
+                mine = mineStorage.getMine(player);
+            }
+            mine.teleportToMine(player);
+        }
+    }
 }
