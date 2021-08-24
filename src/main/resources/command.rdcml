@@ -29,4 +29,10 @@ privatemine,privatemines,pmine {
         help /pmine upgrade - Test Command to upgrade mines
         permission private.mines.upgrade
    }
+
+   teleport {
+        hook teleport
+        help /pmine teleport - Teleport to your mine
+        permission private.mines.teleport
+   }
 }
