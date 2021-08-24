@@ -136,18 +136,6 @@ public class PrivateMines extends JavaPlugin {
         // This populates the mineTypeMap
         loadStructureList(util, structureFolder.listFiles());
 
-        /*
-        mineTypeMap.forEach((s, mineType) -> {
-            Bukkit.getLogger().info(" Mine Type " + mineType.getMineTypeName()
-                    + " is at order " + mineType.getMineOrder());
-        });
-        mineLevels.addAll(mineTypeMap.keySet());
-        Bukkit.getLogger().info("mine levels: " + mineLevels);
-        Collections.sort(mineLevels);
-        Bukkit.getLogger().info("mine levels sorted: " + mineLevels);
-        mineLevelsSorted = mineLevels;
-         */
-
         Bukkit.getLogger().info("Loading mines...");
         if (!minesFolder.exists()) {
             createMinesFolder();
