@@ -93,8 +93,6 @@ public class MineType {
         Consumer<Structure> mineBuilt(Mine mine);
     }
 
-    // i don't think it's needed here is it?
-
     public Mine build(Location location, UUID owner) {
         long startTime = System.currentTimeMillis();
 
