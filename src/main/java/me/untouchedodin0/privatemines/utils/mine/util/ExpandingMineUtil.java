@@ -63,6 +63,11 @@ public class ExpandingMineUtil {
 
     int currentSize = 1;
 
+    /**
+     * @deprecated  This is no longer needed, it should be removed soon
+     */
+
+    @Deprecated
     public void generateBedrock(CuboidRegion cuboidRegion, int amount) {
         currentSize = currentSize + amount;
         cuboidRegion = cuboidRegion.clone().expand(amount, amount, 0, amount, amount, amount);
@@ -73,6 +78,11 @@ public class ExpandingMineUtil {
         }
     }
 
+    /**
+     * @deprecated  This is no longer used it should be removed soon
+     */
+
+    @Deprecated
     public void fillCuboid(CuboidRegion cuboidRegion, Material material) {
         int xMin = Integer.min(cuboidRegion.getStart().getBlockX(), cuboidRegion.getEnd().getBlockX());
         int xMax = Integer.max(cuboidRegion.getStart().getBlockX(), cuboidRegion.getEnd().getBlockX());
@@ -90,6 +100,10 @@ public class ExpandingMineUtil {
             }
         }
     }
+
+    /**
+     * @deprecated  This is no longer used it should be removed soon
+     */
 
     public void expandMine(Player player) {
         userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
@@ -122,6 +136,10 @@ public class ExpandingMineUtil {
             e.printStackTrace();
         }
     }
+
+    /**
+     * @deprecated  This is no longer used it should be removed soon
+     */
 
     public void expandMine(Player player, int amount) {
         userFile = new File(MINE_DIRECTORY + player.getUniqueId() + ".yml");
