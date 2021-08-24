@@ -78,6 +78,8 @@ shadowJar {
     relocate('com.cryptomorin.xseries', 'me.untouchedodin0.xseries')
 }
 
+tasks.shadowJar.dependsOn tasks.licenseFormat
+
 tasks.register('buildAndMoveJar') {
     doLast {
         println 'Building and moving Jar...'
