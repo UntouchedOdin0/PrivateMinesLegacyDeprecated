@@ -39,6 +39,7 @@ public class PrivateMinesCmd {
     MineFactory mineFactory;
     Mine mine;
     boolean hasMine;
+    String targetDidntOwnAMine = "Target didn't own a mine!";
 
     public PrivateMinesCmd(MineStorage mineStorage, MineFactory mineFactory) {
         this.mineStorage = mineStorage;
@@ -67,7 +68,7 @@ public class PrivateMinesCmd {
         if (sender != null) {
             this.hasMine = mineStorage.hasMine(player);
             if (!hasMine) {
-                sender.sendMessage("Target didn't own a mine!");
+                sender.sendMessage(targetDidntOwnAMine);
                 return;
             } else {
                 mine = mineStorage.getMine(player);
@@ -81,7 +82,7 @@ public class PrivateMinesCmd {
         if (sender != null && target != null) {
             this.hasMine = mineStorage.hasMine(target);
             if (!hasMine) {
-                sender.sendMessage("Target didn't own a mine!");
+                sender.sendMessage(targetDidntOwnAMine);
                 return;
             } else {
                 mine = mineStorage.getMine(target);
@@ -95,13 +96,12 @@ public class PrivateMinesCmd {
         if (sender != null && target != null) {
             this.hasMine = mineStorage.hasMine(target);
             if (!hasMine) {
-                sender.sendMessage("Target didn't own a mine!");
+                sender.sendMessage(targetDidntOwnAMine);
                 return;
             } else {
                 mine = mineStorage.getMine(target);
             }
             mineFactory.upgradeMine(target.getPlayer());
-//            mine.upgradeMine();
         }
     }
 
@@ -111,7 +111,7 @@ public class PrivateMinesCmd {
         if (sender != null) {
             this.hasMine = mineStorage.hasMine(player);
             if (!hasMine) {
-                sender.sendMessage("Target didn't own a mine!");
+                sender.sendMessage(targetDidntOwnAMine);
                 return;
             } else {
                 mine = mineStorage.getMine(player);
