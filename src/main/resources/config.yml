@@ -15,7 +15,7 @@ materials:
   COBBLESTONE: 1
   STONE: 5
 
-# Put the mine types in the fucking order you want them to fucking rank up in :)
+# List the different mine types here in the order you want them to level up in
 mineTypes:
   Type1:
     file: structure.dat
