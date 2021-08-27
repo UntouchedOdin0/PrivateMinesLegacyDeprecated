@@ -2,6 +2,7 @@ resetDelay: 5 # This is the reset delay in minutes.
 structureFile: "structure" # This is the structure file name without the .dat on the end!
 autoResets: true # Should the plugin auto-reset the mines?
 teleportToMineFromVoid: true # Should players be teleported to their mines if they fall in the void?
+floorOffset: 1
 
 # Options
 # - BUKKIT
@@ -11,20 +12,20 @@ teleportToMineFromVoid: true # Should players be teleported to their mines if th
 
 mineFillSpeed: BUKKIT
 
-materials:
-  COBBLESTONE: 1
-  STONE: 5
+#materials:
+#  COBBLESTONE: 1
+#  STONE: 5
 
 # Put the mine types in the fucking order you want them to fucking rank up in :)
 mineTypes:
   Type1:
     file: structure.dat
-    blocks:
-      STONE: 1.0
-      COBBLESTONE: 2.0
+    materials:
+      STONE: 0.9
+      COBBLESTONE: 0.1
   Type2:
     file: structure2.dat
-    blocks:
-      STONE: 1.0
-      COBBLESTONE: 2.0
-      EMERALD_BLOCK: 0.3
+    materials:
+      - STONE: 1.0
+      - COBBLESTONE: 2.0
+      - EMERALD_BLOCK: 0.3

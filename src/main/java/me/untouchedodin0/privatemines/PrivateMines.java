@@ -87,6 +87,9 @@ public class PrivateMines extends JavaPlugin {
     private int resetDelay = 5;
 
     @ConfigValue
+    private int floorOffset = 1;
+
+    @ConfigValue
     private Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
 
     public static String fileNameWithOutExt(String fileName) {
@@ -97,7 +100,7 @@ public class PrivateMines extends JavaPlugin {
     @Override
     public void onEnable() {
         Bukkit.getLogger().info("Loading PrivateMinesRewrite...");
-        materials.put(Material.STONE, 1.0);
+//        materials.put(Material.STONE, 1.0);
         Util util = new Util();
         configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) {
@@ -284,6 +287,10 @@ public class PrivateMines extends JavaPlugin {
         } else {
             Bukkit.getLogger().info("Couldn't find the specified the specified mine fill speed.");
         }
+    }
+
+    public int getFloorOffset() {
+        return floorOffset;
     }
 
     @SuppressWarnings("unused")
