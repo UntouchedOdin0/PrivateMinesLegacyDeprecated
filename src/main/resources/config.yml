@@ -12,9 +12,9 @@ floorOffset: 1
 
 mineFillSpeed: BUKKIT
 
-#materials:
-#  COBBLESTONE: 1
-#  STONE: 5
+materials:
+  COBBLESTONE: 1
+  STONE: 5
 
 # Put the mine types in the order you want them to rank up in :)
 
@@ -27,6 +27,6 @@ mineTypes:
   Type2:
     file: structure2.dat
     materials:
-      - STONE: 1.0
-      - COBBLESTONE: 2.0
-      - EMERALD_BLOCK: 0.3
+      STONE: 1.0
+      COBBLESTONE: 2.0
+      EMERALD_BLOCK: 0.3

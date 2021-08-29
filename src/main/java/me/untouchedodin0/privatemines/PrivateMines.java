@@ -45,6 +45,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import redempt.redlib.commandmanager.CommandParser;
 import redempt.redlib.commandmanager.Messages;
 import redempt.redlib.configmanager.ConfigManager;
+import redempt.redlib.configmanager.annotations.ConfigMappable;
 import redempt.redlib.configmanager.annotations.ConfigValue;
 import redempt.redlib.multiblock.MultiBlockStructure;
 
@@ -111,6 +112,7 @@ public class PrivateMines extends JavaPlugin {
                 .addConverter(UUID.class, UUID::fromString, UUID::toString)
                 .register(this).load();
 
+
         saveResource("messages.txt", false);
 
         Bukkit.getLogger().info("Setting up the Private Mines World...");
@@ -135,6 +137,8 @@ public class PrivateMines extends JavaPlugin {
         createMinesFolder();
         createStructureFolder();
         privateMine = this;
+
+        Bukkit.getLogger().info("mineTypes: " + mineTypes);
 
         // This populates the mineTypeMap
         loadStructureList(util, structureFolder.listFiles());
@@ -217,10 +221,6 @@ public class PrivateMines extends JavaPlugin {
 
     public StructureLoader getStructureLoader() {
         return structureLoader;
-    }
-
-    public List<MineType> getMineTypes() {
-        return mineTypes;
     }
 
     public Map<String, MineType> getMineTypeMap() {

@@ -26,12 +26,15 @@ package me.untouchedodin0.privatemines.utils;
 
 import me.byteful.lib.blockedit.BlockEditAPI;
 import me.untouchedodin0.privatemines.PrivateMines;
+import me.untouchedodin0.privatemines.utils.mine.util.region.utils.WorldEditRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Player;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.flag.WrappedState;
 import org.codemc.worldguardwrapper.region.IWrappedRegion;
+import org.jetbrains.annotations.NotNull;
 import redempt.redlib.multiblock.MultiBlockStructure;
 import redempt.redlib.region.Region;
 
@@ -72,7 +75,20 @@ public class Util {
         return loadStructure(structureName, file);
     }
 
-    @SuppressWarnings("unused")
+    @NotNull
+    public IWrappedRegion createMainWorldGuardRegion(Player owner, WorldEditRegion r) {
+        IWrappedRegion region = WorldGuardWrapper.getInstance().addCuboidRegion(
+                owner.getUniqueId().toString(),
+                r.getMinimumLocation(),
+                r.getMaximumLocation())
+                .orElseThrow(() -> new RuntimeException("Could not create Main WorldGuard region"));
+
+        region.getOwners().addPlayer(owner.getUniqueId());
+
+        setMainFlags(region);
+        return region;
+    }
+
     public void setMainFlags(IWrappedRegion region) {
         final WorldGuardWrapper w = WorldGuardWrapper.getInstance();
         Stream.of(

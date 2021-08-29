@@ -25,11 +25,16 @@
 package me.untouchedodin0.privatemines.utils.mine;
 
 import me.byteful.lib.blockedit.BlockEditAPI;
+import me.untouchedodin0.privatemines.utils.Util;
+import me.untouchedodin0.privatemines.utils.mine.util.region.utils.WorldEditRegion;
+import me.untouchedodin0.privatemines.utils.mine.util.region.utils.WorldEditVector;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
+import org.codemc.worldguardwrapper.region.IWrappedRegion;
 import redempt.redlib.misc.WeightedRandom;
 import redempt.redlib.multiblock.Structure;
 import redempt.redlib.region.CuboidRegion;
@@ -52,6 +57,7 @@ public class Mine {
     Location corner1;
     Location corner2;
     private WeightedRandom<Material> weightedRandom;
+    private Util util;
 
     public Mine(Structure structure, MineType mineType) {
         this.structure = structure;
@@ -64,6 +70,7 @@ public class Mine {
         this.corner2 = getRelative(getCornerLocations()[1]);
         this.cuboidRegion = new CuboidRegion(corner1, corner2);
         this.cuboidRegion.expand(1, 0, 1, 0, 1, 0);
+        this.util = new Util();
     }
 
     public Location getMineLocation() {
@@ -166,5 +173,15 @@ public class Mine {
             String loggermessage = String.format("Creating a npc named %s for playing %s", name, playerName);
             Bukkit.getLogger().info(loggermessage);
         }
+    }
+
+    public void createWorldGuardRegions(Player player, Location corner1, Location corner2) {
+        WorldEditVector vector1 = new WorldEditVector(corner1.getX(), corner1.getY(), corner1.getZ());
+        WorldEditVector vector2 = new WorldEditVector(corner2.getX(), corner2.getY(), corner2.getZ());
+
+        World world = corner1.getWorld();
+
+        WorldEditRegion worldEditRegion = new WorldEditRegion(vector1, vector2, world);
+        IWrappedRegion worldguardRegion = util.createMainWorldGuardRegion(player, worldEditRegion);
     }
 }

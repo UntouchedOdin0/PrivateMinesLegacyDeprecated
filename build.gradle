@@ -54,13 +54,13 @@ dependencies {
     compileOnly 'dev.dbassett:skullcreator:3.0.1'
     compileOnly 'net.citizensnpcs:citizens-main:2.0.28-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.10.10'
-//    compileOnly 'me.byteful.lib:blockeditapi:1.0.3'
 
     compileOnly 'org.codemc.worldguardwrapper:worldguardwrapper:1.2.0-SNAPSHOT'
 
     compile files('libs/blockeditapi-1.0.3.jar')
 //    compile files('libs/RedLib.jar')
 
+//    implementation 'com.github.byteful:BlockEditAPI:1.0.3'
     implementation 'com.github.cryptomorin:XSeries:8.3.0'
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
     implementation "dev.triumphteam:triumph-gui:3.0.3" // Replace version here
