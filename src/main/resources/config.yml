@@ -16,7 +16,8 @@ mineFillSpeed: BUKKIT
 #  COBBLESTONE: 1
 #  STONE: 5
 
-# Put the mine types in the fucking order you want them to fucking rank up in :)
+# Put the mine types in the order you want them to rank up in :)
+
 mineTypes:
   Type1:
     file: structure.dat
