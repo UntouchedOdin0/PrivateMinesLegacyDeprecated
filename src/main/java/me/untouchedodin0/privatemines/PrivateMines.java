@@ -148,6 +148,8 @@ public class PrivateMines extends JavaPlugin {
         mineTypes.forEach((string, mineConfig) -> {
             Bukkit.getLogger().info("MineTypes String: " + string);
             Bukkit.getLogger().info("MineTypes mineConfig: " + mineConfig);
+            Bukkit.getLogger().info("MineType Priority: " + mineConfig.getPriority());
+            Bukkit.getLogger().info("MineType Materials: " + mineConfig.getMaterials());
         });
 
         // This populates the mineTypeMap
