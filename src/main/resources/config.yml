@@ -16,7 +16,17 @@ materials:
   COBBLESTONE: 1
   STONE: 5
 
-# Put the mine types in the order you want them to rank up in :)
+# This is the list of all the mine types you want to have in your private mine
+#
+#
+# An example of how to set up a mine type
+#
+#  Type1:                    - The top will be what it's called.
+#    file: structure.dat     - This is the file of which the mine type will use
+#    priority: 1             - This is the priority of the mine type (where it goes in the upgrade oder)
+#    materials:              - The list of Materials, follow the order posted here
+#      STONE: 0.9            - MATERIAL: (0.1 -> 1.0) - Value after the Material is the percent
+#      COBBLESTONE: 0.1      - Example of a percent is 3.14159265359
 
 mineTypes:
   Type1:
