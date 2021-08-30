@@ -31,6 +31,11 @@ import redempt.redlib.configmanager.annotations.ConfigValue;
 
 import java.util.Map;
 
+/*
+    This class handles the mineTypes part of the config.
+    Credit to Redempt for making such an amazing system!
+ */
+
 @ConfigMappable
 public class MineConfig {
 
@@ -38,5 +43,20 @@ public class MineConfig {
     private String file; // reads "file" from the category.
 
     @ConfigValue
-    private Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
+    private int priority; // reads "priority" from the category.
+
+    @ConfigValue
+    private Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class); // reads "materials" from the category.
+
+    public String getFile() {
+        return file;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public Map<Material, Double> getMaterials() {
+        return materials;
+    }
 }

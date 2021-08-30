@@ -46,7 +46,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import redempt.redlib.commandmanager.CommandParser;
 import redempt.redlib.commandmanager.Messages;
 import redempt.redlib.configmanager.ConfigManager;
-import redempt.redlib.configmanager.annotations.ConfigMappable;
 import redempt.redlib.configmanager.annotations.ConfigValue;
 import redempt.redlib.multiblock.MultiBlockStructure;
 
@@ -95,7 +94,9 @@ public class PrivateMines extends JavaPlugin {
     private Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
 
     @ConfigValue
-    Map<String, MineConfig> mineTypes = ConfigManager.map(MineConfig.class);
+    private Map<String, MineConfig> mineTypes = ConfigManager.map(MineConfig.class);
+
+    private Map<MineType, Integer> mineTypeOrder = new HashMap<>();
 
     public static String fileNameWithOutExt(String fileName) {
         return Optional.of(fileName.lastIndexOf(".")).filter(i -> i >= 0)
@@ -144,6 +145,10 @@ public class PrivateMines extends JavaPlugin {
 
         Bukkit.getLogger().info("mineTypes map: " + mineTypes);
 
+        mineTypes.forEach((string, mineConfig) -> {
+            Bukkit.getLogger().info("MineTypes String: " + string);
+            Bukkit.getLogger().info("MineTypes mineConfig: " + mineConfig);
+        });
 
         // This populates the mineTypeMap
         loadStructureList(util, structureFolder.listFiles());
