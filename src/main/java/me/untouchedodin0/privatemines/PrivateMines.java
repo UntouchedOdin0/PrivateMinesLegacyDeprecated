@@ -33,6 +33,7 @@ import me.untouchedodin0.privatemines.structure.StructureLoader;
 import me.untouchedodin0.privatemines.utils.Metrics;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.filling.MineFillManager;
+import me.untouchedodin0.privatemines.utils.mine.MineConfig;
 import me.untouchedodin0.privatemines.utils.mine.MineType;
 import me.untouchedodin0.privatemines.utils.mine.loop.MineLoopUtil;
 import me.untouchedodin0.privatemines.utils.mine.util.PrivateMineResetUtil;
@@ -72,7 +73,7 @@ public class PrivateMines extends JavaPlugin {
     File configFile;
     MultiBlockStructure multiBlockStructure;
 
-    List<MineType> mineTypes = new ArrayList<>();
+//    List<MineType> mineTypes = new ArrayList<>();
 
     List<MultiBlockStructure> multiBlockStructures = new ArrayList<>();
 
@@ -92,6 +93,9 @@ public class PrivateMines extends JavaPlugin {
 
     @ConfigValue
     private Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class);
+
+    @ConfigValue
+    Map<String, MineConfig> mineTypes = ConfigManager.map(MineConfig.class);
 
     public static String fileNameWithOutExt(String fileName) {
         return Optional.of(fileName.lastIndexOf(".")).filter(i -> i >= 0)
@@ -138,7 +142,8 @@ public class PrivateMines extends JavaPlugin {
         createStructureFolder();
         privateMine = this;
 
-        Bukkit.getLogger().info("mineTypes: " + mineTypes);
+        Bukkit.getLogger().info("mineTypes map: " + mineTypes);
+
 
         // This populates the mineTypeMap
         loadStructureList(util, structureFolder.listFiles());
