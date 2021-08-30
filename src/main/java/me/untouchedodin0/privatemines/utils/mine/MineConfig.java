@@ -48,13 +48,25 @@ public class MineConfig {
     @ConfigValue
     private Map<Material, Double> materials = ConfigManager.map(Material.class, Double.class); // reads "materials" from the category.
 
+    /*
+        This method gives easy access to the "file" value in the minetype in the config.
+     */
+
     public String getFile() {
         return file;
     }
 
+    /*
+        This method gives easy access to the "priority" value in the minetype in the config.
+    */
+
     public int getPriority() {
         return priority;
     }
+
+    /*
+        This method gives easy access to the "materials" list in the minetype in the config.
+    */
 
     public Map<Material, Double> getMaterials() {
         return materials;
