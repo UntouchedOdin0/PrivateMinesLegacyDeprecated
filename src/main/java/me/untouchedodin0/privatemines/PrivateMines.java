@@ -117,7 +117,6 @@ public class PrivateMines extends JavaPlugin {
                 .addConverter(UUID.class, UUID::fromString, UUID::toString)
                 .register(this).load();
 
-
         saveResource("messages.txt", false);
 
         Bukkit.getLogger().info("Setting up the Private Mines World...");
