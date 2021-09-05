@@ -63,4 +63,11 @@ public class PrivateMinesAPI {
         mine = mineStorage.getMine(player);
         mine.resetMine();
     }
+
+    public boolean hasMine(Player player) {
+        privateMines = PrivateMines.getPlugin(PrivateMines.class);
+        mineFactory = privateMines.getMineFactory();
+        mineStorage = privateMines.getMineStorage();
+        return mineStorage.hasMine(player);
+    }
 }
