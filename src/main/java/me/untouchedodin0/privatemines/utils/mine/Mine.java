@@ -24,7 +24,9 @@
 
 package me.untouchedodin0.privatemines.utils.mine;
 
+import com.cryptomorin.xseries.XMaterial;
 import me.byteful.lib.blockedit.BlockEditAPI;
+import me.byteful.lib.blockedit.data.BlockLocation;
 import me.untouchedodin0.privatemines.utils.Util;
 import me.untouchedodin0.privatemines.utils.mine.util.region.utils.WorldEditRegion;
 import me.untouchedodin0.privatemines.utils.mine.util.region.utils.WorldEditVector;
@@ -183,5 +185,14 @@ public class Mine {
 
         WorldEditRegion worldEditRegion = new WorldEditRegion(vector1, vector2, world);
         IWrappedRegion worldguardRegion = util.createMainWorldGuardRegion(player, worldEditRegion);
+    }
+
+    public void deleteMineStructure(Player player) {
+        getStructure().getRegion().forEachBlock(block -> {
+            BlockState state = block.getState();
+            if (XMaterial.AIR.parseMaterial() != null) {
+                BlockEditAPI.setBlock(block, XMaterial.AIR.parseMaterial(), state.getData(), false);
+            }
+        });
     }
 }

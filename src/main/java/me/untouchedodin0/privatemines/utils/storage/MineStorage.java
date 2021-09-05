@@ -39,6 +39,7 @@ public class MineStorage {
     File[] mineFiles = new File("plugins/PrivateMinesRewrite/mines").listFiles();
 
     Map<UUID, Mine> mines = new HashMap<>();
+    Mine mine;
 
     public void addMine(UUID uuid, Mine mine) {
         if (mines.containsKey(uuid)) {
@@ -52,6 +53,7 @@ public class MineStorage {
         if (!mines.containsKey(uuid)) {
             Bukkit.getLogger().warning("User didn't own a private mine!");
         } else {
+            mine = mines.get(uuid);
             mines.remove(uuid);
         }
     }

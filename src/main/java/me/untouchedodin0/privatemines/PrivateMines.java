@@ -83,6 +83,8 @@ public class PrivateMines extends JavaPlugin {
     private MineWorldManager mineManager;
     private StructureLoader structureLoader;
     private ConfigManager configManager;
+    private MineFactory mineFactory;
+    private MineStorage mineStorage;
 
     @ConfigValue
     private int resetDelay = 5;
@@ -125,11 +127,11 @@ public class PrivateMines extends JavaPlugin {
         MineFillManager fillManager = new MineFillManager(this);
 
         Bukkit.getLogger().info("Setting up the Private Mines Storage and Factory...");
-        MineStorage mineStorage = new MineStorage();
+        mineStorage = new MineStorage();
         PrivateMineResetUtil privateMineResetUtil = new PrivateMineResetUtil(this);
         MineLoopUtil mineLoopUtil = new MineLoopUtil();
         structureLoader = new StructureLoader(mineLoopUtil);
-        MineFactory mineFactory = new MineFactory(
+        mineFactory = new MineFactory(
                 this,
                 mineStorage,
                 fillManager,
@@ -307,5 +309,13 @@ public class PrivateMines extends JavaPlugin {
     @SuppressWarnings("unused")
     public ConfigManager getConfigManager() {
         return configManager;
+    }
+
+    public MineFactory getMineFactory() {
+        return mineFactory;
+    }
+
+    public MineStorage getMineStorage() {
+        return mineStorage;
     }
 }
