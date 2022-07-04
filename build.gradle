@@ -60,7 +60,7 @@ dependencies {
 //    compile files('libs/RedLib.jar')
 
 //    implementation 'com.github.byteful:BlockEditAPI:1.0.3'
-    implementation 'com.github.cryptomorin:XSeries:8.3.0'
+    implementation 'com.github.cryptomorin:XSeries:9.0.0'
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
     implementation "dev.triumphteam:triumph-gui:3.0.3" // Replace version here
     implementation "net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT"
