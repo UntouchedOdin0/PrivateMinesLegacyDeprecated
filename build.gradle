@@ -49,7 +49,7 @@ dependencies {
 
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
     compileOnly "co.aikar:acf-paper:0.5.0-SNAPSHOT"
-    compileOnly 'com.github.Redempt:RedLib:6.0.1'
+    compileOnly 'com.github.Redempt:RedLib:6.5.3.2'
     compileOnly 'dev.dbassett:skullcreator:3.0.1'
     compileOnly 'net.citizensnpcs:citizens-main:2.0.28-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.10.10'
